@@ -25,10 +25,6 @@ body {
   text-decoration: none;
   color: black;
 }
-/* temp */
-/* .navbar-left {
-  background-color: green;
-} */
 
 .navlist-left a {
   display: flex;
@@ -99,4 +95,12 @@ body {
 .navlist-center li a:hover:after,
 .navlist-center li a:hover:before {
   width: 100%;
+}
+
+p {
+  background-color: green;
+}
+
+.test {
+  background-color: red;
 }
