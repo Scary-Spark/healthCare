@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #0f4c5c;
+}
+
 .navbar {
   background-image: url("/assets/images/homeNavBg.webp");
   background-size: cover;
@@ -74,7 +78,7 @@
   position: absolute;
   height: 3px;
   width: 0%;
-  background-color: #009688;
+  background-color: #0f4c5c;
   transition: 0.5s;
 }
 
@@ -89,7 +93,7 @@
 }
 
 .navlist-center li a:hover {
-  color: #009688;
+  color: #0f4c5c;
 }
 
 .navlist-center li a:hover:after,
