@@ -9,9 +9,9 @@ const port = 3000; // server running on port 3000
 
 // middlewares
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "src/public")));
+app.use(express.static(path.join(__dirname, "src", "public")));
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "src/views"));
+app.set("views", path.join(__dirname, "src", "views"));
 
 app.use("/", router);
 
