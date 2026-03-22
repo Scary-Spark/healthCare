@@ -1,0 +1,16 @@
+{
+  "name": "code-blue-client",
+  "version": "1.0.0",
+  "description": "Client-Side Web Application for Healthcare Appointment and Report Generation System",
+  "license": "AGPL-3.0",
+  "author": "Scary Spark",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "client-server": "nodemon src/main/main.js"
+  },
+  "dependencies": {
+    "ejs": "^5.0.1",
+    "express": "^5.2.1"
+  }
+}
