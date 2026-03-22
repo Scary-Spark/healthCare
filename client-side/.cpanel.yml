@@ -12,3 +12,10 @@ deployment:
 
     # Copy CSS files recursively
     - /bin/cp -R src/public/styles $DEPLOYPATH
+
+# ---
+# deployment:
+#   tasks:
+#     - export DEPLOYPATH=/home/codeblue/public_html/
+#     - rsync -av --exclude 'node_modules' ./ $DEPLOYPATH/
+#     - cd $DEPLOYPATH && npm install
