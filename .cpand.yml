@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/codeblue/repositories/healthCare/client-side/
+    - /bin/cp -R * $DEPLOYPATH
