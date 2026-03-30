@@ -6,15 +6,12 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: #0f4c5c;
-}
-
 .navbar {
-  background-image: url("/assets/images/homeNavBg.webp");
+  /* background-image: url("/assets/images/homeNavBg.webps");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: top;
+  background-position: top; */
+  background-color: rgb(84, 90, 96);
   height: 65px;
   display: flex;
   align-items: center;
@@ -95,12 +92,4 @@ body {
 .navlist-center li a:hover:after,
 .navlist-center li a:hover:before {
   width: 100%;
-}
-
-p {
-  background-color: green;
-}
-
-.test {
-  background-color: red;
 }
