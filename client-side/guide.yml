@@ -15,3 +15,31 @@ clientPath.js:
 static folder:
   - public files that browser can access directly without backend logic
   - path: src/public
+
+folderStructure:
+  clientPath.js
+  src:
+    controllers:
+      .. backend logic for each page
+    main:
+      main.js // main server run file
+    publicFolder:
+      assets:
+        fonts:
+        icons:
+        images:
+      scripts:
+        home.js
+        login.js
+      styles:
+        fonts.css
+        home.css
+        login.css
+    routes:
+      homeRouts.js
+    utils:
+      components
+      layouts
+    views:
+      login.ejs
+      home.ejs

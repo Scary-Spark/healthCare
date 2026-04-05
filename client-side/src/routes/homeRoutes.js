@@ -6,4 +6,8 @@ router.get("/", (req, res) => {
   res.render("home.ejs");
 });
 
+router.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
+
 export default router;

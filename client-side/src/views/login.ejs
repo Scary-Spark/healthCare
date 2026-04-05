@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Login - NovaLife Medical Center</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/login.css" />
+
+    <!-- Global Image Error Handler -->
+    <!-- Global Image Error Handler -->
+    <script>
+      window.handleImageError = function (img) {
+        img.onerror = null;
+        // Fallback to a reliable medical image
+        img.src =
+          "https://static.vecteezy.com/system/resources/previews/002/501/834/large_2x/health-and-medical-background-free-photo.jpg";
+        img.style.objectFit = "cover";
+      };
+    </script>
+  </head>
+  <body class="login-page">
+    <!-- ==================== HEADER (Simplified) ==================== -->
+    <header class="header login-header">
+      <div class="container navbar">
+        <div class="logo">
+          <a href="/">
+            <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div class="logo-text">
+              <span class="logo-name">NovaLife</span>
+              <span class="logo-tagline">Medical Center</span>
+            </div>
+          </a>
+        </div>
+        <a href="/" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+    </header>
+
+    <!-- ==================== LOGIN MAIN ==================== -->
+    <main class="login-main">
+      <div class="login-container">
+        <!-- Left Side: Branding & Info -->
+        <div class="login-brand">
+          <div class="login-brand-content">
+            <div class="login-brand-icon">
+              <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <h1>Welcome Back</h1>
+            <p>
+              Access your health records, book appointments, and connect with
+              your care team — all in one secure portal.
+            </p>
+
+            <div class="login-features">
+              <div class="feature">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>View medical history & prescriptions</span>
+              </div>
+              <div class="feature">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Book & manage appointments</span>
+              </div>
+              <div class="feature">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Secure messaging with doctors</span>
+              </div>
+              <div class="feature">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Access lab results instantly</span>
+              </div>
+            </div>
+
+            <div class="login-trust">
+              <div class="trust-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>HIPAA Compliant & Secure</span>
+              </div>
+              <div class="trust-badge">
+                <i class="fa-solid fa-lock"></i>
+                <span>256-bit SSL Encryption</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="login-brand-image">
+            <img
+              src="https://images.unsplash.com/photo-1576091160550-217358c7e618?auto=format&fit=crop&q=80&w=600"
+              alt="Healthcare"
+              onerror="handleImageError(this)"
+            />
+            <div class="brand-overlay"></div>
+          </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="login-form-wrapper">
+          <div class="login-form-card">
+            <!-- Login Form -->
+            <form
+              id="patientLoginForm"
+              class="login-form"
+              autocomplete="off"
+              novalidate
+            >
+              <div class="form-header">
+                <h2>Patient Login</h2>
+                <p>Sign in to access your patient portal</p>
+              </div>
+
+              <!-- Email/Phone Input -->
+              <div class="form-group">
+                <label for="loginIdentifier">
+                  <i class="fa-regular fa-user"></i>
+                  Email or Phone Number
+                </label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="loginIdentifier"
+                    name="identifier"
+                    placeholder="Enter your email or phone"
+                    autocomplete="username"
+                    required
+                  />
+                  <i class="input-icon fa-regular fa-envelope"></i>
+                </div>
+                <span class="error-message" id="identifierError"></span>
+              </div>
+
+              <!-- Password Input -->
+              <!-- Password Input -->
+              <div class="form-group">
+                <label for="password">
+                  <i class="fa-solid fa-lock"></i>
+                  Password
+                </label>
+                <div class="input-wrapper">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="new-password"
+                    required
+                    minlength="6"
+                  />
+                  <button
+                    type="button"
+                    class="toggle-password"
+                    id="togglePassword"
+                    aria-label="Toggle password visibility"
+                  >
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </div>
+                <span class="error-message" id="passwordError"></span>
+              </div>
+
+              <!-- Remember & Forgot -->
+              <div class="form-options">
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" name="remember" id="remember" />
+                  <span class="checkmark"></span>
+                  Remember me
+                </label>
+                <a href="#" class="forgot-link" id="forgotPasswordLink"
+                  >Forgot password?</a
+                >
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                id="loginBtn"
+              >
+                <span class="btn-text">Sign In</span>
+                <span class="btn-loader" style="display: none">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i> Signing in...
+                </span>
+              </button>
+
+              <!-- Divider -->
+              <div class="form-divider">
+                <span>or continue with</span>
+              </div>
+
+              <!-- Social Login -->
+              <div class="social-login">
+                <button
+                  type="button"
+                  class="social-btn google"
+                  id="googleLogin"
+                >
+                  <i class="fa-brands fa-google"></i>
+                  <span>Google</span>
+                </button>
+                <button
+                  type="button"
+                  class="social-btn facebook"
+                  id="facebookLogin"
+                >
+                  <i class="fa-brands fa-facebook-f"></i>
+                  <span>Facebook</span>
+                </button>
+              </div>
+
+              <!-- Sign Up Link -->
+              <div class="form-footer">
+                <p>
+                  New to NovaLife?
+                  <a href="/patient/register" id="signupLink"
+                    >Create an account</a
+                  >
+                </p>
+              </div>
+            </form>
+
+            <!-- Forgot Password Form (Hidden by default) -->
+            <form
+              id="forgotPasswordForm"
+              class="login-form"
+              style="display: none"
+              novalidate
+            >
+              <div class="form-header">
+                <h2>Reset Password</h2>
+                <p>Enter your email to receive a reset link</p>
+              </div>
+
+              <div class="form-group">
+                <label for="resetEmail">
+                  <i class="fa-regular fa-envelope"></i>
+                  Email Address
+                </label>
+                <div class="input-wrapper">
+                  <input
+                    type="email"
+                    id="resetEmail"
+                    name="email"
+                    placeholder="Enter your registered email"
+                    autocomplete="email"
+                    required
+                  />
+                  <i class="input-icon fa-regular fa-envelope"></i>
+                </div>
+                <span class="error-message" id="resetEmailError"></span>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                id="resetBtn"
+              >
+                <span class="btn-text">Send Reset Link</span>
+                <span class="btn-loader" style="display: none">
+                  <i class="fa-solid fa-circle-notch fa-spin"></i> Sending...
+                </span>
+              </button>
+
+              <div class="form-footer">
+                <p>
+                  <a href="#" id="backToLogin">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Login
+                  </a>
+                </p>
+              </div>
+            </form>
+
+            <!-- Success Message (Hidden by default) -->
+            <div
+              id="successMessage"
+              class="success-message"
+              style="display: none"
+            >
+              <div class="success-icon">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <h3>Check Your Email</h3>
+              <p>
+                We've sent a password reset link to
+                <strong id="resetEmailDisplay"></strong>
+              </p>
+              <p class="success-note">
+                Didn't receive the email? Check your spam folder or
+                <a href="#" id="resendLink">resend</a>.
+              </p>
+              <button class="btn btn-outline" id="backToLoginFromSuccess">
+                <i class="fa-solid fa-arrow-left"></i> Back to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== FOOTER (Simplified) ==================== -->
+    <footer class="login-footer">
+      <div class="container">
+        <div class="footer-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/help">Help Center</a>
+          <a href="/contact">Contact Support</a>
+        </div>
+        <p class="copyright">
+          &copy; 2025 NovaLife Medical Center. All rights reserved.
+        </p>
+        <p class="security-note">
+          <i class="fa-solid fa-shield-halved"></i>
+          Your data is protected with enterprise-grade security
+        </p>
+      </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/scripts/login.js"></script>
+  </body>
+</html>

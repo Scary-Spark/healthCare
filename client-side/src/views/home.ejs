@@ -4,384 +4,1120 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NovaLife Medical Center</title>
-    <!-- Google Fonts for a modern look -->
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- FontAwesome for Icons -->
+
+    <!-- FontAwesome Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="styles/home.css" />
+
+    <link rel="stylesheet" href="/styles/home.css" />
+
+    <!-- Global Image Error Handler -->
+    <script>
+      window.handleImageError = function (img) {
+        img.onerror = null;
+        img.src =
+          "https://via.placeholder.com/400x400/3b82f6/ffffff?text=NovaLife";
+        img.alt = "Image unavailable";
+        img.style.objectFit = "cover";
+      };
+    </script>
   </head>
   <body>
-    <!-- Header / Navigation -->
+    <!-- ==================== HEADER ==================== -->
     <header class="header">
-      <div class="container navbar">
-        <div class="logo">
-          <a href="#">
-            <i class="fa-solid fa-heart-pulse"></i>
-            <span>NovaLife</span>
-          </a>
+      <div class="header-top">
+        <div class="container">
+          <div class="top-info">
+            <span
+              ><i class="fa-solid fa-location-dot"></i>45 Hospital Road,
+              Motihar, Rajshahi 6000, Bangladesh</span
+            >
+            <span
+              ><i class="fa-solid fa-envelope"></i> contact@novalife.com</span
+            >
+            <span
+              ><i class="fa-solid fa-clock"></i> Sun - Sat: 8:00 AM - 8:00
+              PM</span
+            >
+          </div>
+          <div class="top-social">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
         </div>
+      </div>
 
-        <nav class="nav-links">
-          <ul>
-            <li><a href="#home" class="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#departments">Departments</a></li>
-            <li><a href="#doctors">Doctors</a></li>
-            <li><a href="#articles">Blog</a></li>
-          </ul>
-        </nav>
+      <div class="header-main">
+        <div class="container navbar">
+          <div class="logo">
+            <a href="#">
+              <div class="logo-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+              <div class="logo-text">
+                <span class="logo-name">NovaLife</span>
+                <span class="logo-tagline">Medical Center</span>
+              </div>
+            </a>
+          </div>
 
-        <div class="nav-actions">
-          <a href="#" class="btn-emergency">
-            <i class="fa-solid fa-phone"></i> Emergency
-          </a>
-          <a href="#" class="btn-login">Login / Register</a>
-        </div>
+          <nav class="nav-links">
+            <ul>
+              <li><a href="#home" class="active">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#departments">Departments</a></li>
+              <li><a href="#doctors">Doctors</a></li>
+              <li><a href="#articles">Blog</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
 
-        <!-- Mobile Menu Icon -->
-        <div class="mobile-menu-btn">
-          <i class="fa-solid fa-bars"></i>
+          <div class="nav-actions">
+            <a href="tel:+8807217254321" class="emergency-btn">
+              <i class="fa-solid fa-phone-volume"></i>
+              <div class="emergency-text">
+                <span>Emergency</span>
+                <strong>+880 721 7254321</strong>
+              </div>
+            </a>
+            <a href="/login" class="appointment-btn">
+              Login <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
         </div>
       </div>
     </header>
 
     <main>
-      <!-- 1. Hero Section -->
+      <!-- ==================== HERO SECTION ==================== -->
       <section id="home" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-          <h1>
-            World-Class Healthcare <br />
-            For Your Family
-          </h1>
-          <p>
-            Experience advanced medical technology combined with compassionate
-            care. Your health is our top priority.
-          </p>
-          <div class="hero-buttons">
-            <a href="#departments" class="btn btn-primary">Find a Specialist</a>
-            <a href="#contact" class="btn btn-outline">Book Appointment</a>
+        <div class="hero-bg-shapes">
+          <div class="shape shape-1"></div>
+          <div class="shape shape-2"></div>
+          <div class="shape shape-3"></div>
+        </div>
+
+        <div class="container hero-container">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <i class="fa-solid fa-star"></i
+              ><span>Trusted Healthcare Provider</span>
+            </div>
+            <h1 class="hero-title">
+              Your Health Is Our <span class="gradient-text">Top Priority</span>
+            </h1>
+            <p class="hero-description">
+              Experience world-class healthcare with cutting-edge technology and
+              compassionate care. Our expert team is dedicated to your
+              well-being.
+            </p>
+
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number" data-count="150">0</span
+                ><span class="stat-label">Expert Doctors</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" data-count="50">0</span
+                ><span class="stat-label">Departments</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" data-count="25">0</span
+                ><span class="stat-label">Years Experience</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" data-count="100">0</span
+                ><span class="stat-label">k+ Patients</span>
+              </div>
+            </div>
+
+            <div class="hero-buttons">
+              <a href="#departments" class="btn btn-primary btn-lg"
+                ><i class="fa-solid fa-calendar-check"></i>Book Appointment</a
+              >
+              <a href="#about" class="btn btn-outline btn-lg"
+                ><i class="fa-solid fa-play"></i>Watch Video</a
+              >
+            </div>
+
+            <div class="hero-trust">
+              <div class="trust-avatars">
+                <img
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100"
+                  alt="Patient"
+                  onerror="handleImageError(this)"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100"
+                  alt="Patient"
+                  onerror="handleImageError(this)"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100"
+                  alt="Patient"
+                  onerror="handleImageError(this)"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100"
+                  alt="Patient"
+                  onerror="handleImageError(this)"
+                />
+                <div class="more-count">+25k</div>
+              </div>
+              <div class="trust-text">
+                <div class="stars">
+                  <i class="fa-solid fa-star"></i
+                  ><i class="fa-solid fa-star"></i
+                  ><i class="fa-solid fa-star"></i
+                  ><i class="fa-solid fa-star"></i
+                  ><i class="fa-solid fa-star"></i>
+                </div>
+                <span>Trusted by 25k+ Happy Patients</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-image">
+            <div class="image-wrapper">
+              <img
+                src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800"
+                alt="Doctor Team"
+                class="main-image"
+                onerror="handleImageError(this)"
+              />
+              <div class="floating-card card-1">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div><strong>150+</strong><span>Specialist Doctors</span></div>
+              </div>
+              <div class="floating-card card-2">
+                <i class="fa-solid fa-award"></i>
+                <div><strong>25+</strong><span>Awards Won</span></div>
+              </div>
+              <div class="floating-card card-3">
+                <i class="fa-solid fa-heart"></i>
+                <div>
+                  <strong>100%</strong><span>Patient Satisfaction</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-wave">
+          <svg
+            viewBox="0 0 1440 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 60L48 68.3C96 76.7 192 93.3 288 98.3C384 103.3 480 96.7 576 88.3C672 80 768 70 864 68.3C960 66.7 1056 73.3 1152 73.3C1248 73.3 1344 66.7 1392 63.3L1440 60V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0V60Z"
+              fill="#ffffff"
+            />
+          </svg>
+        </div>
+      </section>
+
+      <!-- ==================== ABOUT SECTION ==================== -->
+      <section id="about" class="about-section">
+        <div class="container">
+          <div class="about-grid">
+            <div class="about-image">
+              <img
+                src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600"
+                alt="About NovaLife"
+                onerror="handleImageError(this)"
+              />
+              <div class="about-experience">
+                <span class="exp-number">25+</span
+                ><span class="exp-text">Years of Excellence</span>
+              </div>
+            </div>
+            <div class="about-content">
+              <span class="section-badge"
+                ><i class="fa-solid fa-circle-info"></i>About Us</span
+              >
+              <h2 class="section-title">
+                Leading the Way in
+                <span class="gradient-text">Medical Excellence</span>
+              </h2>
+              <p class="about-text">
+                NovaLife Medical Center has been providing exceptional
+                healthcare services for over 25 years. Our commitment to patient
+                care, advanced technology, and expert medical professionals sets
+                us apart.
+              </p>
+              <p class="about-text">
+                We believe in a patient-centered approach, where every
+                individual receives personalized care tailored to their unique
+                health needs. Our state-of-the-art facilities and compassionate
+                staff ensure the best possible outcomes for our patients.
+              </p>
+              <div class="about-features">
+                <div class="feature-item">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Board-Certified Specialists</span>
+                </div>
+                <div class="feature-item">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Advanced Medical Technology</span>
+                </div>
+                <div class="feature-item">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>24/7 Emergency Services</span>
+                </div>
+                <div class="feature-item">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Comprehensive Care Programs</span>
+                </div>
+              </div>
+              <div class="about-buttons">
+                <a href="#doctors" class="btn btn-primary">Meet Our Doctors</a>
+                <a href="#contact" class="btn btn-outline">Contact Us</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 2. Why Trust Us Section -->
-      <section class="trust-us">
+      <!-- ==================== TRUST SECTION ==================== -->
+      <section class="trust-section">
         <div class="container">
           <div class="section-header">
-            <span class="sub-title">Why Choose NovaLife</span>
-            <h2>Trusted by Thousands</h2>
+            <span class="section-badge"
+              ><i class="fa-solid fa-shield-heart"></i>Why Choose Us</span
+            >
+            <h2 class="section-title">
+              Healthcare You Can <span class="gradient-text">Trust</span>
+            </h2>
+            <p class="section-subtitle">
+              We combine advanced medical technology with compassionate care to
+              deliver exceptional healthcare experiences.
+            </p>
           </div>
           <div class="trust-grid">
             <div class="trust-card">
-              <i class="fa-solid fa-user-doctor"></i>
+              <div class="card-icon">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div class="icon-bg"></div>
+              </div>
               <h3>Expert Doctors</h3>
-              <p>Highly qualified specialists from top medical universities.</p>
+              <p>
+                Board-certified specialists with years of experience in their
+                respective fields.
+              </p>
+              <a href="#doctors" class="card-link"
+                >Meet Our Team <i class="fa-solid fa-arrow-right"></i
+              ></a>
+            </div>
+            <div class="trust-card featured">
+              <div class="featured-badge">Most Popular</div>
+              <div class="card-icon">
+                <i class="fa-solid fa-microscope"></i>
+                <div class="icon-bg"></div>
+              </div>
+              <h3>Advanced Technology</h3>
+              <p>
+                State-of-the-art diagnostic and treatment equipment for accurate
+                results.
+              </p>
+              <a href="#services" class="card-link"
+                >Our Technology <i class="fa-solid fa-arrow-right"></i
+              ></a>
             </div>
             <div class="trust-card">
-              <i class="fa-solid fa-microscope"></i>
-              <h3>Modern Tech</h3>
-              <p>State-of-the-art diagnostic and surgical equipment.</p>
+              <div class="card-icon">
+                <i class="fa-solid fa-clock"></i>
+                <div class="icon-bg"></div>
+              </div>
+              <h3>24/7 Emergency</h3>
+              <p>
+                Round-the-clock emergency services with rapid response teams.
+              </p>
+              <a href="#emergency" class="card-link"
+                >Emergency Care <i class="fa-solid fa-arrow-right"></i
+              ></a>
             </div>
             <div class="trust-card">
-              <i class="fa-solid fa-clock"></i>
-              <h3>24/7 Service</h3>
-              <p>Emergency and urgent care available round the clock.</p>
-            </div>
-            <div class="trust-card">
-              <i class="fa-solid fa-heart"></i>
-              <h3>Patient Care</h3>
-              <p>A compassionate approach to every patient's journey.</p>
+              <div class="card-icon">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <div class="icon-bg"></div>
+              </div>
+              <h3>Patient-Centered Care</h3>
+              <p>
+                Personalized treatment plans tailored to your unique health
+                needs.
+              </p>
+              <a href="#about" class="card-link"
+                >Learn More <i class="fa-solid fa-arrow-right"></i
+              ></a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 3. Doctor Slider Section -->
-      <section id="doctors" class="doctor-slider-section">
+      <!-- ==================== DEPARTMENTS SECTION ==================== -->
+      <section id="departments" class="departments-section">
         <div class="container">
           <div class="section-header">
-            <span class="sub-title">Our Team</span>
-            <h2>Meet Our Top Specialists</h2>
-            <p>Click on a doctor to view their full profile and schedule.</p>
+            <span class="section-badge"
+              ><i class="fa-solid fa-building-columns"></i>Our Departments</span
+            >
+            <h2 class="section-title">
+              Specialized <span class="gradient-text">Care Centers</span>
+            </h2>
+            <p class="section-subtitle">
+              Comprehensive medical services across multiple specialties to
+              address all your healthcare needs.
+            </p>
+          </div>
+          <div class="departments-grid">
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1576091160550-217358c7e618?auto=format&fit=crop&q=80&w=400"
+                  alt="Cardiology"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon">
+                  <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <h3>Cardiology</h3>
+                <p>Heart care & cardiovascular surgery</p>
+                <span class="dept-count">12 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=400"
+                  alt="Neurology"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-brain"></i></div>
+                <h3>Neurology</h3>
+                <p>Brain & nervous system disorders</p>
+                <span class="dept-count">8 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&q=80&w=400"
+                  alt="Orthopedics"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-bone"></i></div>
+                <h3>Orthopedics</h3>
+                <p>Bones, joints & musculoskeletal care</p>
+                <span class="dept-count">10 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1516574187841-693083f69802?auto=format&fit=crop&q=80&w=400"
+                  alt="Pediatrics"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-baby"></i></div>
+                <h3>Pediatrics</h3>
+                <p>Comprehensive child healthcare</p>
+                <span class="dept-count">15 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=400"
+                  alt="Dental"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-tooth"></i></div>
+                <h3>Dental Care</h3>
+                <p>Complete oral health services</p>
+                <span class="dept-count">9 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=80&w=400"
+                  alt="Ophthalmology"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-eye"></i></div>
+                <h3>Ophthalmology</h3>
+                <p>Eye care & vision services</p>
+                <span class="dept-count">7 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card">
+              <div class="dept-image">
+                <img
+                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=400"
+                  alt="General Medicine"
+                  onerror="handleImageError(this)"
+                />
+                <div class="dept-overlay"></div>
+              </div>
+              <div class="dept-content">
+                <div class="dept-icon">
+                  <i class="fa-solid fa-stethoscope"></i>
+                </div>
+                <h3>General Medicine</h3>
+                <p>Primary care & preventive health</p>
+                <span class="dept-count">20 Specialists</span>
+              </div>
+            </a>
+            <a href="#" class="dept-card view-all">
+              <div class="dept-content">
+                <div class="dept-icon"><i class="fa-solid fa-grid-2"></i></div>
+                <h3>View All</h3>
+                <p>Explore all 50+ departments</p>
+                <span class="dept-count"
+                  >See More <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== DOCTOR SLIDER SECTION ==================== -->
+      <section id="doctors" class="doctors-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-badge"
+              ><i class="fa-solid fa-user-doctor"></i>Our Team</span
+            >
+            <h2 class="section-title">
+              Meet Our <span class="gradient-text">Specialists</span>
+            </h2>
+            <p class="section-subtitle">
+              Click on any doctor to view their complete profile,
+              qualifications, and schedule an appointment.
+            </p>
           </div>
 
-          <div class="slider-wrapper">
-            <!-- Slider Container -->
+          <div class="slider-container">
+            <button class="slider-nav prev">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
             <div class="slider-track">
               <!-- Doctor Card 1 -->
               <a href="#" class="doctor-card">
-                <div class="doc-img">
+                <div class="doc-image-wrapper">
                   <img
-                    src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300"
-                    alt="Doctor"
+                    src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. Sarah Jenkins"
+                    onerror="handleImageError(this)"
                   />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>4.9</span>
+                  </div>
                 </div>
                 <div class="doc-info">
                   <h4>Dr. Sarah Jenkins</h4>
-                  <span>Cardiologist</span>
-                  <p>15+ Years Exp.</p>
+                  <span class="doc-specialty">Cardiologist</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 15+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 2.5k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="available"
+                      ><i class="fa-solid fa-circle"></i> Available Today</span
+                    >
+                  </div>
                 </div>
               </a>
-
               <!-- Doctor Card 2 -->
               <a href="#" class="doctor-card">
-                <div class="doc-img">
+                <div class="doc-image-wrapper">
                   <img
-                    src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=300"
-                    alt="Doctor"
+                    src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. Mark Alston"
+                    onerror="handleImageError(this)"
                   />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>4.8</span>
+                  </div>
                 </div>
                 <div class="doc-info">
                   <h4>Dr. Mark Alston</h4>
-                  <span>Neurologist</span>
-                  <p>12+ Years Exp.</p>
+                  <span class="doc-specialty">Neurologist</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 12+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 1.8k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="available"
+                      ><i class="fa-solid fa-circle"></i> Available Today</span
+                    >
+                  </div>
                 </div>
               </a>
-
               <!-- Doctor Card 3 -->
               <a href="#" class="doctor-card">
-                <div class="doc-img">
+                <div class="doc-image-wrapper">
                   <img
-                    src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=300"
-                    alt="Doctor"
+                    src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. Emily Chen"
+                    onerror="handleImageError(this)"
                   />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>5.0</span>
+                  </div>
                 </div>
                 <div class="doc-info">
                   <h4>Dr. Emily Chen</h4>
-                  <span>Pediatrician</span>
-                  <p>8+ Years Exp.</p>
+                  <span class="doc-specialty">Pediatrician</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 8+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 3.2k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="busy"
+                      ><i class="fa-solid fa-circle"></i> Busy</span
+                    >
+                  </div>
                 </div>
               </a>
-
               <!-- Doctor Card 4 -->
               <a href="#" class="doctor-card">
-                <div class="doc-img">
+                <div class="doc-image-wrapper">
                   <img
-                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300"
-                    alt="Doctor"
+                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. Robert Fox"
+                    onerror="handleImageError(this)"
                   />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>4.9</span>
+                  </div>
                 </div>
                 <div class="doc-info">
                   <h4>Dr. Robert Fox</h4>
-                  <span>Orthopedic</span>
-                  <p>20+ Years Exp.</p>
+                  <span class="doc-specialty">Orthopedic Surgeon</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 20+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 4.1k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="available"
+                      ><i class="fa-solid fa-circle"></i> Available Today</span
+                    >
+                  </div>
                 </div>
               </a>
-
               <!-- Doctor Card 5 -->
               <a href="#" class="doctor-card">
-                <div class="doc-img">
+                <div class="doc-image-wrapper">
                   <img
-                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300"
-                    alt="Doctor"
+                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. Lisa Wong"
+                    onerror="handleImageError(this)"
                   />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>4.8</span>
+                  </div>
                 </div>
                 <div class="doc-info">
                   <h4>Dr. Lisa Wong</h4>
-                  <span>Dermatologist</span>
-                  <p>10+ Years Exp.</p>
+                  <span class="doc-specialty">Dermatologist</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 10+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 2.1k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="available"
+                      ><i class="fa-solid fa-circle"></i> Available Today</span
+                    >
+                  </div>
+                </div>
+              </a>
+              <!-- Doctor Card 6 -->
+              <a href="#" class="doctor-card">
+                <div class="doc-image-wrapper">
+                  <img
+                    src="https://images.unsplash.com/photo-1472396961693-142e6e594e29?auto=format&fit=crop&q=80&w=400"
+                    alt="Dr. James Miller"
+                    onerror="handleImageError(this)"
+                  />
+                  <div class="doc-social">
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                    ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                    ><a href="#"><i class="fa-solid fa-envelope"></i></a>
+                  </div>
+                  <div class="doc-rating">
+                    <i class="fa-solid fa-star"></i><span>4.7</span>
+                  </div>
+                </div>
+                <div class="doc-info">
+                  <h4>Dr. James Miller</h4>
+                  <span class="doc-specialty">General Physician</span>
+                  <div class="doc-meta">
+                    <span><i class="fa-solid fa-briefcase"></i> 18+ Years</span
+                    ><span
+                      ><i class="fa-solid fa-users"></i> 5.3k Patients</span
+                    >
+                  </div>
+                  <div class="doc-availability">
+                    <span class="busy"
+                      ><i class="fa-solid fa-circle"></i> Busy</span
+                    >
+                  </div>
                 </div>
               </a>
             </div>
-            <!-- Navigation Arrows (Visual only for static) -->
-            <button class="slider-btn prev">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <button class="slider-btn next">
+            <button class="slider-nav next">
               <i class="fa-solid fa-chevron-right"></i>
             </button>
           </div>
+
+          <div class="slider-dots"></div>
+
+          <div class="view-all-wrapper">
+            <a href="#" class="btn btn-outline"
+              >View All Doctors <i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
       </section>
 
-      <!-- 4. Departments / Specialties Section -->
-      <section id="departments" class="departments">
+      <!-- ==================== ARTICLES SECTION ==================== -->
+      <section id="articles" class="articles-section">
         <div class="container">
           <div class="section-header">
-            <span class="sub-title">Consulting Specialists</span>
-            <h2>Our Departments</h2>
-          </div>
-
-          <div class="dept-grid">
-            <!-- Dept 1 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
-              </div>
-              <h3>Cardiology</h3>
-              <p>Heart care & Surgery</p>
-            </a>
-            <!-- Dept 2 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-brain"></i></div>
-              <h3>Neurology</h3>
-              <p>Brain & Nervous System</p>
-            </a>
-            <!-- Dept 3 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-bone"></i></div>
-              <h3>Orthopedics</h3>
-              <p>Bones & Joints</p>
-            </a>
-            <!-- Dept 4 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-baby"></i></div>
-              <h3>Pediatrics</h3>
-              <p>Child Care</p>
-            </a>
-            <!-- Dept 5 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-tooth"></i></div>
-              <h3>Dental</h3>
-              <p>Oral Health</p>
-            </a>
-            <!-- Dept 6 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-eye"></i></div>
-              <h3>Ophthalmology</h3>
-              <p>Eye Care</p>
-            </a>
-            <!-- Dept 7 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon">
-                <i class="fa-solid fa-stethoscope"></i>
-              </div>
-              <h3>General Medicine</h3>
-              <p>Primary Care</p>
-            </a>
-            <!-- Dept 8 -->
-            <a href="#" class="dept-card">
-              <div class="dept-icon"><i class="fa-solid fa-flask"></i></div>
-              <h3>Laboratory</h3>
-              <p>Pathology & Testing</p>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. Recent Articles Section -->
-      <section id="articles" class="articles">
-        <div class="container">
-          <div class="section-header">
-            <span class="sub-title">Health Tips</span>
-            <h2>Recent Articles</h2>
-          </div>
-
-          <div class="article-grid">
-            <article class="article-card">
-              <div class="art-img">
-                <img
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=500"
-                  alt="Article"
-                />
-              </div>
-              <div class="art-content">
-                <span class="date">Oct 12, 2023</span>
-                <h3>5 Ways to Improve Heart Health</h3>
-                <p>
-                  Simple lifestyle changes that can make a huge difference...
-                </p>
-                <a href="#">Read More &rarr;</a>
-              </div>
-            </article>
-
-            <article class="article-card">
-              <div class="art-img">
-                <img
-                  src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=500"
-                  alt="Article"
-                />
-              </div>
-              <div class="art-content">
-                <span class="date">Sep 28, 2023</span>
-                <h3>Understanding Seasonal Allergies</h3>
-                <p>How to prepare for pollen season and reduce symptoms...</p>
-                <a href="#">Read More &rarr;</a>
-              </div>
-            </article>
-
-            <article class="article-card">
-              <div class="art-img">
-                <img
-                  src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=500"
-                  alt="Article"
-                />
-              </div>
-              <div class="art-content">
-                <span class="date">Sep 15, 2023</span>
-                <h3>The Importance of Annual Checkups</h3>
-                <p>
-                  Why prevention is better than cure when it comes to health...
-                </p>
-                <a href="#">Read More &rarr;</a>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Location / FAQ / CTA -->
-      <section class="location-cta">
-        <div class="container">
-          <div class="cta-box">
-            <h2>Need Immediate Assistance?</h2>
-            <p>
-              Our emergency lines are open 24/7. Visit our locations or call us
-              now.
+            <span class="section-badge"
+              ><i class="fa-solid fa-newspaper"></i>Health Blog</span
+            >
+            <h2 class="section-title">
+              Latest <span class="gradient-text">Articles</span>
+            </h2>
+            <p class="section-subtitle">
+              Stay informed with expert health tips, medical news, and wellness
+              advice from our specialists.
             </p>
-            <a href="#contact" class="btn btn-white">Find a Location</a>
+          </div>
+          <div class="articles-grid">
+            <article class="article-card featured">
+              <div class="article-image">
+                <img
+                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
+                  alt="Heart Health"
+                  onerror="handleImageError(this)"
+                />
+                <div class="article-category">
+                  <i class="fa-solid fa-heart-pulse"></i> Cardiology
+                </div>
+              </div>
+              <div class="article-content">
+                <div class="article-meta">
+                  <span class="author"
+                    ><img
+                      src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=50"
+                      alt="Author"
+                      onerror="handleImageError(this)"
+                    />Dr. Sarah Jenkins</span
+                  ><span class="date"
+                    ><i class="fa-regular fa-calendar"></i> Oct 12, 2025</span
+                  >
+                </div>
+                <h3>5 Essential Tips to Improve Your Heart Health</h3>
+                <p>
+                  Discover simple yet effective lifestyle changes that can
+                  significantly reduce your risk of heart disease...
+                </p>
+                <a href="#" class="read-more"
+                  >Read Article <i class="fa-solid fa-arrow-right"></i
+                ></a>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="article-image">
+                <img
+                  src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=600"
+                  alt="Seasonal Allergies"
+                  onerror="handleImageError(this)"
+                />
+                <div class="article-category">
+                  <i class="fa-solid fa-notes-medical"></i> General Health
+                </div>
+              </div>
+              <div class="article-content">
+                <div class="article-meta">
+                  <span class="author"
+                    ><img
+                      src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=50"
+                      alt="Author"
+                      onerror="handleImageError(this)"
+                    />Dr. Mark Alston</span
+                  ><span class="date"
+                    ><i class="fa-regular fa-calendar"></i> Sep 28, 2025</span
+                  >
+                </div>
+                <h3>Understanding Seasonal Allergies: A Complete Guide</h3>
+                <p>
+                  Learn how to identify, prevent, and treat common seasonal
+                  allergies effectively...
+                </p>
+                <a href="#" class="read-more"
+                  >Read Article <i class="fa-solid fa-arrow-right"></i
+                ></a>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="article-image">
+                <img
+                  src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=600"
+                  alt="Annual Checkup"
+                  onerror="handleImageError(this)"
+                />
+                <div class="article-category">
+                  <i class="fa-solid fa-stethoscope"></i> Preventive Care
+                </div>
+              </div>
+              <div class="article-content">
+                <div class="article-meta">
+                  <span class="author"
+                    ><img
+                      src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80&w=50"
+                      alt="Author"
+                      onerror="handleImageError(this)"
+                    />Dr. Emily Chen</span
+                  ><span class="date"
+                    ><i class="fa-regular fa-calendar"></i> Sep 15, 2025</span
+                  >
+                </div>
+                <h3>Why Annual Health Checkups Are More Important Than Ever</h3>
+                <p>
+                  Regular screenings can detect potential health issues before
+                  they become serious problems...
+                </p>
+                <a href="#" class="read-more"
+                  >Read Article <i class="fa-solid fa-arrow-right"></i
+                ></a>
+              </div>
+            </article>
+          </div>
+          <div class="view-all-wrapper">
+            <a href="#" class="btn btn-outline"
+              >View All Articles <i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== APPOINTMENT CTA SECTION ==================== -->
+      <section class="appointment-cta">
+        <div class="container">
+          <div class="cta-wrapper">
+            <div class="cta-content">
+              <span class="cta-badge">Book Your Visit</span>
+              <h2>Ready to Prioritize Your Health?</h2>
+              <p>
+                Schedule an appointment with our specialists today. We offer
+                same-day appointments for urgent care needs.
+              </p>
+              <div class="cta-features">
+                <div class="feature">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Quick Online Booking</span>
+                </div>
+                <div class="feature">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Minimal Wait Time</span>
+                </div>
+                <div class="feature">
+                  <i class="fa-solid fa-circle-check"></i
+                  ><span>Insurance Accepted</span>
+                </div>
+              </div>
+              <div class="cta-buttons">
+                <a href="#" class="btn btn-primary btn-lg"
+                  ><i class="fa-solid fa-calendar-plus"></i> Book Appointment</a
+                >
+                <a href="tel:+8807217254321" class="btn btn-white btn-lg"
+                  ><i class="fa-solid fa-phone"></i> Call Now</a
+                >
+              </div>
+            </div>
+            <div class="cta-image">
+              <img
+                src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80&w=600"
+                alt="Appointment"
+                onerror="handleImageError(this)"
+              />
+              <div class="cta-shape"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== LOCATION & FAQ SECTION ==================== -->
+      <section id="contact" class="location-section">
+        <div class="container">
+          <div class="location-grid">
+            <div class="location-info">
+              <div class="section-header-left">
+                <span class="section-badge"
+                  ><i class="fa-solid fa-location-dot"></i> Our Locations</span
+                >
+                <h2 class="section-title">
+                  Find Us <span class="gradient-text">Near You</span>
+                </h2>
+              </div>
+              <div class="locations-list">
+                <div class="location-item">
+                  <div class="location-icon">
+                    <i class="fa-solid fa-building-medical"></i>
+                  </div>
+                  <div class="location-details">
+                    <h4>Main Hospital</h4>
+                    <p>45 Hospital Road, Motihar, Rajshahi 6000, Bangladesh</p>
+                    <span
+                      ><i class="fa-solid fa-phone"></i> +880 721 7254321</span
+                    >
+                  </div>
+                  <a href="#" class="location-link"
+                    ><i class="fa-solid fa-arrow-right"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+            <div class="faq-section">
+              <div class="section-header-left">
+                <span class="section-badge"
+                  ><i class="fa-solid fa-circle-question"></i> FAQ</span
+                >
+                <h2 class="section-title">
+                  Common <span class="gradient-text">Questions</span>
+                </h2>
+              </div>
+              <div class="faq-list">
+                <div class="faq-item">
+                  <button class="faq-question">
+                    <span>How do I book an appointment?</span
+                    ><i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="faq-answer">
+                    <p>
+                      You can book an appointment online through our website,
+                      call our helpline, or visit any of our locations in
+                      person.
+                    </p>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question">
+                    <span>Do you accept insurance?</span
+                    ><i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="faq-answer">
+                    <p>
+                      Yes, we accept most major insurance providers. Please
+                      contact us to verify your specific insurance plan.
+                    </p>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question">
+                    <span>What are your emergency services hours?</span
+                    ><i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="faq-answer">
+                    <p>
+                      Our emergency services are available 24/7, 365 days a
+                      year. No appointment needed for emergencies.
+                    </p>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question">
+                    <span>Can I get a second opinion?</span
+                    ><i class="fa-solid fa-chevron-down"></i>
+                  </button>
+                  <div class="faq-answer">
+                    <p>
+                      Absolutely! We encourage second opinions and our
+                      specialists are happy to review your case and provide
+                      expert insights.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- Footer -->
+    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
-      <div class="container footer-grid">
-        <div class="footer-col">
-          <h3>NovaLife</h3>
-          <p>
-            Providing advanced healthcare solutions with a human touch. Your
-            health is our mission.
-          </p>
-          <div class="social-links">
-            <a href="#"><i class="fa-brands fa-facebook"></i></a>
-            <a href="#"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+      <div class="footer-top">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-col about">
+              <div class="footer-logo">
+                <div class="logo-icon">
+                  <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div class="logo-text">
+                  <span class="logo-name">NovaLife</span
+                  ><span class="logo-tagline">Medical Center</span>
+                </div>
+              </div>
+              <p>
+                Providing world-class healthcare with compassion and excellence.
+                Your health journey starts here.
+              </p>
+              <div class="footer-social">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a
+                ><a href="#"><i class="fa-brands fa-twitter"></i></a
+                ><a href="#"><i class="fa-brands fa-instagram"></i></a
+                ><a href="#"><i class="fa-brands fa-linkedin-in"></i></a
+                ><a href="#"><i class="fa-brands fa-youtube"></i></a>
+              </div>
+            </div>
+            <div class="footer-col">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#doctors">Our Doctors</a></li>
+                <li><a href="#departments">Departments</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#articles">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Our Services</h4>
+              <ul>
+                <li><a href="#">Cardiology</a></li>
+                <li><a href="#">Neurology</a></li>
+                <li><a href="#">Orthopedics</a></li>
+                <li><a href="#">Pediatrics</a></li>
+                <li><a href="#">Dental Care</a></li>
+                <li><a href="#">Emergency Care</a></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Contact Info</h4>
+              <ul class="contact-list">
+                <li>
+                  <i class="fa-solid fa-location-dot"></i
+                  ><span
+                    >45 Hospital Road, Motihar, Rajshahi 6000, Bangladesh</span
+                  >
+                </li>
+                <li>
+                  <i class="fa-solid fa-phone"></i><span>+880 721 7254321</span>
+                </li>
+                <li>
+                  <i class="fa-solid fa-envelope"></i
+                  ><span>info@novalife.com</span>
+                </li>
+                <li>
+                  <i class="fa-solid fa-clock"></i
+                  ><span>Mon - Sat: 8:00 AM - 8:00 PM</span>
+                </li>
+              </ul>
+            </div>
+            <div class="footer-col newsletter">
+              <h4>Newsletter</h4>
+              <p>Subscribe to get health tips and updates</p>
+              <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" /><button
+                  type="submit"
+                >
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-        <div class="footer-col">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Our Doctors</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Contact Info</h4>
-          <ul>
-            <li>
-              <i class="fa-solid fa-location-dot"></i> 123 Health Ave, Med City
-            </li>
-            <li><i class="fa-solid fa-phone"></i> +1 234 567 8900</li>
-            <li><i class="fa-solid fa-envelope"></i> info@novalife.com</li>
-          </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2023 NovaLife Medical Center. All Rights Reserved.</p>
+        <div class="container">
+          <div class="bottom-content">
+            <p>&copy; 2025 NovaLife Medical Center. All Rights Reserved.</p>
+            <div class="bottom-links">
+              <a href="#">Privacy Policy</a><a href="#">Terms of Service</a
+              ><a href="#">Cookie Policy</a>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
+
+    <!-- Scroll to Top Button -->
+    <a href="#home" class="scroll-top"><i class="fa-solid fa-arrow-up"></i></a>
+    <script src="/scripts/home.js"></script>
   </body>
 </html>
