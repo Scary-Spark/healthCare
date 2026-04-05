@@ -1720,28 +1720,112 @@ ul {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+/* ============================================
+   16. MOBILE MENU STYLES
+   ============================================ */
 @media (max-width: 992px) {
   .header-top {
     display: none;
   }
-  .nav-links,
+
+  /* Hide desktop nav actions in mobile */
   .nav-actions {
-    display: none;
+    display: none !important;
   }
+
   .mobile-menu-btn {
     display: block;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
   }
-  .hero-title {
-    font-size: 2.5rem;
+
+  .nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
   }
-  .about-features {
-    grid-template-columns: 1fr;
+
+  .nav-links.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
-  .location-grid {
-    grid-template-columns: 1fr;
+
+  .nav-links ul {
+    flex-direction: column;
+    gap: 10px;
   }
-  .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+  .nav-links a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+  }
+
+  /* Mobile menu emergency button */
+  .mobile-emergency {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--accent-red);
+    color: #fff;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+    text-decoration: none;
+  }
+
+  .mobile-emergency i {
+    font-size: 1.5rem;
+    animation: pulse 2s infinite;
+  }
+
+  .mobile-emergency-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-emergency-text span {
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+
+  .mobile-emergency-text strong {
+    font-size: 1.1rem;
+  }
+
+  /* Mobile menu login button */
+  .mobile-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: var(--gradient-primary);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 16px;
+  }
+
+  .mobile-login-btn:hover {
+    box-shadow: var(--shadow-glow);
   }
 }
 @media (max-width: 768px) {
