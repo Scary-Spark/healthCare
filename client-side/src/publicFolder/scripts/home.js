@@ -1,5 +1,5 @@
 // ============================================
-// NovaLife Medical Center - Home Page Scripts (FIXED)
+// NovaLife Medical Center - Home Page Scripts
 // ============================================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -11,29 +11,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const header = document.querySelector(".header");
 
   if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener("click", function () {
+    mobileMenuBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
       navLinks.classList.toggle("active");
       mobileMenuBtn.classList.toggle("active");
       const icon = mobileMenuBtn.querySelector("i");
       if (icon) {
-        icon.classList.toggle(
-          "fa-bars",
-          !navLinks.classList.contains("active"),
-        );
-        icon.classList.toggle(
-          "fa-xmark",
-          navLinks.classList.contains("active"),
-        );
+        if (navLinks.classList.contains("active")) {
+          icon.classList.remove("fa-bars");
+          icon.classList.add("fa-xmark");
+        } else {
+          icon.classList.remove("fa-xmark");
+          icon.classList.add("fa-bars");
+        }
       }
     });
   }
 
+  // Close mobile menu when clicking outside
   document.addEventListener("click", function (e) {
     if (
       navLinks &&
       mobileMenuBtn &&
       !navLinks.contains(e.target) &&
-      !mobileMenuBtn.contains(e.target)
+      !mobileMenuBtn.contains(e.target) &&
+      navLinks.classList.contains("active")
     ) {
       navLinks.classList.remove("active");
       mobileMenuBtn.classList.remove("active");
@@ -45,6 +47,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Close mobile menu when clicking a link
+  const navLinkItems = document.querySelectorAll('.nav-links a[href^="#"]');
+  navLinkItems.forEach((link) => {
+    link.addEventListener("click", function () {
+      navLinks.classList.remove("active");
+      mobileMenuBtn?.classList.remove("active");
+      const icon = mobileMenuBtn?.querySelector("i");
+      if (icon) {
+        icon.classList.remove("fa-xmark");
+        icon.classList.add("fa-bars");
+      }
+    });
+  });
+
   // ============================================
   // 2. HEADER SCROLL EFFECT
   // ============================================
@@ -52,7 +68,12 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", function () {
     const currentScroll = window.pageYOffset;
     if (header) {
-      header.classList.toggle("scrolled", currentScroll > 50);
+      if (currentScroll > 50) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
+      }
+
       if (currentScroll > lastScroll && currentScroll > 200) {
         header.classList.add("header-hide");
       } else {
@@ -65,22 +86,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // ============================================
   // 3. SMOOTH SCROLL FOR NAVIGATION LINKS
   // ============================================
-  const navLinkItems = document.querySelectorAll('.nav-links a[href^="#"]');
   navLinkItems.forEach((link) => {
     link.addEventListener("click", function (e) {
       e.preventDefault();
       const targetId = this.getAttribute("href");
       const targetSection = document.querySelector(targetId);
-      if (targetSection && header) {
-        const headerHeight = header.offsetHeight;
+      if (targetSection) {
+        const headerHeight = header ? header.offsetHeight : 80;
         const targetPosition = targetSection.offsetTop - headerHeight;
         window.scrollTo({ top: targetPosition, behavior: "smooth" });
-        navLinks?.classList.remove("active");
-        const icon = mobileMenuBtn?.querySelector("i");
-        if (icon) {
-          icon.classList.remove("fa-xmark");
-          icon.classList.add("fa-bars");
-        }
       }
     });
   });
@@ -110,12 +124,11 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("scroll", highlightNavLink);
 
   // ============================================
-  // 5. DOCTOR SLIDER NAVIGATION - COMPLETELY FIXED
+  // 5. DOCTOR SLIDER NAVIGATION
   // ============================================
   const sliderTrack = document.querySelector(".slider-track");
   const sliderPrevBtn = document.querySelector(".slider-nav.prev");
   const sliderNextBtn = document.querySelector(".slider-nav.next");
-  let sliderDots = document.querySelectorAll(".slider-dots .dot");
   const doctorCards = document.querySelectorAll(".doctor-card");
 
   if (sliderTrack && sliderPrevBtn && sliderNextBtn && doctorCards.length > 0) {
@@ -126,19 +139,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const getCardWidth = () => {
       const card = doctorCards[0];
-      const style = window.getComputedStyle(card);
-      const gap = parseInt(style.marginRight || style.gap || 24);
+      const style = window.getComputedStyle(sliderTrack);
+      const gap = parseInt(style.gap) || 24;
       return card.offsetWidth + gap;
     };
 
     const getVisibleCards = () => {
-      const containerWidth = sliderTrack.parentElement?.offsetWidth || 0;
+      const containerWidth =
+        sliderTrack.parentElement?.offsetWidth || window.innerWidth;
       return Math.max(1, Math.floor(containerWidth / cardWidth));
     };
 
+    const updateSlider = () => {
+      currentSlide = Math.max(0, Math.min(currentSlide, maxSlide));
+      sliderTrack.scrollTo({
+        left: currentSlide * cardWidth,
+        behavior: "smooth",
+      });
+      updateSliderDots();
+      updateSliderButtons();
+    };
+
+    const updateSliderButtons = () => {
+      if (sliderPrevBtn) {
+        sliderPrevBtn.style.opacity = currentSlide === 0 ? "0.5" : "1";
+        sliderPrevBtn.style.pointerEvents =
+          currentSlide === 0 ? "none" : "auto";
+      }
+      if (sliderNextBtn) {
+        sliderNextBtn.style.opacity = currentSlide >= maxSlide ? "0.5" : "1";
+        sliderNextBtn.style.pointerEvents =
+          currentSlide >= maxSlide ? "none" : "auto";
+      }
+    };
+
     const generateSliderDots = () => {
-      const dotsContainer = document.querySelector(".slider-dots");
-      if (!dotsContainer) return;
+      let dotsContainer = document.querySelector(".slider-dots");
+      if (!dotsContainer) {
+        dotsContainer = document.createElement("div");
+        dotsContainer.className = "slider-dots";
+        sliderTrack.parentElement?.appendChild(dotsContainer);
+      }
       dotsContainer.innerHTML = "";
       const totalDots = Math.min(maxSlide + 1, 6);
       for (let i = 0; i < totalDots; i++) {
@@ -150,23 +191,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         dotsContainer.appendChild(dot);
       }
-      sliderDots = document.querySelectorAll(".slider-dots .dot");
     };
 
-    const updateSlider = () => {
-      currentSlide = Math.max(0, Math.min(currentSlide, maxSlide));
-      sliderTrack.scrollTo({
-        left: currentSlide * cardWidth,
-        behavior: "smooth",
+    const updateSliderDots = () => {
+      const dots = document.querySelectorAll(".slider-dots .dot");
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentSlide);
       });
-      sliderDots.forEach((dot, index) =>
-        dot.classList.toggle("active", index === currentSlide),
-      );
-      sliderPrevBtn.style.opacity = currentSlide === 0 ? "0.5" : "1";
-      sliderPrevBtn.style.pointerEvents = currentSlide === 0 ? "none" : "auto";
-      sliderNextBtn.style.opacity = currentSlide >= maxSlide ? "0.5" : "1";
-      sliderNextBtn.style.pointerEvents =
-        currentSlide >= maxSlide ? "none" : "auto";
     };
 
     const initSlider = () => {
@@ -175,24 +206,30 @@ document.addEventListener("DOMContentLoaded", function () {
       maxSlide = Math.max(0, doctorCards.length - visibleCards);
       currentSlide = Math.min(currentSlide, maxSlide);
       generateSliderDots();
-      updateSlider();
+      updateSliderButtons();
     };
 
     initSlider();
 
-    sliderPrevBtn.addEventListener("click", () => {
-      if (currentSlide > 0) {
-        currentSlide--;
-        updateSlider();
-      }
-    });
-    sliderNextBtn.addEventListener("click", () => {
-      if (currentSlide < maxSlide) {
-        currentSlide++;
-        updateSlider();
-      }
-    });
+    if (sliderPrevBtn) {
+      sliderPrevBtn.addEventListener("click", () => {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlider();
+        }
+      });
+    }
 
+    if (sliderNextBtn) {
+      sliderNextBtn.addEventListener("click", () => {
+        if (currentSlide < maxSlide) {
+          currentSlide++;
+          updateSlider();
+        }
+      });
+    }
+
+    // Resize handler
     let resizeTimeout;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimeout);
@@ -200,8 +237,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Touch swipe support
-    let touchStartX = 0,
-      touchEndX = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+
     sliderTrack.addEventListener(
       "touchstart",
       (e) => {
@@ -209,15 +247,20 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       { passive: true },
     );
+
     sliderTrack.addEventListener(
       "touchend",
       (e) => {
         touchEndX = e.changedTouches[0].screenX;
         const diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 50) {
-          if (diff > 0 && currentSlide < maxSlide) currentSlide++;
-          else if (diff < 0 && currentSlide > 0) currentSlide--;
-          updateSlider();
+          if (diff > 0 && currentSlide < maxSlide) {
+            currentSlide++;
+            updateSlider();
+          } else if (diff < 0 && currentSlide > 0) {
+            currentSlide--;
+            updateSlider();
+          }
         }
       },
       { passive: true },
@@ -225,24 +268,35 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ============================================
-  // 6. FAQ ACCORDION - DYNAMIC HEIGHT
+  // 6. FAQ ACCORDION
   // ============================================
   const faqItems = document.querySelectorAll(".faq-item");
   faqItems.forEach((item) => {
     const question = item.querySelector(".faq-question");
     const answer = item.querySelector(".faq-answer");
-    question?.addEventListener("click", function () {
-      const isActive = item.classList.contains("active");
-      faqItems.forEach((other) => {
-        const otherAnswer = other.querySelector(".faq-answer");
-        other.classList.remove("active");
-        if (otherAnswer) otherAnswer.style.maxHeight = null;
+
+    if (question) {
+      question.addEventListener("click", function () {
+        const isActive = item.classList.contains("active");
+
+        // Close all other items
+        faqItems.forEach((other) => {
+          const otherAnswer = other.querySelector(".faq-answer");
+          other.classList.remove("active");
+          if (otherAnswer) {
+            otherAnswer.style.maxHeight = null;
+          }
+        });
+
+        // Toggle current item
+        if (!isActive) {
+          item.classList.add("active");
+          if (answer) {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          }
+        }
       });
-      if (!isActive) {
-        item.classList.add("active");
-        if (answer) answer.style.maxHeight = answer.scrollHeight + "px";
-      }
-    });
+    }
   });
 
   // ============================================
@@ -251,8 +305,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const scrollTopBtn = document.querySelector(".scroll-top");
   if (scrollTopBtn) {
     window.addEventListener("scroll", () => {
-      scrollTopBtn.classList.toggle("visible", window.pageYOffset > 500);
+      if (window.pageYOffset > 500) {
+        scrollTopBtn.classList.add("visible");
+      } else {
+        scrollTopBtn.classList.remove("visible");
+      }
     });
+
     scrollTopBtn.addEventListener("click", (e) => {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -260,18 +319,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ============================================
-  // 8. STATS COUNTER ANIMATION - IMPROVED
+  // 8. STATS COUNTER ANIMATION
   // ============================================
   const statNumbers = document.querySelectorAll(".stat-number");
   let statsAnimated = false;
+
   function animateStats() {
     if (statsAnimated) return;
+
     statNumbers.forEach((stat) => {
       const target = parseInt(stat.getAttribute("data-count")) || 0;
       const duration = 2000;
       const increment = target / (duration / 16);
       let current = 0;
       const suffix = stat.textContent.includes("+") ? "+" : "";
+
       const update = () => {
         current += increment;
         if (current < target) {
@@ -285,50 +347,72 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     statsAnimated = true;
   }
+
   const statsSection = document.querySelector(".hero-stats");
   if (statsSection) {
-    const checkVisibility = () => {
-      const rect = statsSection.getBoundingClientRect();
-      return rect.top < window.innerHeight && rect.bottom > 0;
-    };
-    if (checkVisibility()) animateStats();
-    else {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              animateStats();
-              observer.disconnect();
-            }
-          });
-        },
-        { threshold: 0.3 },
-      );
-      observer.observe(statsSection);
-    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateStats();
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(statsSection);
   }
 
   // ============================================
-  // 9. NOTIFICATION SYSTEM
+  // 9. NEWSLETTER FORM
+  // ============================================
+  const newsletterForm = document.querySelector(".newsletter-form");
+  if (newsletterForm) {
+    newsletterForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const emailInput = this.querySelector('input[type="email"]');
+      const email = emailInput?.value;
+
+      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showNotification("Thank you for subscribing!", "success");
+        if (emailInput) emailInput.value = "";
+      } else {
+        showNotification("Please enter a valid email address.", "error");
+      }
+    });
+  }
+
+  // ============================================
+  // 10. NOTIFICATION SYSTEM
   // ============================================
   function showNotification(message, type = "info") {
     const existing = document.querySelector(".notification");
     if (existing) existing.remove();
+
     const notification = document.createElement("div");
     notification.className = `notification notification-${type}`;
+
     const icons = {
       success: "fa-circle-check",
       error: "fa-circle-exclamation",
       info: "fa-circle-info",
       warning: "fa-triangle-exclamation",
     };
+
     const colors = {
       success: "#22c55e",
       error: "#ef4444",
       info: "#3b82f6",
       warning: "#f97316",
     };
-    notification.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${message}</span><button class="notification-close"><i class="fa-solid fa-xmark"></i></button>`;
+
+    notification.innerHTML = `
+      <i class="fa-solid ${icons[type] || icons.info}"></i>
+      <span>${message}</span>
+      <button class="notification-close"><i class="fa-solid fa-xmark"></i></button>
+    `;
+
     Object.assign(notification.style, {
       position: "fixed",
       top: "100px",
@@ -344,8 +428,11 @@ document.addEventListener("DOMContentLoaded", function () {
       zIndex: "10000",
       animation: "slideIn 0.3s ease",
       maxWidth: "400px",
+      fontSize: "0.9rem",
     });
+
     document.body.appendChild(notification);
+
     const closeBtn = notification.querySelector(".notification-close");
     Object.assign(closeBtn.style, {
       background: "none",
@@ -354,36 +441,34 @@ document.addEventListener("DOMContentLoaded", function () {
       cursor: "pointer",
       padding: "4px",
       marginLeft: "auto",
+      fontSize: "1rem",
     });
+
     const remove = () => {
       notification.style.animation = "slideOut 0.3s ease";
       setTimeout(() => notification.remove(), 300);
     };
+
     closeBtn.addEventListener("click", remove);
     setTimeout(remove, 5000);
   }
-  // Add animation keyframes
+
+  // Add animation keyframes if not exists
   if (!document.querySelector("#notification-styles")) {
     const style = document.createElement("style");
     style.id = "notification-styles";
-    style.textContent = `@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}`;
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
     document.head.appendChild(style);
   }
-
-  // ============================================
-  // 10. FORM SUBMISSION HANDLERS
-  // ============================================
-  const newsletterForm = document.querySelector(".newsletter-form");
-  newsletterForm?.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = this.querySelector('input[type="email"]')?.value;
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showNotification("Thank you for subscribing!", "success");
-      this.querySelector('input[type="email"]').value = "";
-    } else {
-      showNotification("Please enter a valid email address.", "error");
-    }
-  });
 
   // ============================================
   // 11. INTERACTIVE CARD CLICKS
@@ -395,10 +480,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (this.getAttribute("href") === "#") {
           e.preventDefault();
           const name = this.querySelector("h4, h3")?.textContent || "this item";
-          showNotification(
-            `Viewing ${this.classList.contains("dept-card") ? "department" : "profile"} for ${name}`,
-            "info",
-          );
+          const type = this.classList.contains("dept-card")
+            ? "department"
+            : "profile";
+          showNotification(`Viewing ${type} for ${name}`, "info");
         }
       });
     });
