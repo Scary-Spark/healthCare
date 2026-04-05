@@ -109,6 +109,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.brand-logo i {
+  font-size: 36px;
+  height: 36px;
+  color: #ffffff;
+}
+
 .brand-logo svg {
   width: 36px;
   height: 36px;
