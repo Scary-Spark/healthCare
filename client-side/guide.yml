@@ -31,10 +31,12 @@ folderStructure:
       scripts:
         home.js
         login.js
+        signup.js
       styles:
         fonts.css
         home.css
         login.css
+        signup.css
     routes:
       homeRouts.js
     utils:
@@ -43,3 +45,5 @@ folderStructure:
     views:
       login.ejs
       home.ejs
+      signup.ejs
+    
