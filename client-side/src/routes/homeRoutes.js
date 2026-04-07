@@ -16,4 +16,13 @@ router.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+// main dashboard
+router.get("/dashboard", (req, res) => {
+  res.render("dashboard");
+});
+
+router.get("/appointment", (req, res) => {
+  res.render("appointment");
+});
+
 export default router;

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/dashboard.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="dashboard-container">
+        
+        <!-- Enhanced Welcome Header -->
+        <header class="welcome-header">
+          <div class="welcome-greeting">
+            <div class="greeting-icon">👋</div>
+            <div>
+              <h1>Welcome back, <span class="gradient-text">John</span></h1>
+              <p class="welcome-subtitle">Here's your health overview for today</p>
+            </div>
+          </div>
+          <div class="welcome-actions">
+            <a href="/appointments/new" class="btn-primary">
+              <i class="fa-solid fa-plus"></i>
+              <span>Book Appointment</span>
+            </a>
+            <a href="/records" class="btn-secondary">
+              <i class="fa-solid fa-folder-open"></i>
+              <span>View Records</span>
+            </a>
+          </div>
+        </header>
+
+        <!-- Enhanced Stats Grid -->
+        <section class="stats-section">
+          <h2 class="section-title">Health Overview</h2>
+          <div class="stats-grid">
+            <div class="stat-card" data-stat="appointments">
+              <div class="stat-icon-wrapper">
+                <i class="fa-regular fa-calendar-check"></i>
+                <div class="stat-icon-glow"></div>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" data-count="2">0</span>
+                <span class="stat-label">Upcoming Appointments</span>
+              </div>
+              <div class="stat-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+                <span>2 this week</span>
+              </div>
+            </div>
+            
+            <div class="stat-card" data-stat="reports">
+              <div class="stat-icon-wrapper report">
+                <i class="fa-solid fa-file-medical"></i>
+                <div class="stat-icon-glow"></div>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" data-count="1">0</span>
+                <span class="stat-label">Pending Reports</span>
+              </div>
+              <div class="stat-trend warning">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Review needed</span>
+              </div>
+            </div>
+            
+            <div class="stat-card" data-stat="prescriptions">
+              <div class="stat-icon-wrapper prescription">
+                <i class="fa-solid fa-prescription"></i>
+                <div class="stat-icon-glow"></div>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" data-count="3">0</span>
+                <span class="stat-label">Active Prescriptions</span>
+              </div>
+              <div class="stat-trend success">
+                <i class="fa-solid fa-check"></i>
+                <span>All on track</span>
+              </div>
+            </div>
+            
+            <div class="stat-card" data-stat="messages">
+              <div class="stat-icon-wrapper chat">
+                <i class="fa-regular fa-comments"></i>
+                <div class="stat-icon-glow"></div>
+              </div>
+              <div class="stat-content">
+                <span class="stat-number" data-count="5">0</span>
+                <span class="stat-label">New Messages</span>
+              </div>
+              <div class="stat-trend">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+                <span>3 unread</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-section">
+          <h2 class="section-title">Quick Actions</h2>
+          <div class="quick-actions">
+            <a href="/appointments" class="action-card">
+              <div class="action-icon">
+                <i class="fa-solid fa-calendar-plus"></i>
+              </div>
+              <div class="action-content">
+                <h3>Book Appointment</h3>
+                <p>Schedule a visit with our specialists</p>
+              </div>
+              <i class="fa-solid fa-arrow-right action-arrow"></i>
+            </a>
+            
+            <a href="/records" class="action-card">
+              <div class="action-icon">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+              <div class="action-content">
+                <h3>View Records</h3>
+                <p>Access your medical history & reports</p>
+              </div>
+              <i class="fa-solid fa-arrow-right action-arrow"></i>
+            </a>
+            
+            <a href="/profile" class="action-card">
+              <div class="action-icon">
+                <i class="fa-regular fa-user"></i>
+              </div>
+              <div class="action-content">
+                <h3>Update Profile</h3>
+                <p>Manage your personal information</p>
+              </div>
+              <i class="fa-solid fa-arrow-right action-arrow"></i>
+            </a>
+            
+            <a href="/forum" class="action-card">
+              <div class="action-icon">
+                <i class="fa-solid fa-comments"></i>
+              </div>
+              <div class="action-content">
+                <h3>Community Forum</h3>
+                <p>Connect with other patients</p>
+              </div>
+              <i class="fa-solid fa-arrow-right action-arrow"></i>
+            </a>
+          </div>
+        </section>
+
+        <!-- Upcoming Appointments -->
+        <section class="appointments-section">
+          <div class="section-header">
+            <h2 class="section-title">Upcoming Appointments</h2>
+            <a href="/appointments" class="view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          
+          <div class="appointments-table">
+            <div class="table-header">
+              <span>Doctor</span>
+              <span>Date & Time</span>
+              <span>Type</span>
+              <span>Status</span>
+              <span>Action</span>
+            </div>
+            
+            <div class="table-row">
+              <div class="doctor-info">
+                <img src="https://ui-avatars.com/api/?name=Sarah+Jenkins&background=0c6e5f&color=fff" alt="Dr. Sarah" class="doctor-avatar">
+                <div>
+                  <div class="doctor-name">Dr. Sarah Jenkins</div>
+                  <div class="doctor-specialty">Cardiology</div>
+                </div>
+              </div>
+              <div class="appointment-date">
+                <i class="fa-regular fa-calendar"></i>
+                <span>Oct 28, 2024</span>
+                <span class="appointment-time">10:00 AM</span>
+              </div>
+              <div><span class="appointment-type in-person">In-Person</span></div>
+              <div><span class="status-badge status-upcoming">Upcoming</span></div>
+              <div>
+                <a href="#" class="action-btn-small">Reschedule</a>
+              </div>
+            </div>
+            
+            <div class="table-row">
+              <div class="doctor-info">
+                <img src="https://ui-avatars.com/api/?name=Mark+Alston&background=0c6e5f&color=fff" alt="Dr. Mark" class="doctor-avatar">
+                <div>
+                  <div class="doctor-name">Dr. Mark Alston</div>
+                  <div class="doctor-specialty">Neurology</div>
+                </div>
+              </div>
+              <div class="appointment-date">
+                <i class="fa-regular fa-calendar"></i>
+                <span>Nov 2, 2024</span>
+                <span class="appointment-time">2:30 PM</span>
+              </div>
+              <div><span class="appointment-type virtual">Virtual</span></div>
+              <div><span class="status-badge status-upcoming">Upcoming</span></div>
+              <div>
+                <a href="#" class="action-btn-small">Join Call</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recent Medical Records -->
+        <section class="records-section">
+          <div class="section-header">
+            <h2 class="section-title">Recent Records</h2>
+            <a href="/records" class="view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          
+          <div class="records-grid">
+            <div class="record-card">
+              <div class="record-header">
+                <div class="record-icon-wrapper">
+                  <i class="fa-solid fa-file-medical"></i>
+                </div>
+                <span class="record-type">Lab Report</span>
+              </div>
+              <h3 class="record-title">Blood Test Results</h3>
+              <p class="record-desc">Complete blood count, lipid panel, glucose levels</p>
+              <div class="record-meta">
+                <span class="record-date"><i class="fa-regular fa-calendar"></i> Oct 20, 2024</span>
+                <span class="record-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Sarah Jenkins</span>
+              </div>
+              <div class="record-actions">
+                <a href="#" class="btn-view">View Details</a>
+                <a href="#" class="btn-download">Download PDF</a>
+              </div>
+            </div>
+            
+            <div class="record-card">
+              <div class="record-header">
+                <div class="record-icon-wrapper prescription">
+                  <i class="fa-solid fa-prescription"></i>
+                </div>
+                <span class="record-type">Prescription</span>
+              </div>
+              <h3 class="record-title">Amoxicillin 500mg</h3>
+              <p class="record-desc">Antibiotic • Take 1 capsule twice daily for 7 days</p>
+              <div class="record-meta">
+                <span class="record-date"><i class="fa-regular fa-calendar"></i> Oct 15, 2024</span>
+                <span class="record-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Mark Alston</span>
+              </div>
+              <div class="record-actions">
+                <a href="#" class="btn-view">View Details</a>
+                <a href="#" class="btn-download">Download PDF</a>
+              </div>
+            </div>
+            
+            <div class="record-card">
+              <div class="record-header">
+                <div class="record-icon-wrapper discharge">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <span class="record-type">Discharge Summary</span>
+              </div>
+              <h3 class="record-title">Hospital Release Summary</h3>
+              <p class="record-desc">Post-treatment care instructions & follow-up schedule</p>
+              <div class="record-meta">
+                <span class="record-date"><i class="fa-regular fa-calendar"></i> Oct 10, 2024</span>
+                <span class="record-doctor"><i class="fa-solid fa-user-doctor"></i> Dr. Emily Chen</span>
+              </div>
+              <div class="record-actions">
+                <a href="#" class="btn-view">View Details</a>
+                <a href="#" class="btn-download">Download PDF</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/dashboard.js"></script>
+  
+</body>
+</html>

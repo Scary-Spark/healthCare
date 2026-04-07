@@ -1,0 +1,152 @@
+<!-- 
+  CLIENT NAVBAR - Authenticated Header for Patient Portal
+  Features: Logo, Emergency, Notifications, Profile Dropdown, Search
+  Static frontend - backend integration later
+-->
+<header class="client-navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <a href="/dashboard" class="navbar-logo">
+      <div class="logo-icon">
+        <i class="fa-solid fa-heart-pulse"></i>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">NovaLife</span>
+        <span class="logo-tagline">Patient Portal</span>
+      </div>
+    </a>
+
+    <!-- Search Bar (Desktop) -->
+    <div class="navbar-search">
+      <form class="search-form">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input
+          type="search"
+          placeholder="Search doctors, records..."
+          class="search-input"
+          aria-label="Search"
+        />
+      </form>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="navbar-actions">
+      <!-- Emergency Button -->
+      <a href="/emergency" class="btn-emergency" title="Emergency Assistance">
+        <i class="fa-solid fa-truck-medical"></i>
+        <span class="emergency-text">Emergency</span>
+      </a>
+
+      <!-- Notification Bell -->
+      <div class="nav-notification">
+        <button
+          class="notification-btn"
+          id="notificationToggle"
+          aria-label="Notifications"
+          aria-expanded="false"
+        >
+          <i class="fa-regular fa-bell"></i>
+          <span class="notification-badge" id="notificationCount">3</span>
+        </button>
+        <div class="notification-dropdown" id="notificationDropdown" hidden>
+          <div class="dropdown-header">
+            <h4>Notifications</h4>
+            <button class="mark-read" id="markAllRead">Mark all read</button>
+          </div>
+          <div class="notification-list">
+            <div class="notification-item unread">
+              <i class="fa-solid fa-calendar-check notif-icon"></i>
+              <div class="notif-content">
+                <p><strong>Appointment Reminder</strong></p>
+                <p class="notif-desc">Dr. Sarah Jenkins • Tomorrow, 10:00 AM</p>
+                <span class="notif-time">2h ago</span>
+              </div>
+            </div>
+            <div class="notification-item unread">
+              <i class="fa-solid fa-file-medical notif-icon"></i>
+              <div class="notif-content">
+                <p><strong>New Report Ready</strong></p>
+                <p class="notif-desc">Blood Test Results • PDF Available</p>
+                <span class="notif-time">5h ago</span>
+              </div>
+            </div>
+            <div class="notification-item">
+              <i class="fa-solid fa-prescription notif-icon"></i>
+              <div class="notif-content">
+                <p><strong>Refill Approved</strong></p>
+                <p class="notif-desc">Prescription #1024</p>
+                <span class="notif-time">1d ago</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-footer">
+            <a href="/notifications">View All</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Dropdown with Logout -->
+      <div class="nav-profile">
+        <button
+          class="profile-btn"
+          id="profileToggle"
+          aria-label="User menu"
+          aria-expanded="false"
+        >
+          <img
+            src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff"
+            alt="User"
+            class="profile-avatar"
+          />
+          <span class="profile-name">John Doe</span>
+          <i class="fa-solid fa-chevron-down profile-arrow"></i>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown" hidden>
+          <div class="profile-header">
+            <img
+              src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff"
+              alt="User"
+              class="profile-avatar-lg"
+            />
+            <div>
+              <p class="profile-fullname">John Doe</p>
+              <p class="profile-email">john@email.com</p>
+            </div>
+          </div>
+          <ul class="profile-links">
+            <li>
+              <a href="/profile"
+                ><i class="fa-regular fa-user"></i> My Profile</a
+              >
+            </li>
+            <li>
+              <a href="/settings"><i class="fa-solid fa-gear"></i> Settings</a>
+            </li>
+            <li>
+              <a href="/activity-log"
+                ><i class="fa-solid fa-shield-halved"></i> Security Log</a
+              >
+            </li>
+            <li><hr /></li>
+            <li>
+              <form action="/logout" method="POST" class="logout-form">
+                <button type="submit" class="logout-btn">
+                  <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button
+        class="mobile-menu-btn"
+        id="mobileMenuToggle"
+        aria-label="Toggle menu"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</header>

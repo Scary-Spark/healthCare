@@ -1,0 +1,121 @@
+<!-- 
+  PUBLIC CHAT WIDGET - Simplified Community Chat
+  Features: Single #general room, draggable widget, toggle via floating icon
+  Note: This is PUBLIC chat (all users), NOT support chat
+-->
+<div
+  class="public-chat-widget"
+  id="publicChatWidget"
+  style="bottom: 24px; right: 24px"
+>
+  <!-- Floating Toggle Button (Drag Handle) -->
+  <button
+    class="chat-toggle-btn"
+    id="publicChatToggle"
+    aria-label="Toggle public chat"
+    aria-expanded="false"
+  >
+    <i class="fa-solid fa-comments"></i>
+    <span class="chat-badge" id="publicChatBadge" hidden>5</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" id="publicChatWindow" hidden>
+    <!-- Chat Header (No close/minimize buttons) -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <h4>💬 Public Chat</h4>
+        <p class="chat-room-name">
+          #general • <span id="onlineCount">24</span> online
+        </p>
+      </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div class="chat-messages" id="publicChatMessages">
+      <!-- System Message -->
+      <div class="message system">
+        <p>
+          👋 Welcome to NovaLife Public Chat! Be respectful. Not for medical
+          advice.
+        </p>
+      </div>
+
+      <!-- Example Messages -->
+      <div class="message received">
+        <div class="message-avatar">
+          <img
+            src="https://ui-avatars.com/api/?name=Alice+Smith&background=109e88&color=fff"
+            alt="Alice"
+          />
+        </div>
+        <div class="message-content">
+          <div class="message-meta">
+            <span class="message-username">Alice Smith</span>
+            <span class="message-time">10:32 AM</span>
+          </div>
+          <p>Has anyone tried the new telemedicine feature? How was it?</p>
+        </div>
+      </div>
+
+      <div class="message received">
+        <div class="message-avatar">
+          <img
+            src="https://ui-avatars.com/api/?name=Bob+Jones&background=0c6e5f&color=fff"
+            alt="Bob"
+          />
+        </div>
+        <div class="message-content">
+          <div class="message-meta">
+            <span class="message-username">Bob Jones</span>
+            <span class="message-time">10:35 AM</span>
+          </div>
+          <p>Yes! Super convenient. The doctor was very helpful 😊</p>
+        </div>
+      </div>
+
+      <div class="message sent">
+        <div class="message-content">
+          <div class="message-meta">
+            <span class="message-username">You</span>
+            <span class="message-time">10:36 AM</span>
+          </div>
+          <p>Thanks for the info! I'll book one soon.</p>
+        </div>
+        <div class="message-avatar">
+          <img
+            src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff"
+            alt="You"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="chat-input-area">
+      <input
+        type="text"
+        class="chat-input"
+        id="publicChatInput"
+        placeholder="Type a message..."
+        aria-label="Message input"
+        maxlength="500"
+      />
+      <button
+        class="chat-send-btn"
+        id="publicChatSend"
+        aria-label="Send message"
+      >
+        <i class="fa-regular fa-paper-plane"></i>
+      </button>
+    </div>
+
+    <!-- Chat Disclaimer -->
+    <div class="chat-disclaimer">
+      <small
+        >⚠️ Public chat: Do not share personal health info. For medical advice,
+        consult a doctor.</small
+      >
+    </div>
+  </div>
+</div>
