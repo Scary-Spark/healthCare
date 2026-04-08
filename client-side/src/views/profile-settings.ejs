@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Settings • NovaLife Patient Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/profile-settings.css" />
+</head>
+<body>
+
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="profile-page">
+        
+        <!-- Profile Header Card -->
+        <div class="profile-header-card">
+          <div class="settings-avatar-wrapper">
+            <!-- ✅ FIX: Renamed class to settings-profile-avatar -->
+            <img src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff&size=128" alt="Profile" class="settings-profile-avatar" id="settingsProfileAvatar" />
+            <label for="avatarUpload" class="avatar-edit"><i class="fa-solid fa-camera"></i></label>
+            <input type="file" id="avatarUpload" accept="image/*" hidden />
+          </div>
+          
+          <div class="profile-info">
+            <h1 class="profile-name" id="displayName">John Doe</h1>
+            <p class="profile-email" id="displayEmail">john@email.com</p>
+            <div class="profile-badges">
+              <span class="badge verified"><i class="fa-solid fa-check"></i> Verified</span>
+              <span class="badge member">Member since 2024</span>
+            </div>
+          </div>
+          
+          <div class="profile-progress">
+            <div class="progress-header">
+              <span>Profile Completion</span>
+              <span class="progress-percent" id="progressPercent">85%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width: 85%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ NEW: Global Security Verification Bar -->
+        <div class="security-verification-bar">
+          <div class="verification-icon"><i class="fa-solid fa-lock"></i></div>
+          <div class="verification-content">
+            <label for="globalCurrentPassword">Enter Current Password to Save Changes</label>
+            <div class="input-group">
+              <i class="fa-solid fa-key input-icon"></i>
+              <input type="password" id="globalCurrentPassword" placeholder="Required for Personal, Contact & Address updates" />
+              <button type="button" class="toggle-password" onclick="togglePassword('globalCurrentPassword', this)">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Sections -->
+        <div class="settings-sections">
+          
+          <!-- Personal Information -->
+          <section class="settings-card expandable" id="personalSection">
+            <div class="card-header" onclick="toggleSection('personal')">
+              <div class="header-left">
+                <div class="header-icon"><i class="fa-regular fa-user"></i></div>
+                <div><h3>Personal Information</h3><p>Update your basic details</p></div>
+              </div>
+              <i class="fa-solid fa-chevron-down toggle-icon" id="personalToggle"></i>
+            </div>
+            
+            <div class="card-body" id="personalBody">
+              <form id="personalForm">
+                <!-- ✅ REMOVED: Local Current Password Field -->
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>First Name <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-regular fa-user input-icon"></i>
+                      <input type="text" id="firstName" value="John" required />
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Last Name <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-regular fa-user input-icon"></i>
+                      <input type="text" id="lastName" value="Doe" required />
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Date of Birth <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-regular fa-calendar input-icon"></i>
+                      <input type="date" id="dob" value="1990-05-15" required />
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Gender</label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-venus-mars input-icon"></i>
+                      <select id="gender">
+                        <option value="male" selected>Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                  <div class="form-field full">
+                    <label>Blood Group</label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-droplet input-icon"></i>
+                      <select id="bloodGroup">
+                        <option value="not-tested" selected>Not Tested</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A−</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B−</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB−</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O−</option>
+                      </select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline" onclick="resetSection('personal')">Reset</button>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Contact Information -->
+          <section class="settings-card expandable" id="contactSection">
+            <div class="card-header" onclick="toggleSection('contact')">
+              <div class="header-left">
+                <div class="header-icon"><i class="fa-solid fa-address-book"></i></div>
+                <div><h3>Contact Information</h3><p>Manage how we reach you</p></div>
+              </div>
+              <i class="fa-solid fa-chevron-down toggle-icon" id="contactToggle"></i>
+            </div>
+            
+            <div class="card-body" id="contactBody">
+              <form id="contactForm">
+                <!-- ✅ REMOVED: Local Current Password Field -->
+                <div class="form-grid">
+                  <div class="form-field full">
+                    <label>Email Address <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-regular fa-envelope input-icon"></i>
+                      <input type="email" id="email" value="john@email.com" required />
+                      <button type="button" class="verify-btn" onclick="requestVerification('email')"><i class="fa-solid fa-shield-check"></i> Verify</button>
+                    </div>
+                  </div>
+                  <div class="form-field full">
+                    <label>Phone Number <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-phone input-icon"></i>
+                      <input type="tel" id="phone" value="+880 1712 345678" required />
+                      <button type="button" class="verify-btn" onclick="requestVerification('phone')"><i class="fa-solid fa-shield-check"></i> Verify</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline" onclick="resetSection('contact')">Reset</button>
+                  <button type="submit" class="btn btn-primary">Update Contact</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Address Information -->
+          <section class="settings-card expandable" id="addressSection">
+            <div class="card-header" onclick="toggleSection('address')">
+              <div class="header-left">
+                <div class="header-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div><h3>Address Information</h3><p>Update your location details</p></div>
+              </div>
+              <i class="fa-solid fa-chevron-down toggle-icon" id="addressToggle"></i>
+            </div>
+            
+            <div class="card-body" id="addressBody">
+              <form id="addressForm">
+                <!-- ✅ REMOVED: Local Current Password Field -->
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label>Division <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-map input-icon"></i>
+                      <select id="division" required><option value="" disabled selected>Select Division</option></select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>District <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-map-pin input-icon"></i>
+                      <select id="district" required disabled><option value="" disabled selected>Select District</option></select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Upazila <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-building input-icon"></i>
+                      <select id="upazila" required disabled><option value="" disabled selected>Select Upazila</option></select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Postal Code</label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-envelope input-icon"></i>
+                      <input type="text" id="postalCode" placeholder="1200" pattern="[0-9]{4}" />
+                    </div>
+                  </div>
+                  <div class="form-field full">
+                    <label>Street Address</label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-house input-icon"></i>
+                      <input type="text" id="streetAddress" placeholder="House No, Road No, Area" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline" onclick="resetSection('address')">Reset</button>
+                  <button type="submit" class="btn btn-primary">Save Address</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Security Settings -->
+          <section class="settings-card expandable" id="securitySection">
+            <div class="card-header" onclick="toggleSection('security')">
+              <div class="header-left">
+                <div class="header-icon security"><i class="fa-solid fa-lock"></i></div>
+                <div><h3>Security Settings</h3><p>Protect your account</p></div>
+              </div>
+              <i class="fa-solid fa-chevron-down toggle-icon" id="securityToggle"></i>
+            </div>
+            
+            <div class="card-body" id="securityBody">
+              <form id="securityForm">
+                <div class="form-grid">
+                  <!-- <div class="form-field full">
+                    <label>Current Password <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-key input-icon"></i>
+                      <input type="password" id="currentPassword" placeholder="Enter current password" required />
+                      <button type="button" class="toggle-password" onclick="togglePassword('currentPassword', this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                  </div> -->
+                  <div class="form-field full">
+                    <label>New Password <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-key input-icon"></i>
+                      <input type="password" id="newPassword" placeholder="Enter new password" oninput="checkPasswordStrength(this.value)" required />
+                      <button type="button" class="toggle-password" onclick="togglePassword('newPassword', this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                      <div class="strength-bars">
+                        <div class="strength-bar" id="bar1"></div>
+                        <div class="strength-bar" id="bar2"></div>
+                        <div class="strength-bar" id="bar3"></div>
+                        <div class="strength-bar" id="bar4"></div>
+                      </div>
+                      <span class="strength-text" id="strengthText"></span>
+                    </div>
+                  </div>
+                  <div class="form-field full">
+                    <label>Confirm New Password <span class="req">*</span></label>
+                    <div class="input-group">
+                      <i class="fa-solid fa-key input-icon"></i>
+                      <input type="password" id="confirmPassword" placeholder="Confirm new password" required />
+                      <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="security-extra">
+                  <div class="security-option">
+                    <div class="option-info"><h4>Two-Factor Authentication</h4><p>Add an extra layer of security</p></div>
+                    <label class="toggle-switch"><input type="checkbox" id="twoFactor" /><span class="toggle-slider"></span></label>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline" onclick="resetSection('security')">Clear</button>
+                  <button type="submit" class="btn btn-primary">Update Password</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Verification Modal -->
+  <div class="modal-overlay" id="verificationModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon"><i class="fa-solid fa-shield-check"></i></div>
+        <h3>Verify Your <span id="verifyType">Email</span></h3>
+        <button class="modal-close" onclick="closeVerificationModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Enter the 6-digit code sent to your <span id="verifyTarget">email</span></p>
+        <div class="otp-container">
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+          <input type="text" maxlength="1" class="otp-digit" data-target="verify" />
+        </div>
+        <div class="otp-footer">
+          <button class="btn btn-primary" onclick="verifyChange()">Verify</button>
+          <a href="#" class="otp-resend" onclick="resendVerificationCode()">Resend code</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/profile-settings.js"></script>
+  
+</body>
+</html>

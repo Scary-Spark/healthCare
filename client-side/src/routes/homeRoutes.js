@@ -57,4 +57,8 @@ router.get("/others-settings", (req, res) => {
   res.render("others-settings");
 });
 
+router.get("/profile-settings", (req, res) => {
+  res.render("profile-settings");
+});
+
 export default router;
