@@ -452,7 +452,7 @@ body {
 
 /* Mobile Menu Toggle - FIXED */
 .mobile-menu-btn {
-  display: none !important;
+  display: none; /* Remove !important */
   background: none;
   border: none;
   font-size: 1.4rem;
@@ -461,7 +461,10 @@ body {
   padding: 8px;
   border-radius: 10px;
   z-index: 1001;
+  order: 10; /* Ensure it appears last in flex container */
+  flex-shrink: 0; /* Don't shrink */
 }
+
 .mobile-menu-btn:hover {
   background: var(--primary-50);
   color: var(--primary);
@@ -729,10 +732,21 @@ body {
 }
 
 /* Mobile: Slide-Out Overlay (<768px) - COMPLETELY FIXED */
+/* Mobile: Slide-Out Overlay (<768px) */
 @media (max-width: 768px) {
   /* Show mobile menu button */
   .mobile-menu-btn {
-    display: flex !important;
+    display: flex !important; /* Force show on mobile */
+  }
+
+  /* Hide search on mobile */
+  .navbar-search {
+    display: none;
+  }
+
+  /* Adjust navbar actions spacing */
+  .navbar-actions {
+    gap: 8px;
   }
 
   /* Sidebar starts hidden off-screen */
@@ -770,7 +784,7 @@ body {
     display: inline !important;
   }
 
-  /* Submenu: Use max-height only, NO display:none */
+  /* Submenu: Use max-height only */
   .submenu {
     display: block !important;
     max-height: 0;
