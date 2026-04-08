@@ -25,4 +25,20 @@ router.get("/appointment", (req, res) => {
   res.render("appointment");
 });
 
+router.get("/test-reports", (req, res) => {
+  res.render("test-reports");
+});
+
+router.get("/prescriptions", (req, res) => {
+  res.render("prescriptions");
+});
+
+router.get("/appointment-history", (req, res) => {
+  res.render("appointment-history");
+});
+
+router.get("/invoices", (req, res) => {
+  res.render("invoices");
+});
+
 export default router;

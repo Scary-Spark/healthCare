@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prescriptions • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/prescriptions.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="records-page">
+        
+        <!-- Page Header -->
+        <header class="records-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-solid fa-prescription"></i>
+            </div>
+            <div>
+              <h1>Prescriptions</h1>
+              <p>View and manage your prescribed medications and treatment history</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-filter" id="filterBtn">
+              <i class="fa-solid fa-filter"></i>
+              <span>Filter</span>
+            </button>
+            <button class="btn-download-all" id="downloadAllBtn">
+              <i class="fa-solid fa-download"></i>
+              <span>Download All</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-overview">
+          <div class="stat-card">
+            <div class="stat-icon total">
+              <i class="fa-solid fa-file-prescription"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="totalPrescriptions">0</span>
+              <span class="stat-label">Total Prescriptions</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon active">
+              <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="activePrescriptions">0</span>
+              <span class="stat-label">Active</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon expired">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="expiredPrescriptions">0</span>
+              <span class="stat-label">Expired</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon cancelled">
+              <i class="fa-solid fa-ban"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="cancelledPrescriptions">0</span>
+              <span class="stat-label">Cancelled</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filters & Search -->
+        <section class="filters-section" id="filtersSection" hidden>
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="statusFilter">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Date Range</label>
+            <input type="date" id="dateFrom" placeholder="From" />
+          </div>
+          
+          <div class="filter-group">
+            <label>To</label>
+            <input type="date" id="dateTo" placeholder="To" />
+          </div>
+          
+          <button class="btn-apply-filter" id="applyFilter">
+            <i class="fa-solid fa-check"></i> Apply
+          </button>
+          
+          <button class="btn-clear-filter" id="clearFilter">
+            <i class="fa-solid fa-xmark"></i> Clear
+          </button>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search by prescription #, doctor, or medication name..." />
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="records-content">
+          
+          <!-- Table Section -->
+          <div class="table-section">
+            <div class="table-header-info">
+              <span>Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> prescriptions</span>
+              <div class="items-per-page">
+                <label>Show:</label>
+                <select id="itemsPerPage">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="table-wrapper">
+              <table class="records-table">
+                <thead>
+                  <tr>
+                    <th>Prescription #</th>
+                    <th>Medications</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+              <button class="pagination-btn" id="prevPage" disabled>
+                <i class="fa-solid fa-chevron-left"></i> Previous
+              </button>
+              <div class="pagination-numbers" id="paginationNumbers">
+                <!-- Populated by JavaScript -->
+              </div>
+              <button class="pagination-btn" id="nextPage">
+                Next <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Details Panel (Right Side) -->
+          <aside class="details-panel" id="detailsPanel">
+            <div class="panel-header">
+              <h3>Prescription Details</h3>
+              <button class="panel-close" id="panelClose">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            
+            <div class="panel-content" id="panelContent">
+              <div class="empty-state">
+                <i class="fa-regular fa-file-prescription"></i>
+                <p>Hover over a row to view details</p>
+              </div>
+            </div>
+            
+            <div class="panel-actions">
+              <button class="btn-download-panel" id="downloadPanel">
+                <i class="fa-solid fa-download"></i>
+                Download PDF
+              </button>
+              <button class="btn-view-panel" id="viewPanel">
+                <i class="fa-solid fa-eye"></i>
+                View Full Prescription
+              </button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/prescriptions.js"></script>
+  
+</body>
+</html>

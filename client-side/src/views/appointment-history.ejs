@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appointment & Records History • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/appointment-history.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="records-page">
+        
+        <!-- Page Header -->
+        <header class="records-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-solid fa-bed-pulse"></i>
+            </div>
+            <div>
+              <h1>Appointment & Records History</h1>
+              <p>View your past hospital visits, admissions, and medical encounters</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-filter" id="filterBtn">
+              <i class="fa-solid fa-filter"></i>
+              <span>Filter</span>
+            </button>
+            <button class="btn-download-all" id="downloadAllBtn">
+              <i class="fa-solid fa-download"></i>
+              <span>Download All</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-overview">
+          <div class="stat-card">
+            <div class="stat-icon total">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="totalVisits">0</span>
+              <span class="stat-label">Total Visits</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon admission">
+              <i class="fa-solid fa-hospital-user"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="admissions">0</span>
+              <span class="stat-label">Admissions</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon outpatient">
+              <i class="fa-solid fa-person-walking"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="outpatient">0</span>
+              <span class="stat-label">Outpatient</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon emergency">
+              <i class="fa-solid fa-kit-medical"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="emergency">0</span>
+              <span class="stat-label">Emergency</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filters & Search -->
+        <section class="filters-section" id="filtersSection" hidden>
+          <div class="filter-group">
+            <label>Visit Type</label>
+            <select id="visitTypeFilter">
+              <option value="">All Types</option>
+              <option value="admission">Admission</option>
+              <option value="outpatient">Outpatient</option>
+              <option value="emergency">Emergency</option>
+              <option value="followup">Follow-up</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="statusFilter">
+              <option value="">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="in-patient">In-Patient</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Date Range</label>
+            <input type="date" id="dateFrom" placeholder="From" />
+          </div>
+          
+          <div class="filter-group">
+            <label>To</label>
+            <input type="date" id="dateTo" placeholder="To" />
+          </div>
+          
+          <button class="btn-apply-filter" id="applyFilter">
+            <i class="fa-solid fa-check"></i> Apply
+          </button>
+          
+          <button class="btn-clear-filter" id="clearFilter">
+            <i class="fa-solid fa-xmark"></i> Clear
+          </button>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search by diagnosis, doctor, or department..." />
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="records-content">
+          
+          <!-- Table Section -->
+          <div class="table-section">
+            <div class="table-header-info">
+              <span>Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> records</span>
+              <div class="items-per-page">
+                <label>Show:</label>
+                <select id="itemsPerPage">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="table-wrapper">
+              <table class="records-table">
+                <thead>
+                  <tr>
+                    <th>Visit ID</th>
+                    <th>Type</th>
+                    <th>Doctor</th>
+                    <th>Dates</th>
+                    <th>Diagnosis</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+              <button class="pagination-btn" id="prevPage" disabled>
+                <i class="fa-solid fa-chevron-left"></i> Previous
+              </button>
+              <div class="pagination-numbers" id="paginationNumbers">
+                <!-- Populated by JavaScript -->
+              </div>
+              <button class="pagination-btn" id="nextPage">
+                Next <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Details Panel (Right Side) -->
+          <aside class="details-panel" id="detailsPanel">
+            <div class="panel-header">
+              <h3>Visit Details</h3>
+              <button class="panel-close" id="panelClose">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            
+            <div class="panel-content" id="panelContent">
+              <div class="empty-state">
+                <i class="fa-solid fa-bed-pulse"></i>
+                <p>Hover over a row to view details</p>
+              </div>
+            </div>
+            
+            <div class="panel-actions">
+              <button class="btn-download-panel" id="downloadPanel">
+                <i class="fa-solid fa-download"></i>
+                Download Record
+              </button>
+              <button class="btn-view-panel" id="viewPanel">
+                <i class="fa-solid fa-eye"></i>
+                View Full History
+              </button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/appointment-history.js"></script>
+  
+</body>
+</html>
