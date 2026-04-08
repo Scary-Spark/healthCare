@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment & Balance • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/payment.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="payment-page">
+        
+        <!-- Page Header -->
+        <header class="payment-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div>
+              <h1>Payment & Account Balance</h1>
+              <p>Manage your wallet, view transaction history, and add funds securely</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-add-balance" id="addBalanceBtn">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Balance</span>
+            </button>
+            <button class="btn-download-all" id="downloadStatementBtn">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              <span>Download Statement</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-overview">
+          <div class="stat-card">
+            <div class="stat-icon balance">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="currentBalance">৳0</span>
+              <span class="stat-label">Current Balance</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon spent">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="totalSpent">৳0</span>
+              <span class="stat-label">Total Spent</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon pending">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="pendingAmount">৳0</span>
+              <span class="stat-label">Pending</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon last">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" id="lastTransaction">--</span>
+              <span class="stat-label">Last Transaction</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Account Balance & Quick Actions -->
+        <section class="balance-section">
+          <div class="balance-card">
+            <div class="balance-info">
+              <h3>Account Wallet</h3>
+              <div class="balance-amount">
+                <span class="currency">৳</span>
+                <span class="amount" id="walletAmount">12,450.00</span>
+              </div>
+              <p class="balance-note">Funds can be used for appointments, lab tests, and pharmacy purchases</p>
+            </div>
+            <div class="balance-actions">
+              <button class="btn-action" onclick="showComingSoon('Add Balance')">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Top Up</span>
+              </button>
+              <button class="btn-action" onclick="showComingSoon('Transfer Funds')">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                <span>Transfer</span>
+              </button>
+              <button class="btn-action" onclick="showComingSoon('Auto-Pay')">
+                <i class="fa-solid fa-rotate"></i>
+                <span>Auto-Pay</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Payment Methods -->
+          <div class="payment-methods">
+            <h3>Payment Methods</h3>
+            <div class="methods-grid">
+              <div class="method-card coming-soon">
+                <div class="method-icon visa">
+                  <i class="fa-brands fa-cc-visa"></i>
+                </div>
+                <div class="method-info">
+                  <span class="method-name">Credit / Debit Card</span>
+                  <span class="method-desc">Visa, Mastercard, Amex</span>
+                </div>
+                <span class="coming-soon-badge">Coming Soon</span>
+              </div>
+              
+              <div class="method-card coming-soon">
+                <div class="method-icon mobile">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <div class="method-info">
+                  <span class="method-name">Mobile Banking</span>
+                  <span class="method-desc">bKash, Nagad, Rocket</span>
+                </div>
+                <span class="coming-soon-badge">Coming Soon</span>
+              </div>
+              
+              <div class="method-card coming-soon">
+                <div class="method-icon bank">
+                  <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="method-info">
+                  <span class="method-name">Bank Transfer</span>
+                  <span class="method-desc">Direct bank deposit</span>
+                </div>
+                <span class="coming-soon-badge">Coming Soon</span>
+              </div>
+              
+              <div class="method-card coming-soon">
+                <div class="method-icon insurance">
+                  <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="method-info">
+                  <span class="method-name">Insurance</span>
+                  <span class="method-desc">Health insurance claim</span>
+                </div>
+                <span class="coming-soon-badge">Coming Soon</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filters & Search -->
+        <section class="filters-section" id="filtersSection" hidden>
+          <div class="filter-group">
+            <label>Transaction Type</label>
+            <select id="typeFilter">
+              <option value="">All Types</option>
+              <option value="recharge">Recharge</option>
+              <option value="consultation">Consultation</option>
+              <option value="lab">Lab Test</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="refund">Refund</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="statusFilter">
+              <option value="">All Status</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Date Range</label>
+            <input type="date" id="dateFrom" placeholder="From" />
+          </div>
+          
+          <div class="filter-group">
+            <label>To</label>
+            <input type="date" id="dateTo" placeholder="To" />
+          </div>
+          
+          <button class="btn-apply-filter" id="applyFilter">
+            <i class="fa-solid fa-check"></i> Apply
+          </button>
+          
+          <button class="btn-clear-filter" id="clearFilter">
+            <i class="fa-solid fa-xmark"></i> Clear
+          </button>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search by reference, service, or amount..." />
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="records-content">
+          
+          <!-- Table Section -->
+          <div class="table-section">
+            <div class="table-header-info">
+              <span>Showing <strong id="showingCount">0</strong> of <strong id="totalCount">0</strong> transactions</span>
+              <div class="items-per-page">
+                <label>Show:</label>
+                <select id="itemsPerPage">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="table-wrapper">
+              <table class="records-table">
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Type</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+              <button class="pagination-btn" id="prevPage" disabled>
+                <i class="fa-solid fa-chevron-left"></i> Previous
+              </button>
+              <div class="pagination-numbers" id="paginationNumbers">
+                <!-- Populated by JavaScript -->
+              </div>
+              <button class="pagination-btn" id="nextPage">
+                Next <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Details Panel (Right Side) -->
+          <aside class="details-panel" id="detailsPanel">
+            <div class="panel-header">
+              <h3>Transaction Details</h3>
+              <button class="panel-close" id="panelClose">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            
+            <div class="panel-content" id="panelContent">
+              <div class="empty-state">
+                <i class="fa-regular fa-credit-card"></i>
+                <p>Hover over a row to view details</p>
+              </div>
+            </div>
+            
+            <div class="panel-actions">
+              <button class="btn-download-panel" id="downloadPanel">
+                <i class="fa-solid fa-download"></i>
+                Download Receipt
+              </button>
+              <button class="btn-view-panel" id="viewPanel">
+                <i class="fa-solid fa-eye"></i>
+                View Full Details
+              </button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/payment.js"></script>
+  
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suggestions & Complaints • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/suggestions.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="suggestions-page">
+        
+        <!-- Header -->
+        <header class="page-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-regular fa-lightbulb"></i>
+            </div>
+            <div>
+              <h1>Suggestions & Complaints</h1>
+              <p>Help us improve NovaLife. Share your feedback, report issues, or suggest new features.</p>
+            </div>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon total"><i class="fa-solid fa-inbox"></i></div>
+            <div class="stat-info"><span class="stat-number" id="statTotal">0</span><span class="stat-label">Total</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon pending"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info"><span class="stat-number" id="statPending">0</span><span class="stat-label">Pending</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon progress"><i class="fa-solid fa-spinner"></i></div>
+            <div class="stat-info"><span class="stat-number" id="statProgress">0</span><span class="stat-label">In Progress</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon resolved"><i class="fa-solid fa-check-circle"></i></div>
+            <div class="stat-info"><span class="stat-number" id="statResolved">0</span><span class="stat-label">Resolved</span></div>
+          </div>
+        </section>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <div class="search-filter">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchInput" placeholder="Search suggestions or complaints..." />
+            </div>
+            <div class="filter-group">
+              <select id="typeFilter">
+                <option value="">All Types</option>
+                <option value="suggestion">Suggestion</option>
+                <option value="complaint">Complaint</option>
+              </select>
+              <select id="statusFilter">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="under-review">Under Review</option>
+                <option value="in-progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="declined">Declined</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-new" id="newSubmissionBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Submission</span>
+          </button>
+        </div>
+
+        <!-- Submission Form -->
+        <div id="submissionForm" class="form-card hidden">
+          <div class="form-header">
+            <h3><i class="fa-solid fa-paper-plane"></i> Submit New Feedback</h3>
+            <button class="btn-close-form" id="closeFormBtn"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <form id="feedbackForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Type <span class="req">*</span></label>
+                <select id="formType" required>
+                  <option value="">Select type</option>
+                  <option value="suggestion">Suggestion</option>
+                  <option value="complaint">Complaint</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Category <span class="req">*</span></label>
+                <select id="formCategory" required>
+                  <option value="">Select category</option>
+                  <option value="facilities">Facilities & Environment</option>
+                  <option value="staff">Staff & Service</option>
+                  <option value="billing">Billing & Insurance</option>
+                  <option value="tech">App & Technology</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Title <span class="req">*</span></label>
+              <input type="text" id="formTitle" placeholder="Brief summary of your feedback" required />
+            </div>
+            <div class="form-group">
+              <label>Description <span class="req">*</span></label>
+              <textarea id="formDescription" rows="4" placeholder="Describe your suggestion or complaint in detail..." required></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Priority</label>
+                <select id="formPriority">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="formAnonymous" />
+                  <span class="checkmark"></span>
+                  <span>Submit anonymously</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" id="cancelFormBtn">Cancel</button>
+              <button type="submit" class="btn-primary">Submit Feedback</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Submissions List -->
+        <div id="submissionsList" class="submissions-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/suggestions.js"></script>
+  
+</body>
+</html>

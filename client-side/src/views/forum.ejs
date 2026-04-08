@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Forums • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/forum.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="forum-page">
+        
+        <!-- Header -->
+        <header class="forum-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <div>
+              <h1>Community Forums</h1>
+              <p>Connect, share experiences, and get support from fellow patients</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="forumSearch" placeholder="Search channels, posts, or topics..." />
+            </div>
+            <button class="btn-create" id="createPostBtn">
+              <i class="fa-solid fa-plus"></i>
+              <span>New Post</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="forum-stats">
+          <div class="stat-card">
+            <div class="stat-icon channels">
+              <i class="fa-solid fa-hashtag"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">12</span>
+              <span class="stat-label">Active Channels</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon posts">
+              <i class="fa-solid fa-message"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">1,248</span>
+              <span class="stat-label">Total Posts</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon members">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">842</span>
+              <span class="stat-label">Members Online</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main Layout: Channel List + Panel -->
+        <div class="forum-layout">
+          
+          <!-- Left: Channel List -->
+          <div class="channel-list-container">
+            <div class="list-header">
+              <h3><i class="fa-solid fa-layer-group"></i> Channels</h3>
+              <span class="channel-count" id="channelCount">0</span>
+            </div>
+            <div id="channelList" class="channel-list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Forum Detail Panel -->
+          <aside class="forum-panel" id="forumPanel">
+            <div class="panel-empty-state">
+              <i class="fa-regular fa-comment-dots"></i>
+              <h3>Select a Channel</h3>
+              <p>Choose a forum channel to view discussions and posts</p>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/forum.js"></script>
+  
+</body>
+</html>

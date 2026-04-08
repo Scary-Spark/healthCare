@@ -41,4 +41,16 @@ router.get("/invoices", (req, res) => {
   res.render("invoices");
 });
 
+router.get("/payment", (req, res) => {
+  res.render("payment");
+});
+
+router.get("/forum", (req, res) => {
+  res.render("forum");
+});
+
+router.get("/suggestions", (req, res) => {
+  res.render("suggestions");
+});
+
 export default router;
