@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other Settings • NovaLife Patient Portal</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/home.css" />
+  <link rel="stylesheet" href="/styles/client-layouts.css" />
+  <link rel="stylesheet" href="/styles/client-publicChat.css" />
+  <link rel="stylesheet" href="/styles/others-settings.css" />
+</head>
+<body>
+
+  <!-- Layout Components -->
+  <%- include('../utils/layouts/client-navbar', { user: { name: 'John Doe', email: 'john@email.com' } }) %>
+  <%- include('../utils/layouts/client-sidebar') %>
+
+  <!-- Main Content -->
+  <div class="client-layout">
+    <main class="client-main">
+      
+      <div class="settings-page">
+        
+        <!-- Page Header -->
+        <header class="settings-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h1>Other Settings</h1>
+              <p>Customize your NovaLife experience with preferences, accessibility, and more</p>
+            </div>
+          </div>
+        </header>
+
+        <!-- Settings Grid -->
+        <div class="settings-grid">
+          
+          <!-- Theme & Appearance (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-solid fa-palette"></i> Appearance</h3>
+            
+            <div class="theme-scroll-container">
+              <div class="theme-options">
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="novalife" disabled />
+                  <div class="theme-preview novalife">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #0c6e5f, #109e88);"></div>
+                    <span>NovaLife Green</span>
+                  </div>
+                </label>
+                
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="ocean" disabled />
+                  <div class="theme-preview ocean">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #1e3a5f, #3b82f6);"></div>
+                    <span>Ocean Breeze</span>
+                  </div>
+                </label>
+                
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="sunset" disabled />
+                  <div class="theme-preview sunset">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #f59e4a, #d94f4f);"></div>
+                    <span>Sunset Glow</span>
+                  </div>
+                </label>
+                
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="forest" disabled />
+                  <div class="theme-preview forest">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #2d5a3d, #4a7c59);"></div>
+                    <span>Forest Mist</span>
+                  </div>
+                </label>
+                
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="royal" disabled />
+                  <div class="theme-preview royal">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);"></div>
+                    <span>Royal Purple</span>
+                  </div>
+                </label>
+                
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="minimal" disabled />
+                  <div class="theme-preview minimal">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);"></div>
+                    <span>Minimal White</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <p class="theme-note"><i class="fa-solid fa-info-circle"></i> Theme customization will be available in a future update.</p>
+          </section>
+
+          <!-- Notification Preferences (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-regular fa-bell"></i> Notifications</h3>
+            
+            <div class="toggle-list">
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <span class="toggle-label">Appointment Reminders</span>
+                  <span class="toggle-desc">Get notified 24h and 1h before appointments</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <span class="toggle-label">Lab Results Ready</span>
+                  <span class="toggle-desc">Alert when new test reports are available</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <span class="toggle-label">Prescription Refills</span>
+                  <span class="toggle-desc">Reminders when prescriptions are due for refill</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Privacy Settings (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-solid fa-shield-halved"></i> Privacy</h3>
+            
+            <div class="privacy-options">
+              <div class="privacy-item">
+                <label class="checkbox-label">
+                  <input type="checkbox" disabled />
+                  <span class="checkmark"></span>
+                  <div>
+                    <span class="checkbox-title">Make profile visible to doctors</span>
+                    <span class="checkbox-desc">Allow healthcare providers to view your basic profile</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="privacy-item">
+                <label class="checkbox-label">
+                  <input type="checkbox" disabled />
+                  <span class="checkmark"></span>
+                  <div>
+                    <span class="checkbox-title">Share anonymized data for research</span>
+                    <span class="checkbox-desc">Help improve healthcare with your de-identified information</span>
+                  </div>
+                </label>
+              </div>
+              
+              <div class="privacy-item">
+                <label class="checkbox-label">
+                  <input type="checkbox" disabled />
+                  <span class="checkmark"></span>
+                  <div>
+                    <span class="checkbox-title">Enable two-factor authentication</span>
+                    <span class="checkbox-desc">Add an extra layer of security to your account</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Language & Region (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-solid fa-language"></i> Language & Region</h3>
+            
+            <div class="form-group">
+              <label>Preferred Language</label>
+              <select disabled>
+                <option value="en" selected>English</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Date Format</label>
+              <select disabled>
+                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Accessibility (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-solid fa-universal-access"></i> Accessibility</h3>
+            
+            <div class="toggle-list">
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <span class="toggle-label">High Contrast Mode</span>
+                  <span class="toggle-desc">Increase color contrast for better visibility</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <span class="toggle-label">Screen Reader Support</span>
+                  <span class="toggle-desc">Optimize interface for screen readers</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Data Management (COMING SOON) -->
+          <section class="settings-card coming-soon-overlay">
+            <div class="coming-soon-badge"><i class="fa-solid fa-hourglass-half"></i> Coming Soon</div>
+            <h3 class="card-title"><i class="fa-solid fa-database"></i> Data Management</h3>
+            
+            <div class="data-options">
+              <div class="data-item">
+                <h4>Download My Data</h4>
+                <p class="data-desc">Get a copy of your personal information and medical records.</p>
+                <button type="button" class="btn-secondary" disabled>
+                  <i class="fa-solid fa-download"></i> Request Export
+                </button>
+              </div>
+              
+              <div class="data-item">
+                <h4>Clear Cache</h4>
+                <p class="data-desc">Remove temporary files to free up space.</p>
+                <button type="button" class="btn-secondary" disabled>
+                  <i class="fa-solid fa-broom"></i> Clear Cache
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- Footer & Chat -->
+  <%- include('../utils/layouts/client-footer') %>
+  <%- include('../utils/layouts/client-publicChat') %>
+
+  <!-- Scripts -->
+  <script src="/scripts/client-layouts.js"></script>
+  <script src="/scripts/client-publicChat.js"></script>
+  <script src="/scripts/others-settings.js"></script>
+  
+</body>
+</html>

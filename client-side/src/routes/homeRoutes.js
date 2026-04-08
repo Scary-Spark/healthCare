@@ -53,4 +53,8 @@ router.get("/suggestions", (req, res) => {
   res.render("suggestions");
 });
 
+router.get("/others-settings", (req, res) => {
+  res.render("others-settings");
+});
+
 export default router;
