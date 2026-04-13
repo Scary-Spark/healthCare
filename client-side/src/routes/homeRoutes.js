@@ -1,4 +1,5 @@
 import express from "express";
+import { pool } from "../configs/database.js"; // 👈 ADD THIS
 const router = express.Router();
 
 // Home page
@@ -21,6 +22,28 @@ router.get("/dashboard", (req, res) => {
   res.render("dashboard");
 });
 
+// ------------------------------
+// 🧪 DATABASE TEST ROUTE (NEW)
+// ------------------------------
+router.get("/test-db", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT 1 + 1 AS result");
+
+    res.json({
+      success: true,
+      message: "Database connected successfully",
+      result: rows[0].result,
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "Database connection failed",
+      error: err.message,
+    });
+  }
+});
+
+// Other routes
 router.get("/appointment", (req, res) => {
   res.render("appointment");
 });

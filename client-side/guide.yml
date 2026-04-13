@@ -68,36 +68,37 @@ folderStructure:
 
 healthCare:
   admin-side: // admin side server folder
-  .git
-  .github
+  .git/
+  .github/
+  .gitignore
   client-side:
     node-modules:
     server:
     package-lock.json
-  package.json
-  clientPath.js
-  src:
-    controllers:
-      signupController.js
-    main:
-      main.js // main server run file
-    publicFolder:
-      assets:
-        fonts:
-        icons:
-        images:
-      scripts:
-        signup.js
-      styles:
-        signup.css
-    routes:
-      homeRouts.js
-    utils:
-      components/
-      layouts/
-        client-navbar.ejs
-        client-footer.ejs
-        client-sidebar.ejs
-        client-publicChat.ejs
-    views:
-      signup.ejs
+    package.json
+    clientPath.js
+    src:
+      controllers:
+        signupController.js
+      main:
+        main.js // main server run file
+      publicFolder:
+        assets:
+          fonts:
+          icons:
+          images:
+        scripts:
+          signup.js
+        styles:
+          signup.css
+      routes:
+        homeRouts.js
+      utils:
+        components/
+        layouts/
+          client-navbar.ejs
+          client-footer.ejs
+          client-sidebar.ejs
+          client-publicChat.ejs
+      views:
+        signup.ejs
