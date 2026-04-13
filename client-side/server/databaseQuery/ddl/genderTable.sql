@@ -1,0 +1,4 @@
+CREATE TABLE genders (
+    gender_id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    gender_name VARCHAR(20) NOT NULL UNIQUE
+);
