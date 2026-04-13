@@ -67,6 +67,7 @@ folderStructure:
 
 
 healthCare:
+  admin-side: // admin side server folder
   .git
   .github
   client-side:
@@ -77,7 +78,7 @@ healthCare:
   clientPath.js
   src:
     controllers:
-      .. backend logic for each page
+      signupController.js
     main:
       main.js // main server run file
     publicFolder:
@@ -86,32 +87,17 @@ healthCare:
         icons:
         images:
       scripts:
-        home.js
-        login.js
         signup.js
-        client-layouts.js  // navbar, footer, sidebar
-        client-publicChat.js
-        dashboard.js
       styles:
-        fonts.css
-        home.css
-        login.css
         signup.css
-        client-layouts.css  // navbar, footer, sidebar
-        client-publicChat.css
-        dashboard.css
-
     routes:
       homeRouts.js
     utils:
-      components
-      layouts
+      components/
+      layouts/
         client-navbar.ejs
         client-footer.ejs
         client-sidebar.ejs
         client-publicChat.ejs
     views:
-      login.ejs
-      home.ejs
       signup.ejs
-      dashboard.ejs
