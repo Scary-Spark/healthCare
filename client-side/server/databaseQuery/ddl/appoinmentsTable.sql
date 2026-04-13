@@ -16,6 +16,8 @@ CREATE TABLE appointments (
 
     reason_for_visit TEXT NOT NULL,
 
+    diagnosis_name VARCHAR(255) NULL, -- Added column
+
     appointment_status_id TINYINT NOT NULL DEFAULT 1,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -53,3 +55,9 @@ CREATE TABLE appointments (
 
 drop table appointments;
 
+ALTER TABLE appointments
+ADD COLUMN diagnosis_name VARCHAR(255) NULL
+AFTER reason_for_visit;
+
+ALTER table appointments
+drop COLUMN diagnosis_name;
