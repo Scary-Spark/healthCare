@@ -9,12 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
       rel="stylesheet"
     />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <link rel="stylesheet" href="/styles/signup.css" />
   </head>
   <body>
@@ -203,14 +201,14 @@
                   </svg>
                 </div>
               </div>
+
               <div class="input-group">
-                <label>Gender</label>
+                <label>Gender <span class="required">*</span></label>
                 <div class="input-wrapper">
-                  <select id="gender">
-                    <option value="" disabled selected>Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="mental">Mental</option>
+                  <select id="gender" required>
+                    <option value="" disabled selected>
+                      Loading genders...
+                    </option>
                   </select>
                   <svg viewBox="0 0 24 24">
                     <path
@@ -226,21 +224,12 @@
 
             <div class="form-row full">
               <div class="input-group">
-                <label>Blood Group</label>
+                <label>Blood Group <span class="required">*</span></label>
                 <div class="input-wrapper">
-                  <select id="bloodGroup">
+                  <select id="bloodGroup" required>
                     <option value="" disabled selected>
-                      Select blood group
+                      Loading blood groups...
                     </option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A−</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B−</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB−</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O−</option>
-                    <option value="not-tested">Not Tested</option>
                   </select>
                   <svg viewBox="0 0 24 24">
                     <path
@@ -256,7 +245,10 @@
 
             <div class="form-actions">
               <div></div>
-              <button class="btn btn-primary" onclick="nextStep(2)">
+              <button
+                class="btn btn-primary"
+                onclick="validatePersonalInfoAndNext()"
+              >
                 Continue
                 <svg viewBox="0 0 24 24">
                   <path
@@ -422,7 +414,10 @@
                 </svg>
                 Back
               </button>
-              <button class="btn btn-primary" onclick="nextStep(3)">
+              <button
+                class="btn btn-primary"
+                onclick="validateContactInfoAndNext()"
+              >
                 Continue
                 <svg viewBox="0 0 24 24">
                   <path
@@ -457,6 +452,8 @@
                     type="password"
                     id="password"
                     placeholder="Create a strong password"
+                    minlength="8"
+                    maxlength="32"
                     required
                     oninput="checkPasswordStrength(this.value)"
                   />
@@ -476,6 +473,16 @@
                       />
                     </svg>
                   </button>
+                </div>
+                <!-- Requirement Checklist -->
+                <div class="password-requirements">
+                  <span class="req-item" id="req-length">8-32 characters</span>
+                  <span class="req-item" id="req-upper">Uppercase letter</span>
+                  <span class="req-item" id="req-lower">Lowercase letter</span>
+                  <span class="req-item" id="req-number">Number</span>
+                  <span class="req-item" id="req-special"
+                    >Special character</span
+                  >
                 </div>
                 <div class="password-strength" id="passwordStrength">
                   <div class="strength-bars">
@@ -497,6 +504,8 @@
                     type="password"
                     id="confirmPassword"
                     placeholder="Confirm your password"
+                    minlength="8"
+                    maxlength="32"
                     required
                   />
                   <svg viewBox="0 0 24 24">
@@ -519,31 +528,6 @@
               </div>
             </div>
 
-            <div class="checkbox-group">
-              <input type="checkbox" id="terms" />
-              <label class="custom-checkbox" for="terms">
-                <svg viewBox="0 0 24 24">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                </svg>
-              </label>
-              <label class="checkbox-label" for="terms">
-                I agree to the <a href="#">Terms of Service</a> and
-                <a href="#">Privacy Policy</a>
-              </label>
-            </div>
-
-            <div class="checkbox-group">
-              <input type="checkbox" id="newsletter" />
-              <label class="custom-checkbox" for="newsletter">
-                <svg viewBox="0 0 24 24">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                </svg>
-              </label>
-              <label class="checkbox-label" for="newsletter">
-                Send me health tips & updates (optional)
-              </label>
-            </div>
-
             <div class="form-actions">
               <button class="btn btn-secondary" onclick="prevStep(2)">
                 <svg viewBox="0 0 24 24">
@@ -553,7 +537,8 @@
                 </svg>
                 Back
               </button>
-              <button class="btn btn-primary" onclick="nextStep(4)">
+              <!-- ✅ IMPORTANT: This calls validation function -->
+              <button class="btn btn-primary" onclick="validateStep3AndNext()">
                 Continue
                 <svg viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -595,16 +580,13 @@
                 <span class="verify-status" id="emailStatus">Pending</span>
               </div>
 
-              <div class="verify-actions">
+              <div class="verify-actions" id="emailActions">
                 <button
                   class="btn btn-secondary btn-sm"
                   id="sendEmailCode"
-                  onclick="sendVerificationCode('email')"
+                  onclick="handleSendEmailCode()"
                 >
                   <span class="btn-text">Send Code</span>
-                  <span class="btn-loader" style="display: none">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Sending...
-                  </span>
                 </button>
                 <span class="resend-timer" id="emailTimer" style="display: none"
                   >Resend in <strong>30s</strong></span
@@ -672,15 +654,27 @@
                 <div class="otp-actions">
                   <button
                     class="btn btn-primary btn-sm"
-                    onclick="verifyCode('email')"
+                    onclick="handleVerifyCode('email')"
                   >
                     Verify Email
                   </button>
-                  <a href="#" class="otp-resend" onclick="resendCode('email')"
+                  <a
+                    href="#"
+                    class="otp-resend"
+                    onclick="handleResendCode('email')"
                     >Resend code</a
                   >
                 </div>
-                <span class="error-message" id="emailOtpError"></span>
+                <span
+                  class="error-message"
+                  id="emailOtpError"
+                  style="
+                    color: red;
+                    font-size: 0.8rem;
+                    margin-top: 5px;
+                    display: none;
+                  "
+                ></span>
               </div>
 
               <div
@@ -712,16 +706,13 @@
                 <span class="verify-status" id="phoneStatus">Pending</span>
               </div>
 
-              <div class="verify-actions">
+              <div class="verify-actions" id="phoneActions">
                 <button
                   class="btn btn-secondary btn-sm"
                   id="sendPhoneCode"
-                  onclick="sendVerificationCode('phone')"
+                  onclick="handleSendPhoneCode()"
                 >
                   <span class="btn-text">Send Code</span>
-                  <span class="btn-loader" style="display: none">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Sending...
-                  </span>
                 </button>
                 <span class="resend-timer" id="phoneTimer" style="display: none"
                   >Resend in <strong>30s</strong></span
@@ -789,15 +780,27 @@
                 <div class="otp-actions">
                   <button
                     class="btn btn-primary btn-sm"
-                    onclick="verifyCode('phone')"
+                    onclick="handleVerifyCode('phone')"
                   >
                     Verify Phone
                   </button>
-                  <a href="#" class="otp-resend" onclick="resendCode('phone')"
+                  <a
+                    href="#"
+                    class="otp-resend"
+                    onclick="handleResendCode('phone')"
                     >Resend code</a
                   >
                 </div>
-                <span class="error-message" id="phoneOtpError"></span>
+                <span
+                  class="error-message"
+                  id="phoneOtpError"
+                  style="
+                    color: red;
+                    font-size: 0.8rem;
+                    margin-top: 5px;
+                    display: none;
+                  "
+                ></span>
               </div>
 
               <div
@@ -812,18 +815,25 @@
               </div>
             </div>
 
-            <!-- Skip Option -->
-            <div class="verify-skip">
+            <!-- Terms and Conditions -->
+            <div
+              class="verify-skip"
+              style="margin-top: 20px; background: #f8f9fa; border-left: none"
+            >
               <label class="checkbox-wrapper">
-                <input type="checkbox" id="skipVerification" />
+                <input type="checkbox" id="termsAccepted" />
                 <span class="checkmark"></span>
-                <span class="skip-label"
-                  >Skip verification for now (not recommended)</span
-                >
+                <span class="skip-label" style="color: var(--text-dark)">
+                  I agree to the
+                  <a href="#" style="color: var(--primary)">Terms of Service</a>
+                  and
+                  <a href="#" style="color: var(--primary)">Privacy Policy</a>
+                  <span class="required">*</span>
+                </span>
               </label>
             </div>
 
-            <div class="form-actions">
+            <div class="form-actions" style="margin-top: 24px">
               <button class="btn btn-secondary" onclick="prevStep(3)">
                 <svg viewBox="0 0 24 24">
                   <path
@@ -832,7 +842,10 @@
                 </svg>
                 Back
               </button>
-              <button class="btn btn-primary" onclick="completeSignup()">
+              <button
+                class="btn btn-primary"
+                onclick="handleCompleteRegistration()"
+              >
                 Complete Registration
                 <svg viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
@@ -867,18 +880,8 @@
       </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast">
-      <div class="toast-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-        </svg>
-      </div>
-      <div class="toast-content">
-        <h4>Step completed!</h4>
-        <p id="toastMessage">Personal info saved.</p>
-      </div>
-    </div>
+    <!-- TOAST CONTAINER (BOTTOM-RIGHT) ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="/scripts/signup.js"></script>
   </body>

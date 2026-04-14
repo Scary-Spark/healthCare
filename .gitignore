@@ -1,2 +1,6 @@
 **/.env
 **/node_modules/
+**/.env.production
+
+npm-debug.log*
+.DS_Store

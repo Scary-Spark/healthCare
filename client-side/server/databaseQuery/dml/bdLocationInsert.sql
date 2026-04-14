@@ -128,7 +128,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Nesarabad', (SELECT district_id FROM districts WHERE district_name = 'Pirojpur')),
 ('Pirojpur Sadar', (SELECT district_id FROM districts WHERE district_name = 'Pirojpur')),
 ('Indurkani', (SELECT district_id FROM districts WHERE district_name = 'Pirojpur')),
-
 -- Chittagong Division
 ('Ali Kadam', (SELECT district_id FROM districts WHERE district_name = 'Bandarban')),
 ('Bandarban Sadar', (SELECT district_id FROM districts WHERE district_name = 'Bandarban')),
@@ -233,7 +232,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Naniarchar', (SELECT district_id FROM districts WHERE district_name = 'Rangamati')),
 ('Rajasthali', (SELECT district_id FROM districts WHERE district_name = 'Rangamati')),
 ('Rangamati Sadar', (SELECT district_id FROM districts WHERE district_name = 'Rangamati')),
-
 -- Dhaka Division
 ('Dhamrai', (SELECT district_id FROM districts WHERE district_name = 'Dhaka')),
 ('Dohar', (SELECT district_id FROM districts WHERE district_name = 'Dhaka')),
@@ -326,7 +324,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Sakhipur', (SELECT district_id FROM districts WHERE district_name = 'Tangail')),
 ('Tangail Sadar', (SELECT district_id FROM districts WHERE district_name = 'Tangail')),
 ('Dhanbari', (SELECT district_id FROM districts WHERE district_name = 'Tangail')),
-
 -- Khulna Division
 ('Bagerhat Sadar', (SELECT district_id FROM districts WHERE district_name = 'Bagerhat')),
 ('Chitalmari', (SELECT district_id FROM districts WHERE district_name = 'Bagerhat')),
@@ -393,7 +390,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Satkhira Sadar', (SELECT district_id FROM districts WHERE district_name = 'Satkhira')),
 ('Shyamnagar', (SELECT district_id FROM districts WHERE district_name = 'Satkhira')),
 ('Tala', (SELECT district_id FROM districts WHERE district_name = 'Satkhira')),
-
 -- Mymensingh Division
 ('Baksiganj', (SELECT district_id FROM districts WHERE district_name = 'Jamalpur')),
 ('Dewanganj', (SELECT district_id FROM districts WHERE district_name = 'Jamalpur')),
@@ -429,7 +425,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Nalitabari', (SELECT district_id FROM districts WHERE district_name = 'Sherpur')),
 ('Sherpur Sadar', (SELECT district_id FROM districts WHERE district_name = 'Sherpur')),
 ('Sreebardi', (SELECT district_id FROM districts WHERE district_name = 'Sherpur')),
-
 -- Rajshahi Division
 ('Adamdighi', (SELECT district_id FROM districts WHERE district_name = 'Bogra')),
 ('Bogra Sadar', (SELECT district_id FROM districts WHERE district_name = 'Bogra')),
@@ -499,7 +494,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Sirajganj Sadar', (SELECT district_id FROM districts WHERE district_name = 'Sirajganj')),
 ('Tarash', (SELECT district_id FROM districts WHERE district_name = 'Sirajganj')),
 ('Ullahpara', (SELECT district_id FROM districts WHERE district_name = 'Sirajganj')),
-
 -- Rangpur Division
 ('Birampur', (SELECT district_id FROM districts WHERE district_name = 'Dinajpur')),
 ('Birganj', (SELECT district_id FROM districts WHERE district_name = 'Dinajpur')),
@@ -559,7 +553,6 @@ INSERT INTO upazilas (upazila_name, district_id) VALUES
 ('Pirganj', (SELECT district_id FROM districts WHERE district_name = 'Thakurgaon')),
 ('Ranisankail', (SELECT district_id FROM districts WHERE district_name = 'Thakurgaon')),
 ('Thakurgaon Sadar', (SELECT district_id FROM districts WHERE district_name = 'Thakurgaon')),
-
 -- Sylhet Division
 ('Ajmiriganj', (SELECT district_id FROM districts WHERE district_name = 'Habiganj')),
 ('Baniachong', (SELECT district_id FROM districts WHERE district_name = 'Habiganj')),

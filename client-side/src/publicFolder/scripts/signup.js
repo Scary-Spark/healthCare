@@ -1,624 +1,154 @@
-// added
-// Bangladesh Location Data (Division → District → Upazila)
-const bangladeshLocations = {
-  Barisal: {
-    Barguna: [
-      "Amtali",
-      "Bamna",
-      "Barguna Sadar",
-      "Betagi",
-      "Patharghata",
-      "Taltali",
-    ],
-    Barisal: [
-      "Agailjhara",
-      "Babuganj",
-      "Bakerganj",
-      "Banaripara",
-      "Gaurnadi",
-      "Hizla",
-      "Barisal Sadar",
-      "Mehendiganj",
-      "Muladi",
-      "Wazirpur",
-    ],
-    Bhola: [
-      "Bhola Sadar",
-      "Burhanuddin",
-      "Char Fasson",
-      "Daulatkhan",
-      "Lalmohan",
-      "Manpura",
-      "Tazumuddin",
-    ],
-    Jhalokati: ["Jhalokati Sadar", "Kathalia", "Nalchity", "Rajapur"],
-    Patuakhali: [
-      "Bauphal",
-      "Dashmina",
-      "Galachipa",
-      "Kalapara",
-      "Mirzaganj",
-      "Patuakhali Sadar",
-      "Rangabali",
-      "Dumki",
-    ],
-    Pirojpur: [
-      "Bhandaria",
-      "Kaukhali",
-      "Mathbaria",
-      "Nazirpur",
-      "Nesarabad",
-      "Pirojpur Sadar",
-      "Indurkani",
-    ],
-  },
-  Chittagong: {
-    Bandarban: [
-      "Ali Kadam",
-      "Bandarban Sadar",
-      "Lama",
-      "Naikhongchhari",
-      "Rowangchhari",
-      "Ruma",
-      "Thanchi",
-    ],
-    Brahmanbaria: [
-      "Akhaura",
-      "Bancharampur",
-      "Brahmanbaria Sadar",
-      "Kasba",
-      "Nabinagar",
-      "Nasirnagar",
-      "Sarail",
-      "Ashuganj",
-      "Bijoynagar",
-    ],
-    Chandpur: [
-      "Chandpur Sadar",
-      "Faridganj",
-      "Haimchar",
-      "Haziganj",
-      "Kachua",
-      "Matlab Dakshin",
-      "Matlab Uttar",
-      "Shahrasti",
-    ],
-    Chittagong: [
-      "Anwara",
-      "Banshkhali",
-      "Boalkhali",
-      "Chandanaish",
-      "Fatikchhari",
-      "Hathazari",
-      "Lohagara",
-      "Mirsharai",
-      "Patiya",
-      "Rangunia",
-      "Raozan",
-      "Sandwip",
-      "Satkania",
-      "Sitakunda",
-      "Chittagong Port",
-    ],
-    Comilla: [
-      "Barura",
-      "Brahmanpara",
-      "Burichang",
-      "Chandina",
-      "Chauddagram",
-      "Daudkandi",
-      "Debidwar",
-      "Homna",
-      "Laksam",
-      "Muradnagar",
-      "Nangalkot",
-      "Comilla Sadar",
-      "Meghna",
-      "Monohargonj",
-      "Sadarsouth",
-      "Titas",
-      "Comilla Adarsha Sadar",
-    ],
-    "Cox's Bazar": [
-      "Chakaria",
-      "Cox's Bazar Sadar",
-      "Kutubdia",
-      "Maheshkhali",
-      "Ramu",
-      "Teknaf",
-      "Ukhia",
-      "Pekua",
-    ],
-    Feni: [
-      "Chhagalnaiya",
-      "Daganbhuiyan",
-      "Feni Sadar",
-      "Parshuram",
-      "Sonagazi",
-      "Fulgazi",
-    ],
-    Khagrachhari: [
-      "Dighinala",
-      "Khagrachhari Sadar",
-      "Lakshmichhari",
-      "Mahalchhari",
-      "Manikchhari",
-      "Matiranga",
-      "Panchhari",
-      "Ramgarh",
-      "Guimara",
-    ],
-    Lakshmipur: [
-      "Lakshmipur Sadar",
-      "Raipur",
-      "Ramganj",
-      "Ramgati",
-      "Kamalnagar",
-    ],
-    Noakhali: [
-      "Begumganj",
-      "Noakhali Sadar",
-      "Chatkhil",
-      "Companiganj",
-      "Hatiya",
-      "Senbagh",
-      "Sonaimuri",
-      "Subarnachar",
-      "Kabirhat",
-    ],
-    Rangamati: [
-      "Bagaichhari",
-      "Barkal",
-      "Kawkhali",
-      "Belaichhari",
-      "Kaptai",
-      "Juraichhari",
-      "Langadu",
-      "Naniarchar",
-      "Rajasthali",
-      "Rangamati Sadar",
-    ],
-  },
-  Dhaka: {
-    Dhaka: [
-      "Dhamrai",
-      "Dohar",
-      "Keraniganj",
-      "Nawabganj",
-      "Savar",
-      "Dhaka Sadar",
-    ],
-    Faridpur: [
-      "Alfadanga",
-      "Bhanga",
-      "Boalmari",
-      "Charbhadrasan",
-      "Faridpur Sadar",
-      "Madhukhali",
-      "Nagarkanda",
-      "Sadarpur",
-      "Saltha",
-    ],
-    Gazipur: ["Gazipur Sadar", "Kaliakair", "Kaliganj", "Kapasia", "Sreepur"],
-    Gopalganj: [
-      "Gopalganj Sadar",
-      "Kashiani",
-      "Kotalipara",
-      "Muksudpur",
-      "Tungipara",
-    ],
-    Kishoreganj: [
-      "Austagram",
-      "Bajitpur",
-      "Bhairab",
-      "Hossainpur",
-      "Itna",
-      "Karimganj",
-      "Katiadi",
-      "Kishoreganj Sadar",
-      "Kuliarchar",
-      "Mithamain",
-      "Nikli",
-      "Pakundia",
-      "Tarail",
-    ],
-    Madaripur: ["Rajoir", "Madaripur Sadar", "Kalkini", "Shibchar"],
-    Manikganj: [
-      "Manikganj Sadar",
-      "Singair",
-      "Shibalaya",
-      "Saturia",
-      "Harirampur",
-      "Ghior",
-      "Daulatpur",
-    ],
-    Munshiganj: [
-      "Lohajang",
-      "Sreenagar",
-      "Munshiganj Sadar",
-      "Sirajdikhan",
-      "Tongibari",
-      "Gazaria",
-    ],
-    Narayanganj: [
-      "Araihazar",
-      "Bandar",
-      "Narayanganj Sadar",
-      "Rupganj",
-      "Sonargaon",
-      "Siddhirganj",
-    ],
-    Narsingdi: [
-      "Belabo",
-      "Monohardi",
-      "Narsingdi Sadar",
-      "Palash",
-      "Raipura",
-      "Shibpur",
-    ],
-    Rajbari: [
-      "Baliakandi",
-      "Goalandaghat",
-      "Pangsha",
-      "Rajbari Sadar",
-      "Kalukhali",
-    ],
-    Shariatpur: [
-      "Bhedarganj",
-      "Damudya",
-      "Gosairhat",
-      "Naria",
-      "Shariatpur Sadar",
-      "Zanjira",
-      "Shakhipur",
-    ],
-    Tangail: [
-      "Basail",
-      "Bhuapur",
-      "Delduar",
-      "Ghatail",
-      "Gopalpur",
-      "Kalihati",
-      "Madhupur",
-      "Mirzapur",
-      "Nagarpur",
-      "Sakhipur",
-      "Tangail Sadar",
-      "Dhanbari",
-    ],
-  },
-  Khulna: {
-    Bagerhat: [
-      "Bagerhat Sadar",
-      "Chitalmari",
-      "Fakirhat",
-      "Kachua",
-      "Mollahat",
-      "Mongla",
-      "Morrelganj",
-      "Rampal",
-      "Sarankhola",
-    ],
-    Chuadanga: ["Alamdanga", "Chuadanga Sadar", "Damurhuda", "Jibannagar"],
-    Jessore: [
-      "Abhaynagar",
-      "Bagherpara",
-      "Chaugachha",
-      "Jhikargachha",
-      "Keshabpur",
-      "Jessore Sadar",
-      "Manirampur",
-      "Sharsha",
-    ],
-    Jhenaidah: [
-      "Harinakunda",
-      "Jhenaidah Sadar",
-      "Kaliganj",
-      "Kotchandpur",
-      "Maheshpur",
-      "Shailkupa",
-    ],
-    Khulna: [
-      "Batiaghata",
-      "Dacope",
-      "Dumuria",
-      "Digholia",
-      "Koyra",
-      "Paikgachha",
-      "Phultala",
-      "Rupsa",
-      "Terokhada",
-      "Daulatpur",
-      "Khalishpur",
-      "Khan Jahan Ali",
-      "Kotwali",
-      "Sonadanga",
-      "Harintana",
-    ],
-    Kushtia: [
-      "Bheramara",
-      "Daulatpur",
-      "Khoksa",
-      "Kumarkhali",
-      "Kushtia Sadar",
-      "Mirpur",
-    ],
-    Magura: ["Magura Sadar", "Mohammadpur", "Shalikha", "Sreepur"],
-    Meherpur: ["Gangni", "Meherpur Sadar", "Mujibnagar"],
-    Narail: ["Kalia", "Lohagara", "Narail Sadar"],
-    Satkhira: [
-      "Assasuni",
-      "Debhata",
-      "Kalaroa",
-      "Kaliganj",
-      "Satkhira Sadar",
-      "Shyamnagar",
-      "Tala",
-    ],
-  },
-  Mymensingh: {
-    Jamalpur: [
-      "Baksiganj",
-      "Dewanganj",
-      "Islampur",
-      "Jamalpur Sadar",
-      "Madarganj",
-      "Melandaha",
-      "Sarishabari",
-    ],
-    Mymensingh: [
-      "Bhaluka",
-      "Trishal",
-      "Haluaghat",
-      "Muktagachha",
-      "Dhobaura",
-      "Fulbaria",
-      "Gaffargaon",
-      "Gauripur",
-      "Ishwarganj",
-      "Mymensingh Sadar",
-      "Nandail",
-      "Phulpur",
-    ],
-    Netrokona: [
-      "Atpara",
-      "Barhatta",
-      "Durgapur",
-      "Kalmakanda",
-      "Kendua",
-      "Khaliajuri",
-      "Madan",
-      "Mohanganj",
-      "Netrokona Sadar",
-      "Purbadhala",
-    ],
-    Sherpur: [
-      "Jhenaigati",
-      "Nakla",
-      "Nalitabari",
-      "Sherpur Sadar",
-      "Sreebardi",
-    ],
-  },
-  Rajshahi: {
-    Bogra: [
-      "Adamdighi",
-      "Bogra Sadar",
-      "Sherpur",
-      "Dhunat",
-      "Dhupchanchia",
-      "Gabtali",
-      "Kahaloo",
-      "Nandigram",
-      "Sariakandi",
-      "Shajahanpur",
-      "Shibganj",
-      "Sonatala",
-    ],
-    Joypurhat: ["Akkelpur", "Joypurhat Sadar", "Kalai", "Khetlal", "Panchbibi"],
-    Naogaon: [
-      "Atrai",
-      "Badalgachhi",
-      "Manda",
-      "Dhamoirhat",
-      "Mohadevpur",
-      "Naogaon Sadar",
-      "Niamatpur",
-      "Patnitala",
-      "Porsha",
-      "Raninagar",
-      "Sapahar",
-    ],
-    Natore: [
-      "Bagatipara",
-      "Baraigram",
-      "Gurudaspur",
-      "Lalpur",
-      "Natore Sadar",
-      "Singra",
-      "Naldanga",
-    ],
-    Chapainawabganj: [
-      "Bholahat",
-      "Gomastapur",
-      "Nachole",
-      "Chapainawabganj Sadar",
-      "Shibganj",
-    ],
-    Pabna: [
-      "Atgharia",
-      "Bera",
-      "Bhangura",
-      "Chatmohar",
-      "Faridpur",
-      "Ishwardi",
-      "Pabna Sadar",
-      "Santhia",
-      "Sujanagar",
-    ],
-    Rajshahi: [
-      "Bagha",
-      "Bagmara",
-      "Charghat",
-      "Durgapur",
-      "Godagari",
-      "Mohanpur",
-      "Paba",
-      "Puthia",
-      "Tanore",
-      "Rajshahi Sadar",
-    ],
-    Sirajganj: [
-      "Belkuchi",
-      "Chauhali",
-      "Kamarkhanda",
-      "Kazipur",
-      "Raiganj",
-      "Shahjadpur",
-      "Sirajganj Sadar",
-      "Tarash",
-      "Ullahpara",
-    ],
-  },
-  Rangpur: {
-    Dinajpur: [
-      "Birampur",
-      "Birganj",
-      "Biral",
-      "Bochaganj",
-      "Chirirbandar",
-      "Phulbari",
-      "Ghoraghat",
-      "Hakimpur",
-      "Kaharole",
-      "Khansama",
-      "Dinajpur Sadar",
-      "Nawabganj",
-      "Parbatipur",
-    ],
-    Gaibandha: [
-      "Fulchhari",
-      "Gaibandha Sadar",
-      "Gobindaganj",
-      "Palashbari",
-      "Sadullapur",
-      "Saghata",
-      "Sundarganj",
-    ],
-    Kurigram: [
-      "Bhurungamari",
-      "Char Rajibpur",
-      "Chilmari",
-      "Phulbari",
-      "Kurigram Sadar",
-      "Nageshwari",
-      "Rajarhat",
-      "Raomari",
-      "Ulipur",
-    ],
-    Lalmonirhat: [
-      "Aditmari",
-      "Hatibandha",
-      "Kaliganj",
-      "Lalmonirhat Sadar",
-      "Patgram",
-    ],
-    Nilphamari: [
-      "Dimla",
-      "Domar",
-      "Jaldhaka",
-      "Kishoreganj",
-      "Nilphamari Sadar",
-      "Saidpur",
-    ],
-    Panchagarh: ["Atwari", "Boda", "Debiganj", "Panchagarh Sadar", "Tetulia"],
-    Rangpur: [
-      "Badarganj",
-      "Gangachara",
-      "Kaunia",
-      "Rangpur Sadar",
-      "Mithapukur",
-      "Pirgachha",
-      "Pirganj",
-      "Taraganj",
-    ],
-    Thakurgaon: [
-      "Baliadangi",
-      "Haripur",
-      "Pirganj",
-      "Ranisankail",
-      "Thakurgaon Sadar",
-    ],
-  },
-  Sylhet: {
-    Habiganj: [
-      "Ajmiriganj",
-      "Baniachong",
-      "Bahubal",
-      "Chunarughat",
-      "Habiganj Sadar",
-      "Lakhai",
-      "Madhabpur",
-      "Nabiganj",
-      "Shaistagonj",
-    ],
-    Moulvibazar: [
-      "Barlekha",
-      "Juri",
-      "Kamalganj",
-      "Kulaura",
-      "Moulvibazar Sadar",
-      "Rajnagar",
-      "Sreemangal",
-    ],
-    Sunamganj: [
-      "Bishwamvarpur",
-      "Chhatak",
-      "Derai",
-      "Dharamapasha",
-      "Dowarabazar",
-      "Jagannathpur",
-      "Jamalganj",
-      "Sulla",
-      "Sunamganj Sadar",
-      "Shanthiganj",
-      "Tahirpur",
-    ],
-    Sylhet: [
-      "Balaganj",
-      "Beanibazar",
-      "Bishwanath",
-      "Companiganj",
-      "Fenchuganj",
-      "Golapganj",
-      "Gowainghat",
-      "Jaintiapur",
-      "Kanaighat",
-      "Sylhet Sadar",
-      "Zakiganj",
-      "Dakshinsurma",
-      "Osmaninagar",
-    ],
-  },
-};
-
-// Get all divisions sorted alphabetically
-const divisions = Object.keys(bangladeshLocations).sort();
-
 let currentStep = 1;
-
-// Verification state tracking
 const verificationState = {
   email: { sent: false, verified: false, timer: null },
   phone: { sent: false, verified: false, timer: null },
 };
 
-// Demo verification codes (REMOVE IN PRODUCTION)
-const demoCodes = {
-  email: "123456",
-  phone: "123456",
-};
+// ===== LOCATION CASCADE =====
+async function initLocationDropdowns() {
+  await loadDivisions();
+  await loadBloodGroups();
+  await loadGenders();
+  setupLocationEventListeners();
+}
 
+// load genders from db
+async function loadGenders() {
+  try {
+    const response = await fetch("/api/locations/genders");
+    const genders = await response.json();
+
+    const select = document.getElementById("gender");
+    select.innerHTML =
+      '<option value="" disabled selected>Select Gender</option>';
+
+    genders.forEach((g) => {
+      const option = document.createElement("option");
+      option.value = g.gender_id; // Store ID for backend
+      option.textContent = g.gender_name; // Show name to user
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error loading genders:", error);
+    showToast("Failed to load genders.", "error");
+  }
+}
+
+// load blood groups from db
+async function loadBloodGroups() {
+  try {
+    const response = await fetch("/api/locations/blood-groups");
+    const bloodGroups = await response.json();
+
+    const select = document.getElementById("bloodGroup");
+    select.innerHTML =
+      '<option value="" disabled selected>Select Blood Group</option>';
+
+    bloodGroups.forEach((bg) => {
+      const option = document.createElement("option");
+      option.value = bg.blood_group_id; // Store ID for backend
+      option.textContent = bg.blood_group_name; // Show name to user
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error loading blood groups:", error);
+    showToast("Failed to load blood groups.", "error");
+  }
+}
+
+// load divisions from db
+async function loadDivisions() {
+  try {
+    const response = await fetch("/api/locations/divisions");
+    const divisions = await response.json();
+    const select = document.getElementById("division");
+    select.innerHTML =
+      '<option value="" disabled selected>Select Division</option>';
+    divisions.forEach((div) => {
+      const option = document.createElement("option");
+      option.value = div.division_id;
+      option.textContent = div.division_name;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error loading divisions:", error);
+    showToast("Failed to load divisions.", "error");
+  }
+}
+
+async function loadDistricts(divisionId) {
+  const districtSelect = document.getElementById("district");
+  const upazilaSelect = document.getElementById("upazila");
+
+  districtSelect.innerHTML =
+    '<option value="" disabled selected>Select District</option>';
+  upazilaSelect.innerHTML =
+    '<option value="" disabled selected>Select Upazila</option>';
+  upazilaSelect.disabled = true;
+
+  if (!divisionId) {
+    districtSelect.disabled = true;
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/locations/districts/${divisionId}`);
+    const districts = await response.json();
+    districtSelect.innerHTML =
+      '<option value="" disabled selected>Select District</option>';
+    districts.forEach((dist) => {
+      const option = document.createElement("option");
+      option.value = dist.district_id;
+      option.textContent = dist.district_name;
+      districtSelect.appendChild(option);
+    });
+    districtSelect.disabled = false;
+  } catch (error) {
+    console.error("Error loading districts:", error);
+    showToast("Failed to load districts.", "error");
+    districtSelect.disabled = true;
+  }
+}
+
+async function loadUpazilas(districtId) {
+  const upazilaSelect = document.getElementById("upazila");
+  upazilaSelect.innerHTML =
+    '<option value="" disabled selected>Select Upazila</option>';
+
+  if (!districtId) {
+    upazilaSelect.disabled = true;
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/locations/upazilas/${districtId}`);
+    const upazilas = await response.json();
+    upazilaSelect.innerHTML =
+      '<option value="" disabled selected>Select Upazila</option>';
+    upazilas.forEach((upa) => {
+      const option = document.createElement("option");
+      option.value = upa.upazila_id;
+      option.textContent = upa.upazila_name;
+      upazilaSelect.appendChild(option);
+    });
+    upazilaSelect.disabled = false;
+  } catch (error) {
+    console.error("Error loading upazilas:", error);
+    showToast("Failed to load upazilas.", "error");
+    upazilaSelect.disabled = true;
+  }
+}
+
+function setupLocationEventListeners() {
+  document.getElementById("division").addEventListener("change", function () {
+    loadDistricts(this.value);
+  });
+  document.getElementById("district").addEventListener("change", function () {
+    loadUpazilas(this.value);
+  });
+}
+
+// ===== STEP NAVIGATION =====
 function updateStepper() {
   document.querySelectorAll(".step").forEach((step, i) => {
     const stepNum = i + 1;
@@ -626,10 +156,11 @@ function updateStepper() {
     if (stepNum === currentStep) step.classList.add("active");
     if (stepNum < currentStep) step.classList.add("completed");
   });
-
-  document.querySelectorAll(".step-line").forEach((line, i) => {
-    line.classList.toggle("completed", i + 1 < currentStep);
-  });
+  document
+    .querySelectorAll(".step-line")
+    .forEach((line, i) =>
+      line.classList.toggle("completed", i + 1 < currentStep),
+    );
 }
 
 function showStep(step) {
@@ -640,59 +171,155 @@ function showStep(step) {
   updateStepper();
 }
 
-function nextStep(step) {
-  // If moving to step 4 (verification), populate email/phone displays
-  if (step === 4) {
-    const email = document.getElementById("email")?.value;
-    const phone = document.getElementById("phone")?.value;
+// ===== STEP 1 VALIDATION =====
+async function validatePersonalInfoAndNext() {
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const dob = document.getElementById("dob").value;
+  const gender = document.getElementById("gender").value;
+  const bloodGroup = document.getElementById("bloodGroup").value;
 
-    if (email && document.getElementById("emailDisplay")) {
-      document.getElementById("emailDisplay").textContent = email;
+  const continueBtn = document.querySelector("#step1 .btn-primary");
+  const originalText = continueBtn.innerHTML;
+  continueBtn.disabled = true;
+  continueBtn.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Validating...';
+
+  try {
+    const response = await fetch("/api/signup/personal-info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName, dob, gender, bloodGroup }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast("Step completed!", "success");
+      currentStep = 2;
+      showStep(2);
+    } else {
+      if (result.errors)
+        Object.values(result.errors).forEach((errorMsg) =>
+          showToast(errorMsg, "error"),
+        );
+      else showToast(result.message, "error");
     }
-    if (phone && document.getElementById("phoneDisplay")) {
-      document.getElementById("phoneDisplay").textContent = phone;
+  } catch (error) {
+    console.error("Error:", error);
+    showToast("An error occurred. Please try again.", "error");
+  } finally {
+    continueBtn.disabled = false;
+    continueBtn.innerHTML = originalText;
+  }
+}
+
+// ===== STEP 2 VALIDATION =====
+async function validateContactInfoAndNext() {
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const division = document.getElementById("division").value;
+  const district = document.getElementById("district").value;
+  const upazila = document.getElementById("upazila").value;
+  const postalCode = document.getElementById("postalCode").value.trim();
+  const streetAddress = document.getElementById("streetAddress").value.trim();
+
+  const continueBtn = document.querySelector("#step2 .btn-primary");
+  const originalText = continueBtn.innerHTML;
+  continueBtn.disabled = true;
+  continueBtn.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Validating...';
+
+  try {
+    const response = await fetch("/api/signup/contact-info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        phone,
+        division,
+        district,
+        upazila,
+        postalCode,
+        streetAddress,
+        bloodGroup,
+      }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast("Step completed!", "success");
+      currentStep = 3;
+      showStep(3);
+    } else {
+      if (result.errors)
+        Object.values(result.errors).forEach((errorMsg) =>
+          showToast(errorMsg, "error"),
+        );
+      else showToast(result.message, "error");
     }
+  } catch (error) {
+    console.error("Error:", error);
+    showToast("An error occurred. Please try again.", "error");
+  } finally {
+    continueBtn.disabled = false;
+    continueBtn.innerHTML = originalText;
+  }
+}
+
+// ===== STEP 3 VALIDATION (PASSWORD) =====
+async function validateStep3AndNext() {
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  const hasLength = password.length >= 8 && password.length <= 32;
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/;'\`~]/.test(password);
+
+  if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+    showToast("Password does not meet requirements", "error");
+    return;
   }
 
-  currentStep = step;
-  showStep(step);
-  showToast(getToastMessage(step - 1));
+  if (password !== confirmPassword) {
+    showToast("Passwords do not match", "error");
+    return;
+  }
+
+  const continueBtn = document.querySelector("#step3 .btn-primary");
+  const originalText = continueBtn.innerHTML;
+  continueBtn.disabled = true;
+  continueBtn.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Validating...';
+
+  try {
+    const response = await fetch("/api/signup/validate-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password, confirmPassword }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast("Step completed!", "success");
+      currentStep = 4;
+      showStep(4);
+    } else {
+      if (result.errors)
+        Object.values(result.errors).forEach((msg) => showToast(msg, "error"));
+      else showToast(result.message, "error");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    showToast("An error occurred. Please try again.", "error");
+  } finally {
+    continueBtn.disabled = false;
+    continueBtn.innerHTML = originalText;
+  }
 }
 
-function prevStep(step) {
-  currentStep = step;
-  showStep(step);
-}
-
-function getToastMessage(step) {
-  const messages = {
-    1: "Personal info saved ✓",
-    2: "Contact details saved ✓",
-    3: "Account created successfully!",
-    4: "Verification step",
-  };
-  return messages[step] || "";
-}
-
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  document.getElementById("toastMessage").textContent = message;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 3000);
-}
-
-function togglePassword(inputId, btn) {
-  const input = document.getElementById(inputId);
-  const isPassword = input.type === "password";
-  input.type = isPassword ? "text" : "password";
-
-  const eyeSVG = isPassword
-    ? '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>'
-    : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
-
-  btn.querySelector("svg").innerHTML = eyeSVG;
-}
-
+// ===== PASSWORD STRENGTH & REQUIREMENTS =====
 function checkPasswordStrength(password) {
   const strengthEl = document.getElementById("passwordStrength");
   const bars = [
@@ -703,6 +330,18 @@ function checkPasswordStrength(password) {
   ];
   const text = document.getElementById("strengthText");
 
+  const hasLength = password.length >= 8 && password.length <= 32;
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/;'\`~]/.test(password);
+
+  updateReqItem("req-length", hasLength);
+  updateReqItem("req-upper", hasUpper);
+  updateReqItem("req-lower", hasLower);
+  updateReqItem("req-number", hasNumber);
+  updateReqItem("req-special", hasSpecial);
+
   if (password.length === 0) {
     strengthEl.classList.remove("visible");
     return;
@@ -710,27 +349,21 @@ function checkPasswordStrength(password) {
   strengthEl.classList.add("visible");
 
   let score = 0;
-  if (password.length >= 6) score++;
-  if (password.length >= 10) score++;
-  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-
-  let level = 0;
-  if (score <= 1) level = 1;
-  else if (score <= 2) level = 2;
-  else if (score <= 3) level = 3;
-  else level = 4;
+  if (hasLength) score++;
+  if (hasUpper && hasLower) score++;
+  if (hasNumber) score++;
+  if (hasSpecial) score++;
 
   const classes = ["weak", "weak", "medium", "strong"];
   const labels = ["Weak", "Fair", "Good", "Strong"];
+  let level = Math.min(score, 4);
 
   bars.forEach((bar, i) => {
     bar.className = "strength-bar";
     if (i < level) bar.classList.add(classes[level - 1]);
   });
 
-  text.textContent = labels[level - 1];
+  text.textContent = labels[level - 1] || "Too short";
   text.style.color =
     level <= 1
       ? "var(--error)"
@@ -739,329 +372,316 @@ function checkPasswordStrength(password) {
         : "var(--success)";
 }
 
-// ============================================
-// VERIFICATION FUNCTIONS
-// ============================================
+function updateReqItem(id, met) {
+  const el = document.getElementById(id);
+  if (el) el.className = met ? "req-item met" : "req-item unmet";
+}
 
-function sendVerificationCode(type) {
-  const btn = document.getElementById(
-    `send${type.charAt(0).toUpperCase() + type.slice(1)}Code`,
-  );
-  const btnText = btn.querySelector(".btn-text");
-  const btnLoader = btn.querySelector(".btn-loader");
-  const timerEl = document.getElementById(`${type}Timer`);
-  const otpGroup = document.getElementById(`${type}OtpGroup`);
+// ===== SOCIAL LOGIN BUTTONS =====
+document.querySelectorAll(".btn-social").forEach((button) => {
+  button.addEventListener("click", (e) => {
+    e.preventDefault();
+    const provider = button.textContent.trim();
+    showToast(`${provider} login feature is coming soon!`, "info");
+  });
+});
 
-  // Show loading
-  btnText.style.display = "none";
-  btnLoader.style.display = "flex";
-  btn.disabled = true;
+function prevStep(step) {
+  currentStep = step;
+  showStep(step);
+}
 
-  // Simulate API call
+// ===== TOAST NOTIFICATIONS =====
+function showToast(message, type = "success") {
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = `toast-card ${type}`;
+
+  let iconPath =
+    type === "success"
+      ? '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />'
+      : type === "error"
+        ? '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />'
+        : '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />';
+
+  const title =
+    type === "success" ? "Success!" : type === "error" ? "Error!" : "Notice";
+  toast.innerHTML = `<div class="toast-icon"><svg viewBox="0 0 24 24">${iconPath}</svg></div><div class="toast-content"><h4>${title}</h4><p>${message}</p></div>`;
+  container.appendChild(toast);
+
   setTimeout(() => {
-    // Reset button
-    btnText.style.display = "inline";
-    btnLoader.style.display = "none";
-
-    // Show OTP inputs
-    otpGroup.style.display = "block";
-    verificationState[type].sent = true;
-
-    // Focus first OTP digit
-    const firstDigit = otpGroup.querySelector(".otp-digit");
-    if (firstDigit) firstDigit.focus();
-
-    // Start resend timer
-    startResendTimer(type, 30);
-
-    showToast(`Verification code sent to ${type}!`, "success");
-  }, 1500);
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(100%)";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
-function startResendTimer(type, seconds) {
-  const timerEl = document.getElementById(`${type}Timer`);
-  timerEl.style.display = "inline";
+// ===== PASSWORD TOGGLE =====
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isPassword = input.type === "password";
+  input.type = isPassword ? "text" : "password";
+  const eyeSVG = isPassword
+    ? '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>'
+    : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+  btn.querySelector("svg").innerHTML = eyeSVG;
+}
 
-  let remaining = seconds;
+// ===== VERIFICATION: SEND EMAIL CODE =====
+async function handleSendEmailCode() {
+  const btn = document.getElementById("sendEmailCode");
+  btn.disabled = true;
+  btn.querySelector(".btn-text").textContent = "Sending...";
 
-  verificationState[type].timer = setInterval(() => {
-    remaining--;
-    timerEl.innerHTML = `Resend in <strong>${remaining}s</strong>`;
+  try {
+    const response = await fetch("/api/signup/send-email-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: document.getElementById("email").value }),
+    });
+    const result = await response.json();
 
-    if (remaining <= 0) {
-      clearInterval(verificationState[type].timer);
-      timerEl.style.display = "none";
-      document.getElementById(
-        `send${type.charAt(0).toUpperCase() + type.slice(1)}Code`,
-      ).disabled = false;
+    if (result.success) {
+      showToast(result.message, "success");
+      verificationState.email.sent = true;
+      document.getElementById("emailOtpGroup").style.display = "block";
+      btn.style.display = "none";
+      startResendTimer("email", 30);
+      document.getElementById("emailTimer").style.display = "none";
+    } else {
+      showToast(result.message, "error");
+      btn.disabled = false;
+      btn.querySelector(".btn-text").textContent = "Send Code";
     }
-  }, 1000);
-}
-
-function resendCode(type) {
-  // Clear existing timer
-  if (verificationState[type].timer) {
-    clearInterval(verificationState[type].timer);
+  } catch (error) {
+    console.error(error);
+    showToast("Failed to send code", "error");
+    btn.disabled = false;
+    btn.querySelector(".btn-text").textContent = "Send Code";
   }
-
-  // Re-send
-  sendVerificationCode(type);
-  showToast(`New code sent to ${type}!`, "info");
 }
 
-function verifyCode(type) {
+// ===== VERIFICATION: SEND PHONE CODE =====
+async function handleSendPhoneCode() {
+  const btn = document.getElementById("sendPhoneCode");
+  btn.disabled = true;
+  btn.querySelector(".btn-text").textContent = "Sending...";
+
+  try {
+    const response = await fetch("/api/signup/send-phone-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: document.getElementById("phone").value }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast(result.message, "info");
+      verificationState.phone.sent = true;
+      document.getElementById("phoneOtpGroup").style.display = "block";
+      btn.style.display = "none";
+      startResendTimer("phone", 30);
+      document.getElementById("phoneTimer").style.display = "none";
+    } else {
+      showToast(result.message, "error");
+      btn.disabled = false;
+      btn.querySelector(".btn-text").textContent = "Send Code";
+    }
+  } catch (error) {
+    console.error(error);
+    showToast("Failed to send code", "error");
+    btn.disabled = false;
+    btn.querySelector(".btn-text").textContent = "Send Code";
+  }
+}
+
+// ===== VERIFICATION: VERIFY CODE =====
+async function handleVerifyCode(type) {
   const otpGroup = document.getElementById(`${type}OtpGroup`);
   const digits = otpGroup.querySelectorAll(".otp-digit");
   const errorEl = document.getElementById(`${type}OtpError`);
 
-  // Collect OTP value
   let otp = "";
   digits.forEach((d) => (otp += d.value));
 
-  // Validate
   if (otp.length !== 6) {
     errorEl.textContent = "Please enter all 6 digits";
     errorEl.style.display = "block";
     return;
   }
 
-  // Check against demo code
-  if (otp === demoCodes[type]) {
-    // Success
-    errorEl.style.display = "none";
+  try {
+    const endpoint =
+      type === "email"
+        ? "/api/signup/verify-email"
+        : "/api/signup/verify-phone";
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ otp }),
+    });
+    const result = await response.json();
 
-    // Update UI
-    document.getElementById(`${type}Status`).textContent = "Verified";
-    document.getElementById(`${type}Status`).classList.add("verified");
-    document.getElementById(`${type}Success`).style.display = "flex";
-    otpGroup.style.display = "none";
+    if (result.success) {
+      errorEl.style.display = "none";
+      verificationState[type].verified = true;
 
-    // Disable inputs
-    digits.forEach((d) => (d.disabled = true));
-
-    // Mark as verified
-    verificationState[type].verified = true;
-
-    // Add verified class to card
-    document.getElementById(`${type}VerifyCard`).classList.add("verified");
-
-    showToast(
-      `${type.charAt(0).toUpperCase() + type.slice(1)} verified!`,
-      "success",
-    );
-  } else {
-    // Error
-    errorEl.textContent = "Invalid code. Please try again.";
+      document.getElementById(`${type}Status`).textContent = "Verified";
+      document.getElementById(`${type}Status`).classList.add("verified");
+      document.getElementById(`${type}Success`).style.display = "flex";
+      otpGroup.style.display = "none";
+      digits.forEach((d) => (d.disabled = true));
+      document.getElementById(`${type}VerifyCard`).classList.add("verified");
+      showToast(result.message, "success");
+    } else {
+      errorEl.textContent = result.message || "Invalid code";
+      errorEl.style.display = "block";
+      otpGroup.style.animation = "shake 0.3s ease";
+      setTimeout(() => (otpGroup.style.animation = ""), 300);
+    }
+  } catch (error) {
+    console.error(error);
+    errorEl.textContent = "Verification failed";
     errorEl.style.display = "block";
-
-    // Shake animation
-    otpGroup.style.animation = "shake 0.3s ease";
-    setTimeout(() => (otpGroup.style.animation = ""), 300);
-
-    // Clear inputs
-    digits.forEach((d) => (d.value = ""));
-    digits[0].focus();
   }
 }
 
-function completeSignup() {
-  const skipVerification = document.getElementById("skipVerification").checked;
+function handleResendCode(type) {
+  if (type === "email") handleSendEmailCode();
+  else handleSendPhoneCode();
+}
 
-  // If not skipping, check if both are verified
-  if (!skipVerification) {
-    if (
-      !verificationState.email.verified ||
-      !verificationState.phone.verified
-    ) {
-      showToast(
-        'Please verify your email and phone, or check "Skip for now"',
-        "warning",
+function startResendTimer(type, seconds) {
+  const timerEl = document.getElementById(`${type}Timer`);
+  timerEl.style.display = "inline";
+  let remaining = seconds;
+  verificationState[type].timer = setInterval(() => {
+    remaining--;
+    timerEl.innerHTML = `Resend in <strong>${remaining}s</strong>`;
+    if (remaining <= 0) {
+      clearInterval(verificationState[type].timer);
+      timerEl.style.display = "none";
+      const btn = document.getElementById(
+        `send${type.charAt(0).toUpperCase() + type.slice(1)}Code`,
       );
-      return;
+      btn.style.display = "inline-flex";
+      btn.disabled = false;
     }
+  }, 1000);
+}
+
+// ===== COMPLETE REGISTRATION =====
+async function handleCompleteRegistration() {
+  // 1. Check Terms
+  const termsAccepted = document.getElementById("termsAccepted").checked;
+  if (!termsAccepted) {
+    showToast("You must accept the Terms and Conditions", "error");
+    return;
   }
 
-  // Show success overlay
-  document.getElementById("successOverlay").classList.add("show");
+  // 2. Check Verification
+  if (!verificationState.email.verified || !verificationState.phone.verified) {
+    showToast("Please verify both email and phone first", "error");
+    return;
+  }
 
-  // In production: submit form data to backend here
-  console.log("Signup complete!", {
+  // 3. Prepare Data
+  const btn = document.querySelector("#step4 .btn-primary");
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+  const payload = {
     firstName: document.getElementById("firstName").value,
     lastName: document.getElementById("lastName").value,
+    dob: document.getElementById("dob").value,
+    gender: document.getElementById("gender").value,
+    bloodGroup: document.getElementById("bloodGroup").value,
     email: document.getElementById("email").value,
     phone: document.getElementById("phone").value,
-    emailVerified: verificationState.email.verified,
-    phoneVerified: verificationState.phone.verified,
-  });
+    division: document.getElementById("division").value,
+    district: document.getElementById("district").value,
+    upazila: document.getElementById("upazila").value,
+    postalCode: document.getElementById("postalCode").value,
+    streetAddress: document.getElementById("streetAddress").value,
+    password: document.getElementById("password").value,
+  };
+
+  try {
+    const response = await fetch("/api/signup/complete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast("Registration successful! Redirecting...", "success");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+    } else {
+      showToast(result.message, "error");
+    }
+  } catch (error) {
+    console.error(error);
+    showToast("Registration failed", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
 }
 
-function closeSuccess() {
-  document.getElementById("successOverlay").classList.remove("show");
-}
+// ===== OTP INPUT HANDLERS =====
+document.addEventListener("DOMContentLoaded", async function () {
+  await initLocationDropdowns();
 
-// ============================================
-// OTP INPUT HANDLERS (Auto-advance & Paste)
-// ============================================
-document.addEventListener("DOMContentLoaded", function () {
+  // Set email/phone display in Step 4
+  const email = document.getElementById("email")?.value;
+  const phone = document.getElementById("phone")?.value;
+  if (email && document.getElementById("emailDisplay"))
+    document.getElementById("emailDisplay").textContent = email;
+  if (phone && document.getElementById("phoneDisplay"))
+    document.getElementById("phoneDisplay").textContent = phone;
+
   const otpInputs = document.querySelectorAll(".otp-digit");
-
   otpInputs.forEach((input, index) => {
-    // Auto-advance on input
     input.addEventListener("input", function (e) {
       const value = e.target.value;
-
-      // Only allow numbers
       if (!/^\d*$/.test(value)) {
         e.target.value = "";
         return;
       }
-
-      // Move to next input
-      if (value.length === 1 && index < otpInputs.length - 1) {
+      if (value.length === 1 && index < otpInputs.length - 1)
         otpInputs[index + 1].focus();
-      }
-
-      // Auto-verify when last digit entered
       if (value.length === 1 && index === otpInputs.length - 1) {
         const target = e.target.dataset.target;
-        // Small delay to ensure all values are set
-        setTimeout(() => verifyCode(target), 100);
+        const otpGroup = document.getElementById(`${target}OtpGroup`);
+        const digits = otpGroup.querySelectorAll(".otp-digit");
+        let otp = "";
+        digits.forEach((d) => (otp += d.value));
+        if (otp.length === 6) setTimeout(() => handleVerifyCode(target), 300);
       }
     });
-
-    // Handle backspace
     input.addEventListener("keydown", function (e) {
-      if (e.key === "Backspace" && !e.target.value && index > 0) {
+      if (e.key === "Backspace" && !e.target.value && index > 0)
         otpInputs[index - 1].focus();
-      }
     });
-
-    // Handle paste
     input.addEventListener("paste", function (e) {
       e.preventDefault();
-      const paste = (e.clipboardData || window.clipboardData).getData("text");
-      const digits = paste.replace(/\D/g, "").slice(0, 6);
-
+      const digits = (e.clipboardData || window.clipboardData)
+        .getData("text")
+        .replace(/\D/g, "")
+        .slice(0, 6);
       if (digits.length === 6) {
-        const target = e.target.dataset.target;
         const inputs = document.querySelectorAll(
-          `.otp-digit[data-target="${target}"]`,
+          `.otp-digit[data-target="${e.target.dataset.target}"]`,
         );
-
         digits.split("").forEach((digit, i) => {
           if (inputs[i]) inputs[i].value = digit;
         });
-
-        // Auto-verify
-        setTimeout(() => verifyCode(target), 100);
+        setTimeout(() => handleVerifyCode(e.target.dataset.target), 300);
       }
     });
   });
-});
-
-// ============================================
-// LOCATION CASCADE FUNCTIONS
-// ============================================
-
-function populateDivisions() {
-  const divisionSelect = document.getElementById("division");
-  if (!divisionSelect) return;
-
-  // Clear existing options except the first one
-  divisionSelect.innerHTML =
-    '<option value="" disabled selected>Select Division</option>';
-
-  // Add divisions in alphabetical order
-  divisions.forEach((division) => {
-    const option = document.createElement("option");
-    option.value = division;
-    option.textContent = division;
-    divisionSelect.appendChild(option);
-  });
-}
-
-function populateDistricts(division) {
-  const districtSelect = document.getElementById("district");
-  const upazilaSelect = document.getElementById("upazila");
-
-  if (!districtSelect || !upazilaSelect) return;
-
-  // Reset district and upazila
-  districtSelect.innerHTML =
-    '<option value="" disabled selected>Select District</option>';
-  upazilaSelect.innerHTML =
-    '<option value="" disabled selected>Select Upazila</option>';
-  upazilaSelect.disabled = true;
-
-  if (!division || !bangladeshLocations[division]) {
-    districtSelect.disabled = true;
-    return;
-  }
-
-  // Get districts for this division and sort them
-  const districts = Object.keys(bangladeshLocations[division]).sort();
-
-  // Add districts
-  districts.forEach((district) => {
-    const option = document.createElement("option");
-    option.value = district;
-    option.textContent = district;
-    districtSelect.appendChild(option);
-  });
-
-  districtSelect.disabled = false;
-}
-
-function populateUpazilas(division, district) {
-  const upazilaSelect = document.getElementById("upazila");
-
-  if (!upazilaSelect) return;
-
-  // Reset upazila
-  upazilaSelect.innerHTML =
-    '<option value="" disabled selected>Select Upazila</option>';
-
-  if (!division || !district || !bangladeshLocations[division][district]) {
-    upazilaSelect.disabled = true;
-    return;
-  }
-
-  // Get upazilas for this district and sort them
-  const upazilas = [...bangladeshLocations[division][district]].sort();
-
-  // Add upazilas
-  upazilas.forEach((upazila) => {
-    const option = document.createElement("option");
-    option.value = upazila;
-    option.textContent = upazila;
-    upazilaSelect.appendChild(option);
-  });
-
-  upazilaSelect.disabled = false;
-}
-
-// Event Listeners for Location Cascade
-document.addEventListener("DOMContentLoaded", function () {
-  // Populate divisions on page load
-  populateDivisions();
-
-  const divisionSelect = document.getElementById("division");
-  const districtSelect = document.getElementById("district");
-
-  // When division changes
-  if (divisionSelect) {
-    divisionSelect.addEventListener("change", function () {
-      const selectedDivision = this.value;
-      populateDistricts(selectedDivision);
-    });
-  }
-
-  // When district changes
-  if (districtSelect) {
-    districtSelect.addEventListener("change", function () {
-      const selectedDivision = document.getElementById("division").value;
-      const selectedDistrict = this.value;
-      populateUpazilas(selectedDivision, selectedDistrict);
-    });
-  }
 });
