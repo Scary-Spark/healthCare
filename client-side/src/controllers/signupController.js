@@ -1,5 +1,6 @@
 import { pool } from "../configs/database.js";
 import { sendOTPEmail } from "../configs/email.js";
+import { hashPassword } from "../configs/passwordHashing.js";
 
 // Generate 6-digit OTP
 const generateOTP = () =>
@@ -86,8 +87,8 @@ export const completeRegistration = async (req, res) => {
     bloodGroup,
     email,
     phone,
-    division,
-    district,
+    // division,
+    // district,
     upazila,
     postalCode,
     streetAddress,
@@ -103,22 +104,20 @@ export const completeRegistration = async (req, res) => {
   }
 
   try {
-    // insert new user into database
-    const [result] = await pool.query(
-      `INSERT INTO clients (
-        first_name,
-        last_name,
-        dob, gender,
-        blood_group,
-        email,
-        phone,
-        password_hash,
-        division_id,
-        district_id,
-        upazila_id,
-        postal_code,
-        street_address
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    // hash password using Argon2id
+    const passwordHash = await hashPassword(password);
+
+    // get user's IP address
+    const ipAddress =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket.remoteAddress ||
+      null;
+
+    const statusId = 1;
+
+    // insert data into database
+    await pool.query(
+      `CALL RegisterClient(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         firstName,
         lastName,
@@ -127,12 +126,12 @@ export const completeRegistration = async (req, res) => {
         bloodGroup,
         email,
         phone,
-        password,
-        division,
-        district,
+        passwordHash,
         upazila,
         postalCode,
         streetAddress,
+        statusId,
+        ipAddress,
       ],
     );
 
@@ -146,14 +145,24 @@ export const completeRegistration = async (req, res) => {
   } catch (error) {
     console.error("Registration Error:", error);
 
-    // Check for duplicate email error (MySQL code 1062)
     if (error.code === "ER_DUP_ENTRY") {
-      res
-        .status(400)
-        .json({ success: false, message: "Email already exists." });
-    } else {
-      res.status(500).json({ success: false, message: "Registration failed." });
+      return res.status(400).json({
+        success: false,
+        message: "Email or phone already exists.",
+      });
     }
+
+    if (error.code === "ER_NO_REFERENCED_ROW_2") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid reference data provided.",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Registration failed.",
+    });
   }
 };
 
@@ -227,7 +236,7 @@ export const validatePersonalInfo = async (req, res) => {
 };
 
 export const validateContactInfo = async (req, res) => {
-  const { email, phone, division, district, upazila } = req.body;
+  const { email, phone, division, district, upazila, postalCode } = req.body;
   const errors = {};
 
   if (!email || email.trim() === "") errors.email = "Email address is required";
@@ -262,12 +271,26 @@ export const validateContactInfo = async (req, res) => {
     }
   }
 
+  if (postalCode && postalCode.trim() !== "") {
+    // Check if it's exactly 4 digits
+    if (!/^\d{4}$/.test(postalCode)) {
+      errors.postalCode = "Postal code must be exactly 4 digits";
+    } else {
+      // Check if it's within range 1000-9999
+      const code = parseInt(postalCode, 10);
+      if (code < 1000 || code > 9999) {
+        errors.postalCode = "Postal code must be between 1000 and 9999";
+      }
+    }
+  }
+
   if (!division) errors.division = "Please select a division";
   if (!district) errors.district = "Please select a district";
   if (!upazila) errors.upazila = "Please select an upazila";
 
   if (Object.keys(errors).length > 0)
     return res.status(400).json({ success: false, errors });
+
   return res.json({
     success: true,
     message: "Contact information validated successfully",

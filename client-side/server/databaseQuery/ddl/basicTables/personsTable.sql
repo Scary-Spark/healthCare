@@ -17,3 +17,4 @@ CREATE TABLE persons (
 
 alter table persons
 MODIFY gender_id TINYINT NOT NULL;
+

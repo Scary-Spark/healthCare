@@ -168,6 +168,19 @@ function showStep(step) {
     .querySelectorAll(".form-section")
     .forEach((s) => s.classList.remove("active"));
   document.getElementById("step" + step).classList.add("active");
+
+  if (step === 4) {
+    const email = document.getElementById("email")?.value;
+    const phone = document.getElementById("phone")?.value;
+
+    if (email && document.getElementById("emailDisplay")) {
+      document.getElementById("emailDisplay").textContent = email;
+    }
+    if (phone && document.getElementById("phoneDisplay")) {
+      document.getElementById("phoneDisplay").textContent = phone;
+    }
+  }
+
   updateStepper();
 }
 

@@ -7,3 +7,14 @@ CREATE TABLE person_address (
     FOREIGN KEY (person_id) REFERENCES persons(person_id),
     FOREIGN KEY (upazila_id) REFERENCES upazilas(upazila_id)
 );
+
+ALTER TABLE person_address 
+ADD COLUMN postal_code INT,
+ADD COLUMN street_address TEXT;
+
+
+
+
+select * from persons;
+select * from person_address;
+select * from clients;
