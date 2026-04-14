@@ -19,7 +19,7 @@ export const sendEmailCode = async (req, res) => {
   req.session.emailOTPTime = Date.now();
 
   // Uncomment the next line to actually send email in production
-  // await sendOTPEmail(email, otp);
+  await sendOTPEmail(email, otp);
 
   // For testing: Log OTP to console so you can see it
   console.log(`📧 OTP for ${email}: ${otp}`);

@@ -417,20 +417,4 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(() => {
     loginIdentifier?.focus();
   }, 300);
-
-  // ============================================
-  // 12. SECURITY NOTICE (Console)
-  // ============================================
-  console.log(
-    "%c🔐 NovaLife Patient Portal",
-    "color: #2563eb; font-size: 14px; font-weight: bold;",
-  );
-  console.log(
-    "%cThis is a frontend demo. No actual authentication occurs.",
-    "color: #6b7280;",
-  );
-  console.log(
-    "%cDemo credentials: patient@novalife.com / password123",
-    "color: #22c55e;",
-  );
 });
