@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Set token in hidden input
-  resetTokenInput.value = token;
+  if (resetTokenInput) {
+    resetTokenInput.value = token || "";
+  }
+  console.log("📥 Token set in hidden input:", resetTokenInput.value);
 
   // ===== PASSWORD VISIBILITY TOGGLE (GLOBAL FUNCTION) =====
   window.togglePassword = function (inputId, btn) {

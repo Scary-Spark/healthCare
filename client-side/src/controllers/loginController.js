@@ -144,8 +144,7 @@ export const requestPasswordReset = async (req, res) => {
 
     console.log("🔑 Generated token for person_id:", user.person_id);
 
-    // store the token
-    await pool.query("CALL CreatePasswordResetToken(?, ?, ?)", [
+    const result = await pool.query("CALL CreatePasswordResetToken(?, ?, ?)", [
       user.person_id,
       tokenHash,
       expiresAt,
@@ -190,7 +189,7 @@ export const resetPassword = async (req, res) => {
     "  Token received:",
     token ? token.substring(0, 20) + "..." : "MISSING",
   );
-  console.log("  Password match:", password === confirmPassword);
+  // console.log("  Password match:", password === confirmPassword);
 
   if (!token) {
     return res.status(400).json({
@@ -213,9 +212,11 @@ export const resetPassword = async (req, res) => {
     const [rows] = await pool.query("CALL VerifyPasswordResetToken(?)", [
       tokenHash,
     ]);
+    console.log("📦 RAW DB RESULT:", JSON.stringify(rows, null, 2));
 
     console.log("  Database result:", rows);
-    const record = rows[0]?.[0];
+    const record = rows?.[0]?.[0] || rows?.[0] || rows?.[1]?.[0] || null;
+    console.log("📦 Parsed record:", record);
 
     if (!record) {
       console.log("  ❌ No record found - token invalid/expired/used");
