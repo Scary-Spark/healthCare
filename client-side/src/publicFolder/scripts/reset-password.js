@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", function () {
           showResetError(result.message);
         }
       } catch (error) {
-        // console.error("Reset error:", error);
+        console.error("Reset error:", error);
         showToast("An error occurred. Please try again.", "error");
         showResetError("Connection error. Please try again.");
       } finally {
