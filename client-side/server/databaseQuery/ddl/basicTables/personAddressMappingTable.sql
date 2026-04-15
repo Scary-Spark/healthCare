@@ -13,8 +13,3 @@ ADD COLUMN postal_code INT,
 ADD COLUMN street_address TEXT;
 
 
-
-
-select * from persons;
-select * from person_address;
-select * from clients;

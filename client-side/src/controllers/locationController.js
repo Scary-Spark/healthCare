@@ -1,55 +1,62 @@
-// src/controllers/locationController.js
 import { pool } from "../configs/database.js";
 
-/**
- * Get all divisions (for dropdown)
- */
+// Get all divisions (for dropdown)
 export const getDivisions = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      "SELECT division_id, division_name FROM divisions ORDER BY division_name ASC",
-    );
-    res.json(rows);
+    const [rows] = await pool.query("CALL GetDivisions()");
+    res.json(rows[0]);
   } catch (error) {
     console.error("Error fetching divisions:", error);
     res.status(500).json({ error: "Failed to fetch divisions" });
   }
 };
 
-/**
- * Get districts for a specific division
- */
+// Get districts for a specific division
 export const getDistricts = async (req, res) => {
   try {
     const { divisionId } = req.params;
 
-    const [rows] = await pool.query(
-      "SELECT district_id, district_name FROM districts WHERE division_id = ? ORDER BY district_name ASC",
-      [divisionId],
-    );
+    const [rows] = await pool.query("CALL GetDistrictsByDivision(?)", [
+      divisionId,
+    ]);
 
-    res.json(rows);
+    res.json(rows[0]);
   } catch (error) {
     console.error("Error fetching districts:", error);
     res.status(500).json({ error: "Failed to fetch districts" });
   }
 };
 
-/**
- * Get upazilas for a specific district
- */
+// Get upazilas for a specific district
 export const getUpazilas = async (req, res) => {
   try {
     const { districtId } = req.params;
 
-    const [rows] = await pool.query(
-      "SELECT upazila_id, upazila_name FROM upazilas WHERE district_id = ? ORDER BY upazila_name ASC",
-      [districtId],
-    );
+    const [rows] = await pool.query("CALL GetUpazilasByDistrict(?)", [
+      districtId,
+    ]);
 
-    res.json(rows);
+    res.json(rows[0]);
   } catch (error) {
     console.error("Error fetching upazilas:", error);
     res.status(500).json({ error: "Failed to fetch upazilas" });
+  }
+};
+
+// get upazila details
+export const getUpazilaDetails = async (req, res) => {
+  try {
+    const { upazilaId } = req.params;
+
+    const [rows] = await pool.query("CALL GetUpazilaDetails(?)", [upazilaId]);
+
+    if (rows[0].length === 0) {
+      return res.status(404).json({ error: "Upazila not found" });
+    }
+
+    res.json(rows[0][0]);
+  } catch (error) {
+    console.error("Error fetching upazila details:", error);
+    res.status(500).json({ error: "Database error" });
   }
 };

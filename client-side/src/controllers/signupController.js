@@ -103,6 +103,10 @@ export const completeRegistration = async (req, res) => {
     });
   }
 
+  const postalCodeFix = postalCode?.trim()
+    ? parseInt(postalCode.trim(), 10)
+    : null;
+
   try {
     // hash password using Argon2id
     const passwordHash = await hashPassword(password);
@@ -128,7 +132,7 @@ export const completeRegistration = async (req, res) => {
         phone,
         passwordHash,
         upazila,
-        postalCode,
+        postalCodeFix,
         streetAddress,
         statusId,
         ipAddress,
