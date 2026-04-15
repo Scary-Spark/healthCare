@@ -209,64 +209,96 @@ document.addEventListener("DOMContentLoaded", function () {
     return true;
   }
 
-  // ============================================
-  // 5. FORM SUBMISSION (Frontend Only - Demo)
-  // ============================================
-  patientLoginForm?.addEventListener("submit", function (e) {
+  // form submission
+  patientLoginForm?.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     if (!validateLoginForm()) return;
 
     // Show loading state
     setLoading(loginBtn, true);
+    clearErrors();
 
-    // SIMULATED API CALL - Replace with actual backend integration
-    setTimeout(() => {
-      setLoading(loginBtn, false);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: loginIdentifier.value.trim(),
+          password: password.value,
+          remember: document.getElementById("remember")?.checked || false,
+        }),
+      });
 
-      // Demo: Show success or error based on demo credentials
-      const identifier = loginIdentifier.value.trim().toLowerCase();
-      const pwd = password.value;
+      const result = await response.json();
 
-      // Demo credentials for testing (REMOVE IN PRODUCTION)
-      if (
-        (identifier === "patient@novalife.com" ||
-          identifier === "+8801712345678") &&
-        pwd === "password123"
-      ) {
+      if (result.success) {
         showToast("Login successful! Redirecting...", "success");
-        // In production: window.location.href = "/patient/dashboard";
         setTimeout(() => {
-          // For demo, just show a message
-          alert(
-            "✅ Login Successful!\n\nIn production, this would redirect to the patient dashboard.\n\nDemo credentials:\n• Email: patient@novalife.com\n• Phone: +8801712345678\n• Password: password123",
-          );
-        }, 1000);
+          window.location.href = "/dashboard";
+        }, 1500);
       } else {
-        showToast("Invalid credentials. Please try again.", "error");
-        showError(
-          password,
-          document.getElementById("passwordError"),
-          "Incorrect email/phone or password",
-        );
+        showToast(result.message, "error");
+
+        // Show specific field errors if available
+        if (result.errors) {
+          if (result.errors.identifier) {
+            showError(
+              loginIdentifier,
+              document.getElementById("identifierError"),
+              result.errors.identifier,
+            );
+          }
+          if (result.errors.password) {
+            showError(
+              password,
+              document.getElementById("passwordError"),
+              result.errors.password,
+            );
+          }
+        }
       }
-    }, 1500);
+    } catch (error) {
+      console.error("Login error:", error);
+      showToast("Connection error. Please try again.", "error");
+    } finally {
+      setLoading(loginBtn, false);
+    }
   });
 
-  forgotPasswordForm?.addEventListener("submit", function (e) {
+  // forgot password form submit handler
+  forgotPasswordForm?.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     if (!validateForgotForm()) return;
 
     setLoading(resetBtn, true);
+    clearError(resetEmail, document.getElementById("resetEmailError"));
 
-    // SIMULATED API CALL
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: resetEmail.value.trim(),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        resetEmailDisplay.textContent = resetEmail.value;
+        showToast(result.message, "success");
+        showForm("success");
+      } else {
+        showToast(result.message, "error");
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      showToast("An error occurred. Please try again.", "error");
+    } finally {
       setLoading(resetBtn, false);
-      resetEmailDisplay.textContent = resetEmail.value;
-      showToast("Reset link sent!", "success");
-      showForm("success");
-    }, 1500);
+    }
   });
 
   // ============================================

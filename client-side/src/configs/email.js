@@ -132,3 +132,33 @@ export const sendOTPEmail = async (email, otp) => {
     return { success: false, error: error.message };
   }
 };
+
+// send reset email
+export const sendPasswordResetEmail = async (email, resetLink) => {
+  try {
+    await transporter.sendMail({
+      from: `"NovaLife Medical Center" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Reset Your Password - NovaLife",
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>You requested to reset your password.</p>
+        <p>Click the button below to reset it:</p>
+        <p>
+          <a href="${resetLink}" 
+             style="background:#0c6e5f;color:#fff;padding:12px 20px;
+             text-decoration:none;border-radius:5px;">
+             Reset Password
+          </a>
+        </p>
+        <p>This link will expire in 15 minutes.</p>
+        <p>If you did not request this, please ignore this email.</p>
+      `,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Password reset email error:", error);
+    return { success: false, error: error.message };
+  }
+};

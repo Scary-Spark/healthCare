@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import {
   validatePersonalInfo,
   handleSocialLogin,
@@ -18,14 +19,53 @@ import {
   getUpazilas,
   getUpazilaDetails,
 } from "../controllers/locationController.js";
+import {
+  requestPasswordReset,
+  resetPassword,
+  loginClient,
+  logoutClient,
+  getCurrentClient,
+} from "../controllers/loginController.js";
 
 const router = express.Router();
+
+// login rate limit
+// 5 attempts per 15 minutes per ip
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per window
+  message: {
+    success: false,
+    message: "Too many login attempts. Please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// middlewares
+const requireAuth = (req, res, next) => {
+  if (req.session.client?.isAuthenticated) {
+    next();
+  } else {
+    res.redirect("/login"); // Redirect to login if not authenticated
+  }
+};
 
 // routes for pages
 router.get("/", (req, res) => res.render("home"));
 router.get("/login", (req, res) => res.render("login"));
 router.get("/signup", (req, res) => res.render("signup"));
-router.get("/dashboard", (req, res) => res.render("dashboard"));
+
+// dashboard (requires login)
+router.get("/dashboard", requireAuth, (req, res) => {
+  res.render("dashboard", {
+    user: {
+      name: `${req.session.client.firstName} ${req.session.client.lastName}`,
+      email: req.session.client.email,
+    },
+  });
+});
+
 router.get("/appointment", (req, res) => res.render("appointment"));
 router.get("/test-reports", (req, res) => res.render("test-reports"));
 router.get("/prescriptions", (req, res) => res.render("prescriptions"));
@@ -46,19 +86,24 @@ router.get("/api/signup/social/:provider", handleSocialLogin);
 router.post("/api/signup/validate-password", validatePassword);
 router.get("/api/locations/blood-groups", getBloodGroups);
 router.get("/api/locations/genders", getGenders);
-
-// api routes: for email and phone verification
 router.post("/api/signup/send-email-code", sendEmailCode);
 router.post("/api/signup/verify-email", verifyEmail);
 router.post("/api/signup/send-phone-code", sendPhoneCode);
 router.post("/api/signup/verify-phone", verifyPhone);
 router.post("/api/signup/complete", completeRegistration);
-
-// api routes: for locations
 router.get("/api/locations/divisions", getDivisions);
 router.get("/api/locations/districts/:divisionId", getDistricts);
 router.get("/api/locations/upazilas/:districtId", getUpazilas);
 router.get("/api/locations/upazila/:upazilaId", getUpazilaDetails);
+
+// authentication routes
+router.post("/api/auth/login", loginLimiter, loginClient);
+router.post("/api/auth/logout", logoutClient);
+router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
+
+// routes for password reset
+router.post("/api/auth/request-password-reset", requestPasswordReset);
+router.post("/api/auth/reset-password", resetPassword);
 
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {
