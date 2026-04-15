@@ -19,16 +19,17 @@ dotenv.config({
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set("trust proxy", 1); // trust proxy for cpanel
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      httpOnly: true, // Prevent XSS
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours default
-      sameSite: "strict", // Prevent CSRF
+      secure: process.env.NODE_ENV === "production", // true in production
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   }),
 );
