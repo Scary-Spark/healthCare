@@ -97,7 +97,7 @@ router.get("/api/locations/upazilas/:districtId", getUpazilas);
 router.get("/api/locations/upazila/:upazilaId", getUpazilaDetails);
 
 // authentication routes
-router.post("/api/auth/login", loginLimiter, loginClient);
+router.post("/api/auth/login", loginClient);
 router.post("/api/auth/logout", logoutClient);
 router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
 
