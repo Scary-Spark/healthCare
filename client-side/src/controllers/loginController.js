@@ -102,7 +102,7 @@ export const loginClient = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
+    // console.error("Login error:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred during login",
@@ -126,7 +126,8 @@ export const requestPasswordReset = async (req, res) => {
       email.trim().toLowerCase(),
     ]);
 
-    const user = rows[0]?.[0];
+    const user = rows[0][0];
+    // console.log(user.person_id);
 
     // always return success for security reasons
     if (!user) {
@@ -141,7 +142,7 @@ export const requestPasswordReset = async (req, res) => {
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
-    console.log("🔑 Generated token for person_id:", user.person_id);
+    // console.log("Generated token for person_id:", user.person_id);
 
     // store the token
     await pool.query("CALL CreatePasswordResetToken(?, ?, ?)", [
@@ -153,13 +154,13 @@ export const requestPasswordReset = async (req, res) => {
     const baseUrl = process.env.BASE_URL;
     const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
-    console.log("📧 Sending reset email to:", user.email);
-    console.log("🔗 Reset link:", resetLink);
+    // console.log("Sending reset email to:", user.email);
+    // console.log("Reset link:", resetLink);
 
     const emailResult = await sendPasswordResetEmail(user.email, resetLink);
 
     if (!emailResult.success) {
-      console.error("❌ Email sending failed:", emailResult.error);
+      // console.error("❌ Email sending failed:", emailResult.error);
     }
 
     res.json({
@@ -167,12 +168,12 @@ export const requestPasswordReset = async (req, res) => {
       message: "A reset link has been sent.",
     });
   } catch (error) {
-    console.log("password reset error: ", error);
-    console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      sqlState: error.sqlState,
-    });
+    // console.log("password reset error: ", error);
+    // console.error("Error details:", {
+    //   message: error.message,
+    //   code: error.code,
+    //   sqlState: error.sqlState,
+    // });
 
     res.status(500).json({
       success: false,
@@ -184,12 +185,12 @@ export const requestPasswordReset = async (req, res) => {
 export const resetPassword = async (req, res) => {
   const { token, password, confirmPassword } = req.body;
 
-  console.log("🔍 Reset password attempt:");
-  console.log(
-    "  Token received:",
-    token ? token.substring(0, 20) + "..." : "MISSING",
-  );
-  console.log("  Password match:", password === confirmPassword);
+  // console.log("Reset password attempt:");
+  // console.log(
+  //   "  Token received:",
+  //   token ? token.substring(0, 20) + "..." : "MISSING",
+  // );
+  // console.log("  Password match:", password === confirmPassword);
 
   if (!token) {
     return res.status(400).json({
@@ -207,17 +208,17 @@ export const resetPassword = async (req, res) => {
 
   try {
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-    console.log("  Token hash:", tokenHash.substring(0, 20) + "...");
+    // console.log("  Token hash:", tokenHash.substring(0, 20) + "...");
 
     const [rows] = await pool.query("CALL VerifyPasswordResetToken(?)", [
       tokenHash,
     ]);
 
-    console.log("  Database result:", rows);
+    // console.log("  Database result:", rows);
     const record = rows[0]?.[0];
 
     if (!record) {
-      console.log("  ❌ No record found - token invalid/expired/used");
+      // console.log("  No record found - token invalid/expired/used");
 
       // Debug: Check if token exists at all
       const [debugRows] = await pool.query(
@@ -225,19 +226,19 @@ export const resetPassword = async (req, res) => {
         [tokenHash],
       );
 
-      if (debugRows.length > 0) {
-        const debugToken = debugRows[0];
-        console.log("  🔍 Token found but not valid:");
-        console.log("    - Expires at:", debugToken.expires_at);
-        console.log("    - Used:", debugToken.used);
-        console.log("    - Now:", new Date());
-        console.log(
-          "    - Is expired:",
-          new Date() > new Date(debugToken.expires_at),
-        );
-      } else {
-        console.log("  🔍 Token not found in database at all");
-      }
+      // if (debugRows.length > 0) {
+      //   const debugToken = debugRows[0];
+      //   console.log("  Token found but not valid:");
+      //   console.log("    - Expires at:", debugToken.expires_at);
+      //   console.log("    - Used:", debugToken.used);
+      //   console.log("    - Now:", new Date());
+      //   console.log(
+      //     "    - Is expired:",
+      //     new Date() > new Date(debugToken.expires_at),
+      //   );
+      // } else {
+      //   console.log(" token not found in database at all");
+      // }
 
       return res.status(400).json({
         success: false,
@@ -245,7 +246,7 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    console.log("  ✅ Token valid for person_id:", record.person_id);
+    // console.log("  Token valid for person_id:", record.person_id);
 
     const passwordHash = await hashPassword(password);
 
@@ -254,14 +255,14 @@ export const resetPassword = async (req, res) => {
       passwordHash,
     ]);
 
-    console.log("  ✅ Password reset successful");
+    // console.log("  Password reset successful");
 
     res.json({
       success: true,
       message: "Password reset successfully.",
     });
   } catch (error) {
-    console.error("❌ Reset password error:", error);
+    // console.error("Reset password error:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred.",
@@ -273,7 +274,7 @@ export const resetPassword = async (req, res) => {
 export const logoutClient = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error("Logout error:", err);
+      // console.error("Logout error:", err);
       return res.status(500).json({ success: false, message: "Logout failed" });
     }
     res.clearCookie("connect.sid"); // Adjust cookie name if using custom session config

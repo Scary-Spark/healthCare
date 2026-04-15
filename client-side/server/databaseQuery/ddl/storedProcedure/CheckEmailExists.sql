@@ -15,3 +15,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+call `CheckClientEmail`("scary.spark.2003@gmail.com");

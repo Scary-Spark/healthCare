@@ -20,3 +20,11 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+select *
+from password_resets;
+
+delete from person_address;
+delete from clients;
+delete from persons;
