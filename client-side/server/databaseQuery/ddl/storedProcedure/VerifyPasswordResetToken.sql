@@ -10,6 +10,6 @@ BEGIN
       AND expires_at > NOW()
       AND used = 0
     LIMIT 1;
-END $$
+END$$
 
 DELIMITER ;

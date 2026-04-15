@@ -105,6 +105,15 @@ router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
 router.post("/api/auth/request-password-reset", requestPasswordReset);
 router.post("/api/auth/reset-password", resetPassword);
 
+router.get("/reset-password", (req, res) => {
+  // Check if token is present in query params
+  const token = req.query.token;
+  if (!token) {
+    return res.redirect("/login?error=invalid_token");
+  }
+  res.render("reset-password", { token });
+});
+
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {
   try {
