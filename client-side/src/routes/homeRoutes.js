@@ -72,6 +72,7 @@ router.get("/prescriptions", (req, res) => res.render("prescriptions"));
 router.get("/appointment-history", (req, res) =>
   res.render("appointment-history"),
 );
+
 router.get("/invoices", (req, res) => res.render("invoices"));
 router.get("/payment", (req, res) => res.render("payment"));
 router.get("/forum", (req, res) => res.render("forum"));

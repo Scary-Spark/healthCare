@@ -207,7 +207,7 @@ export const resetPassword = async (req, res) => {
 
   try {
     const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-    console.log("  Token hash:", tokenHash.substring(0, 20) + "...");
+    // console.log("  Token hash:", tokenHash.substring(0, 20) + "...");
 
     const [rows] = await pool.query("CALL VerifyPasswordResetToken(?)", [
       tokenHash,
@@ -251,7 +251,7 @@ export const resetPassword = async (req, res) => {
 
     const passwordHash = await hashPassword(password);
 
-    await pool.query("CALL ResetClientPassword(?, ?)", [
+    const [updatePass] = await pool.query("CALL ResetClientPassword(?, ?)", [
       record.person_id,
       passwordHash,
     ]);
