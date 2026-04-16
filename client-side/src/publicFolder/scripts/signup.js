@@ -440,7 +440,7 @@ function togglePassword(inputId, btn) {
   btn.querySelector("svg").innerHTML = eyeSVG;
 }
 
-// ===== VERIFICATION: SEND EMAIL CODE =====
+// send email code
 async function handleSendEmailCode() {
   const btn = document.getElementById("sendEmailCode");
   btn.disabled = true;
@@ -460,7 +460,7 @@ async function handleSendEmailCode() {
       document.getElementById("emailOtpGroup").style.display = "block";
       btn.style.display = "none";
       startResendTimer("email", 30);
-      document.getElementById("emailTimer").style.display = "none";
+      // document.getElementById("emailTimer").style.display = "none";
     } else {
       showToast(result.message, "error");
       btn.disabled = false;
@@ -474,7 +474,7 @@ async function handleSendEmailCode() {
   }
 }
 
-// ===== VERIFICATION: SEND PHONE CODE =====
+// send phone code
 async function handleSendPhoneCode() {
   const btn = document.getElementById("sendPhoneCode");
   btn.disabled = true;
@@ -494,7 +494,7 @@ async function handleSendPhoneCode() {
       document.getElementById("phoneOtpGroup").style.display = "block";
       btn.style.display = "none";
       startResendTimer("phone", 30);
-      document.getElementById("phoneTimer").style.display = "none";
+      // document.getElementById("phoneTimer").style.display = "none";
     } else {
       showToast(result.message, "error");
       btn.disabled = false;
@@ -508,7 +508,7 @@ async function handleSendPhoneCode() {
   }
 }
 
-// ===== VERIFICATION: VERIFY CODE =====
+// verify code
 async function handleVerifyCode(type) {
   const otpGroup = document.getElementById(`${type}OtpGroup`);
   const digits = otpGroup.querySelectorAll(".otp-digit");
@@ -528,21 +528,35 @@ async function handleVerifyCode(type) {
       type === "email"
         ? "/api/signup/verify-email"
         : "/api/signup/verify-phone";
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ otp }),
     });
+
     const result = await response.json();
 
     if (result.success) {
       errorEl.style.display = "none";
       verificationState[type].verified = true;
 
+      if (verificationState[type].timer) {
+        clearInterval(verificationState[type].timer);
+        verificationState[type].timer = null;
+      }
+
+      const timerEl = document.getElementById(`${type}Timer`);
+      const actionsEl = document.getElementById(`${type}Actions`);
+
+      if (timerEl) timerEl.style.display = "none";
+      if (actionsEl) actionsEl.style.display = "none";
+
       document.getElementById(`${type}Status`).textContent = "Verified";
       document.getElementById(`${type}Status`).classList.add("verified");
       document.getElementById(`${type}Success`).style.display = "flex";
       otpGroup.style.display = "none";
+
       digits.forEach((d) => (d.disabled = true));
       document.getElementById(`${type}VerifyCard`).classList.add("verified");
       showToast(result.message, "success");
@@ -550,6 +564,7 @@ async function handleVerifyCode(type) {
       errorEl.textContent = result.message || "Invalid code";
       errorEl.style.display = "block";
       otpGroup.style.animation = "shake 0.3s ease";
+
       setTimeout(() => (otpGroup.style.animation = ""), 300);
     }
   } catch (error) {
@@ -645,6 +660,7 @@ async function handleCompleteRegistration() {
   }
 }
 
+// handle otp (render keystroke from keyboard)
 // ===== OTP INPUT HANDLERS =====
 document.addEventListener("DOMContentLoaded", async function () {
   await initLocationDropdowns();
@@ -658,34 +674,35 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("phoneDisplay").textContent = phone;
 
   const otpInputs = document.querySelectorAll(".otp-digit");
+
   otpInputs.forEach((input, index) => {
+    // Handle input event (typing)
     input.addEventListener("input", function (e) {
       const value = e.target.value;
+
+      // Only allow digits
       if (!/^\d*$/.test(value)) {
         e.target.value = "";
         return;
       }
-      if (value.length === 1 && index < otpInputs.length - 1)
+
+      // Auto-focus next input
+      if (value.length === 1 && index < otpInputs.length - 1) {
         otpInputs[index + 1].focus();
-      if (value.length === 1 && index === otpInputs.length - 1) {
-        const target = e.target.dataset.target;
-        const otpGroup = document.getElementById(`${target}OtpGroup`);
-        const digits = otpGroup.querySelectorAll(".otp-digit");
-        let otp = "";
-        digits.forEach((d) => (otp += d.value));
-        if (otp.length === 6) setTimeout(() => handleVerifyCode(target), 300);
       }
+
+      // Check if all 6 digits are entered
+      checkAutoVerify(e.target.dataset.target);
     });
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Backspace" && !e.target.value && index > 0)
-        otpInputs[index - 1].focus();
-    });
+
+    // Handle paste event
     input.addEventListener("paste", function (e) {
       e.preventDefault();
       const digits = (e.clipboardData || window.clipboardData)
         .getData("text")
         .replace(/\D/g, "")
         .slice(0, 6);
+
       if (digits.length === 6) {
         const inputs = document.querySelectorAll(
           `.otp-digit[data-target="${e.target.dataset.target}"]`,
@@ -693,8 +710,138 @@ document.addEventListener("DOMContentLoaded", async function () {
         digits.split("").forEach((digit, i) => {
           if (inputs[i]) inputs[i].value = digit;
         });
+        // Auto-verify after paste
         setTimeout(() => handleVerifyCode(e.target.dataset.target), 300);
       }
     });
+
+    // Handle keydown (backspace)
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && !e.target.value && index > 0) {
+        otpInputs[index - 1].focus();
+      }
+    });
   });
+
+  // ✅ Separate function to check and auto-verify
+  function checkAutoVerify(target) {
+    if (!target) return;
+
+    const otpGroup = document.getElementById(`${target}OtpGroup`);
+    if (!otpGroup || otpGroup.style.display === "none") return;
+
+    const digits = otpGroup.querySelectorAll(".otp-digit");
+    let otp = "";
+    digits.forEach((d) => (otp += d.value));
+
+    // Auto-verify when all 6 digits are entered
+    if (otp.length === 6) {
+      // Small delay to ensure UI is updated
+      setTimeout(() => {
+        console.log(`🔍 Auto-verifying ${target} with OTP: ${otp}`);
+        handleVerifyCode(target);
+      }, 400);
+    }
+  }
 });
+
+// document.addEventListener("DOMContentLoaded", async function () {
+//   await initLocationDropdowns();
+
+//   // Set email/phone display in Step 4
+//   const email = document.getElementById("email")?.value;
+//   const phone = document.getElementById("phone")?.value;
+
+//   if (email && document.getElementById("emailDisplay"))
+//     document.getElementById("emailDisplay").textContent = email;
+
+//   if (phone && document.getElementById("phoneDisplay"))
+//     document.getElementById("phoneDisplay").textContent = phone;
+
+//   const otpInputs = document.querySelectorAll(".otp-digit");
+
+//   otpInputs.forEach((input, index) => {
+//     input.addEventListener("input", function (e) {
+//       const value = e.target.value;
+//       if (!/^\d*$/.test(value)) {
+//         e.target.value = "";
+//         return;
+//       }
+//       if (value.length === 1 && index < otpInputs.length - 1)
+//         otpInputs[index + 1].focus();
+
+//       // ✅ Auto-verify when last digit is entered
+//       if (value.length === 1 && index === otpInputs.length - 1) {
+//         const target = e.target.dataset.target;
+//         const otpGroup = document.getElementById(`${target}OtpGroup`);
+//         const digits = otpGroup.querySelectorAll(".otp-digit");
+//         let otp = "";
+//         digits.forEach((d) => (otp += d.value));
+//         if (otp.length === 6) {
+//           // Small delay to ensure all digits are entered
+//           setTimeout(() => handleVerifyCode(target), 300);
+//         }
+//       }
+//     });
+//     input.addEventListener("keydown", function (e) {
+//       if (e.key === "Backspace" && !e.target.value && index > 0)
+//         otpInputs[index - 1].focus();
+//     });
+//     input.addEventListener("paste", function (e) {
+//       e.preventDefault();
+//       const digits = (e.clipboardData || window.clipboardData)
+//         .getData("text")
+//         .replace(/\D/g, "")
+//         .slice(0, 6);
+//       if (digits.length === 6) {
+//         const inputs = document.querySelectorAll(
+//           `.otp-digit[data-target="${e.target.dataset.target}"]`,
+//         );
+//         digits.split("").forEach((digit, i) => {
+//           if (inputs[i]) inputs[i].value = digit;
+//         });
+//         setTimeout(() => handleVerifyCode(e.target.dataset.target), 300);
+//       }
+//     });
+//   });
+
+//   // otpInputs.forEach((input, index) => {
+//   //   input.addEventListener("input", function (e) {
+//   //     const value = e.target.value;
+//   //     if (!/^\d*$/.test(value)) {
+//   //       e.target.value = "";
+//   //       return;
+//   //     }
+//   //     if (value.length === 1 && index < otpInputs.length - 1)
+//   //       otpInputs[index + 1].focus();
+//   //     if (value.length === 1 && index === otpInputs.length - 1) {
+//   //       const target = e.target.dataset.target;
+//   //       const otpGroup = document.getElementById(`${target}OtpGroup`);
+//   //       const digits = otpGroup.querySelectorAll(".otp-digit");
+//   //       let otp = "";
+//   //       digits.forEach((d) => (otp += d.value));
+//   //       if (otp.length === 6) setTimeout(() => handleVerifyCode(target), 300);
+//   //     }
+//   //   });
+//   //   input.addEventListener("keydown", function (e) {
+//   //     if (e.key === "Backspace" && !e.target.value && index > 0)
+//   //       otpInputs[index - 1].focus();
+//   //   });
+//   //   input.addEventListener("paste", function (e) {
+//   //     e.preventDefault();
+//   //     const digits = (e.clipboardData || window.clipboardData)
+//   //       .getData("text")
+//   //       .replace(/\D/g, "")
+//   //       .slice(0, 6);
+//   //     if (digits.length === 6) {
+//   //       const inputs = document.querySelectorAll(
+//   //         `.otp-digit[data-target="${e.target.dataset.target}"]`,
+//   //       );
+//   //       digits.split("").forEach((digit, i) => {
+//   //         if (inputs[i]) inputs[i].value = digit;
+//   //       });
+//   //       setTimeout(() => handleVerifyCode(e.target.dataset.target), 300);
+//   //     }
+//   //   });
+//   // });
+// });

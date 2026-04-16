@@ -22,7 +22,7 @@ export const sendEmailCode = async (req, res) => {
   await sendOTPEmail(email, otp);
 
   // For testing: Log OTP to console so you can see it
-  console.log(`📧 OTP for ${email}: ${otp}`);
+  console.log(`OTP for ${email}: ${otp}`);
 
   res.json({
     success: true,
@@ -35,7 +35,7 @@ export const verifyEmail = (req, res) => {
   const { otp } = req.body;
 
   // Secret code for testing purpose only
-  if (otp === "123456") {
+  if (otp === "098765") {
     req.session.emailVerified = true;
     return res.json({ success: true, message: "Email verified successfully!" });
   }
