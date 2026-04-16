@@ -1,9 +1,3 @@
-/**
- * CLIENT LAYOUT INTERACTIONS - FIXED MOBILE
- * Handles: Profile dropdown, notifications, sidebar toggle, submenu animation, active state
- * Static frontend only - backend integration later
- */
-
 document.addEventListener("DOMContentLoaded", function () {
   // ===== SET CURRENT YEAR IN FOOTER =====
   const yearEl = document.getElementById("currentYear");

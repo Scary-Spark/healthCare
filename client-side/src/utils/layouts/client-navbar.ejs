@@ -4,6 +4,9 @@
   Static frontend - backend integration later
 -->
 <header class="client-navbar">
+  <!-- DEBUG: Show raw user data -->
+  <% console.log("🎨 EJS RENDER: user =", user); %>
+
   <div class="navbar-container">
     <!-- Logo -->
     <a href="/dashboard" class="navbar-logo">
@@ -85,7 +88,7 @@
         </div>
       </div>
 
-      <!-- Profile Dropdown with Logout -->
+      <!-- Profile Dropdown with Logout option -->
       <div class="nav-profile">
         <button
           class="profile-btn"
@@ -93,43 +96,63 @@
           aria-label="User menu"
           aria-expanded="false"
         >
+          <!-- ✅ Accept both profilePic AND avatar -->
           <img
-            src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff"
-            alt="User"
+            src="<%= user?.profilePic || user?.avatar || '/uploads/profilePictures/defaultProfilePic.jpg' %>"
+            alt="<%= user?.fullName || user?.name || 'User' %>"
             class="profile-avatar"
+            onerror="
+              this.src = '/uploads/profilePictures/defaultProfilePic.jpg'
+            "
           />
-          <span class="profile-name">John Doe</span>
+          <!-- ✅ Accept both fullName AND name -->
+          <span class="profile-name"
+            ><%= user?.fullName || user?.name || 'User' %></span
+          >
           <i class="fa-solid fa-chevron-down profile-arrow"></i>
         </button>
+
         <div class="profile-dropdown" id="profileDropdown" hidden>
           <div class="profile-header">
+            <!-- ✅ Accept both profilePic AND avatar (LARGE) -->
             <img
-              src="https://ui-avatars.com/api/?name=John+Doe&background=0c6e5f&color=fff"
-              alt="User"
+              src="<%= user?.profilePic || user?.avatar || '/uploads/profilePictures/defaultProfilePic.jpg' %>"
+              alt="<%= user?.fullName || user?.name || 'User' %>"
               class="profile-avatar-lg"
+              onerror="
+                this.src = '/uploads/profilePictures/defaultProfilePic.jpg'
+              "
             />
             <div>
-              <p class="profile-fullname">John Doe</p>
-              <p class="profile-email">john@email.com</p>
+              <!-- ✅ Accept both fullName AND name -->
+              <p class="profile-fullname">
+                <%= user?.fullName || user?.name || 'User' %>
+              </p>
+              <p class="profile-email">
+                <%= user?.email || 'user@example.com' %>
+              </p>
             </div>
           </div>
+
           <ul class="profile-links">
             <li>
-              <a href="/profile"
-                ><i class="fa-regular fa-user"></i> My Profile</a
-              >
+              <a href="/profile-settings">
+                <i class="fa-regular fa-user"></i> My Profile
+              </a>
             </li>
             <li>
-              <a href="/settings"><i class="fa-solid fa-gear"></i> Settings</a>
+              <a href="/others-settings">
+                <i class="fa-solid fa-gear"></i> Settings
+              </a>
             </li>
             <li>
-              <a href="/activity-log"
-                ><i class="fa-solid fa-shield-halved"></i> Security Log</a
-              >
+              <a href="/activity-log">
+                <i class="fa-solid fa-shield-halved"></i> Security Log
+              </a>
             </li>
             <li><hr /></li>
             <li>
-              <form action="/logout" method="POST" class="logout-form">
+              <form action="/api/auth/logout" method="POST" class="logout-form">
                 <button type="submit" class="logout-btn">
                   <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </button>

@@ -13,6 +13,7 @@ SELECT
     p.first_name,
     p.last_name,
     p.date_of_birth,
+    p.profile_pic_path,
     p.created_at AS person_created_at,
 
     g.gender_id,

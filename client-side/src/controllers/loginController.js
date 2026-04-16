@@ -279,6 +279,11 @@ export const logoutClient = (req, res) => {
       return res.status(500).json({ success: false, message: "Logout failed" });
     }
     res.clearCookie("connect.sid"); // Adjust cookie name if using custom session config
+
+    if (req.headers.accept?.includes("text/html")) {
+      return res.redirect("/login");
+    }
+
     res.json({ success: true, message: "Logged out successfully" });
   });
 };

@@ -26,6 +26,12 @@ import {
   logoutClient,
   getCurrentClient,
 } from "../controllers/loginController.js";
+import {
+  // getClientData,
+  getDashboard,
+  getProfile,
+  getAppointments,
+} from "../controllers/clientController.js";
 
 const router = express.Router();
 
@@ -45,40 +51,84 @@ const loginLimiter = rateLimit({
 // middlewares
 const requireAuth = (req, res, next) => {
   if (req.session.client?.isAuthenticated) {
+    // user data is already injected by main.js middleware
     next();
   } else {
     res.redirect("/login"); // Redirect to login if not authenticated
   }
 };
 
-// routes for pages
+// public routes
 router.get("/", (req, res) => res.render("home"));
-router.get("/login", (req, res) => res.render("login"));
+// router.get("/login", (req, res) => res.render("login"));
+router.get("/login", (req, res) => {
+  if (req.session.client?.isAuthenticated) {
+    return res.redirect("/dashboard");
+  }
+  res.render("login");
+});
 router.get("/signup", (req, res) => res.render("signup"));
 
-// dashboard (requires login)
+// protected routes (required login)
 router.get("/dashboard", requireAuth, (req, res) => {
+  // res.locals.user is already set by main.js middleware
   res.render("dashboard", {
-    user: {
-      name: `${req.session.client.firstName} ${req.session.client.lastName}`,
-      email: req.session.client.email,
+    user: res.locals.user,
+    stats: {
+      /* ... */
     },
   });
 });
+router.get("/appointment", requireAuth, getAppointments);
+router.get("/test-reports", requireAuth, (req, res) => {
+  res.render("test-reports", { user: res.locals.user });
+});
+router.get("/prescriptions", requireAuth, (req, res) => {
+  res.render("prescriptions", { user: res.locals.user });
+});
+router.get("/appointment-history", requireAuth, (req, res) => {
+  res.render("appointment-history", { user: res.locals.user });
+});
+router.get("/invoices", requireAuth, (req, res) => {
+  res.render("invoices", { user: res.locals.user });
+});
+router.get("/payment", requireAuth, (req, res) => {
+  res.render("payment", { user: res.locals.user });
+});
+router.get("/forum", requireAuth, (req, res) => {
+  res.render("forum", { user: res.locals.user });
+});
+router.get("/suggestions", requireAuth, (req, res) => {
+  res.render("suggestions", { user: res.locals.user });
+});
+router.get("/others-settings", requireAuth, (req, res) => {
+  res.render("others-settings", { user: res.locals.user });
+});
+router.get("/profile-settings", requireAuth, getProfile);
 
-router.get("/appointment", (req, res) => res.render("appointment"));
-router.get("/test-reports", (req, res) => res.render("test-reports"));
-router.get("/prescriptions", (req, res) => res.render("prescriptions"));
-router.get("/appointment-history", (req, res) =>
-  res.render("appointment-history"),
-);
+// dashboard (requires login)
+// router.get("/dashboard", requireAuth, (req, res) => {
+//   res.render("dashboard", {
+//     user: {
+//       name: `${req.session.client.firstName} ${req.session.client.lastName}`,
+//       email: req.session.client.email,
+//     },
+//   });
+// });
 
-router.get("/invoices", (req, res) => res.render("invoices"));
-router.get("/payment", (req, res) => res.render("payment"));
-router.get("/forum", (req, res) => res.render("forum"));
-router.get("/suggestions", (req, res) => res.render("suggestions"));
-router.get("/others-settings", (req, res) => res.render("others-settings"));
-router.get("/profile-settings", (req, res) => res.render("profile-settings"));
+// router.get("/appointment", (req, res) => res.render("appointment"));
+// router.get("/test-reports", (req, res) => res.render("test-reports"));
+// router.get("/prescriptions", (req, res) => res.render("prescriptions"));
+// router.get("/appointment-history", (req, res) =>
+//   res.render("appointment-history"),
+// );
+
+// router.get("/invoices", (req, res) => res.render("invoices"));
+// router.get("/payment", (req, res) => res.render("payment"));
+// router.get("/forum", (req, res) => res.render("forum"));
+// router.get("/suggestions", (req, res) => res.render("suggestions"));
+// router.get("/others-settings", (req, res) => res.render("others-settings"));
+// router.get("/profile-settings", (req, res) => res.render("profile-settings"));
 
 // api routes for signup
 router.post("/api/signup/personal-info", validatePersonalInfo);
@@ -97,7 +147,7 @@ router.get("/api/locations/districts/:divisionId", getDistricts);
 router.get("/api/locations/upazilas/:districtId", getUpazilas);
 router.get("/api/locations/upazila/:upazilaId", getUpazilaDetails);
 
-// authentication routes
+// authentication api routes
 router.post("/api/auth/login", loginClient);
 router.post("/api/auth/logout", logoutClient);
 router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
@@ -105,7 +155,6 @@ router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
 // routes for password reset
 router.post("/api/auth/request-password-reset", requestPasswordReset);
 router.post("/api/auth/reset-password", resetPassword);
-
 router.get("/reset-password", (req, res) => {
   // Check if token is present in query params
   const token = req.query.token;

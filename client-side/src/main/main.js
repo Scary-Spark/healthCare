@@ -63,8 +63,58 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "src", "publicFolder")));
+app.set("view cache", false);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
+
+// send data into all view
+app.use(async (req, res, next) => {
+  try {
+    if (req.session.client?.isAuthenticated && req.session.client.personId) {
+      console.log("👤 Session client:", {
+        personId: req.session.client.personId,
+        firstName: req.session.client.firstName,
+        email: req.session.client.email,
+      });
+
+      // ✅ CORRECT IMPORT PATH
+      const { getUserData } =
+        await import("../controllers/clientController.js");
+      const userData = await getUserData(req.session.client.personId);
+
+      if (userData) {
+        console.log("✅ User data injected:", userData);
+        res.locals.user = userData;
+      } else {
+        console.log("⚠️ No user data found, using session fallback");
+        // Fallback to session data if DB query fails
+        res.locals.user = {
+          fullName: `${req.session.client.firstName} ${req.session.client.lastName}`,
+          email: req.session.client.email,
+          profilePic: `/uploads/profilePictures/defaultProfilePic.jpg`,
+          personId: req.session.client.personId,
+        };
+      }
+    } else {
+      console.log("⚠️ No authenticated session");
+      res.locals.user = null;
+    }
+  } catch (error) {
+    console.error("❌ Error injecting user ", error);
+    // Fallback to session data on error
+    if (req.session.client?.isAuthenticated) {
+      res.locals.user = {
+        fullName: `${req.session.client.firstName} ${req.session.client.lastName}`,
+        email: req.session.client.email,
+        profilePic: `/uploads/profilePictures/defaultProfilePic.jpg`,
+        personId: req.session.client.personId,
+      };
+    } else {
+      res.locals.user = null;
+    }
+  }
+  next();
+});
 
 // Routes
 app.use("/", router);

@@ -18,3 +18,8 @@ CREATE TABLE persons (
 alter table persons
 MODIFY gender_id TINYINT NOT NULL;
 
+ALTER TABLE `persons`
+ADD COLUMN `profile_pic_path` VARCHAR(255)
+NULL DEFAULT '/uploads/profilePictures/defaultProfilePic.jpg'
+AFTER `blood_group_id`;
+
