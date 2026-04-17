@@ -34,31 +34,6 @@ app.use(
   }),
 );
 
-// // login rate limit
-// // 5 attempts per 15 minutes per ip
-// const loginLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 5, // Limit each IP to 5 login attempts per window
-//   message: {
-//     success: false,
-//     message: "Too many login attempts. Please try again later.",
-//   },
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-
-// router.post("/api/auth/login", loginLimiter, loginClient);
-
-// // Session Middleware (for OTP and Verification State)
-// app.use(
-//   session({
-//     secret: "novlife_secret_key_123",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { maxAge: 15 * 60 * 1000 }, // 15 minutes
-//   }),
-// );
-
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -77,13 +52,12 @@ app.use(async (req, res, next) => {
         email: req.session.client.email,
       });
 
-      // ✅ CORRECT IMPORT PATH
       const { getUserData } =
         await import("../controllers/clientController.js");
       const userData = await getUserData(req.session.client.personId);
 
       if (userData) {
-        console.log("✅ User data injected:", userData);
+        console.log("User data injected:", userData);
         res.locals.user = userData;
       } else {
         console.log("⚠️ No user data found, using session fallback");
@@ -96,7 +70,7 @@ app.use(async (req, res, next) => {
         };
       }
     } else {
-      console.log("⚠️ No authenticated session");
+      // console.log("⚠️ No authenticated session");
       res.locals.user = null;
     }
   } catch (error) {

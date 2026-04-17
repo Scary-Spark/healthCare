@@ -6,6 +6,99 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
+  async function loadUserProfile() {
+    try {
+      const response = await fetch("/api/appointments/profile");
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        const profile = result.data;
+
+        // ✅ Populate "For Myself" tab with real user data
+        const selfTab = document.getElementById("tab-self");
+        if (selfTab) {
+          const infoRows = selfTab.querySelectorAll(".info-row");
+
+          // Name (first row)
+          if (infoRows[0]) {
+            const nameEl = infoRows[0].querySelector(".info-value");
+            if (nameEl) nameEl.textContent = profile.fullName || "User";
+          }
+
+          // Contact/Phone (second row)
+          if (infoRows[1]) {
+            const contactEl = infoRows[1].querySelector(".info-value");
+            if (contactEl) contactEl.textContent = profile.phone || "Not set";
+          }
+
+          // Email (third row)
+          if (infoRows[2]) {
+            const emailEl = infoRows[2].querySelector(".info-value");
+            if (emailEl) emailEl.textContent = profile.email || "Not set";
+          }
+
+          // ✅ Address (fourth row) - FIXED SELECTOR + FALLBACK
+          if (infoRows[3]) {
+            const addressEl = infoRows[3].querySelector(".info-value");
+            if (addressEl) {
+              // Show concatenated address or fallback
+              addressEl.textContent = profile.address || "Address not set";
+              console.log(
+                "✅ Address updated:",
+                profile.address || "Address not set",
+              );
+            }
+          }
+        }
+
+        // ✅ Pre-fill applicant info in "For Someone Else" tab
+        const otherTab = document.getElementById("tab-other");
+        if (otherTab) {
+          const applicantSections = otherTab.querySelectorAll(".sub-section");
+
+          // Applicant name
+          if (applicantSections[0]) {
+            const applicantName =
+              applicantSections[0].querySelector(".info-value");
+            if (applicantName)
+              applicantName.textContent = profile.fullName || "User";
+          }
+
+          // Applicant contact
+          if (applicantSections[0]) {
+            const applicantInfoRows =
+              applicantSections[0].querySelectorAll(".info-row");
+            if (applicantInfoRows[1]) {
+              const applicantContact =
+                applicantInfoRows[1].querySelector(".info-value");
+              if (applicantContact)
+                applicantContact.textContent = profile.phone || "Not set";
+            }
+          }
+
+          // ✅ Pre-fill patient address field (editable) - with fallback
+          if (profile.address) {
+            otherAddressInput.value = profile.address;
+          } else {
+            // Optional: Set default if no address in DB
+            otherAddressInput.value = "Address not set";
+          }
+        }
+
+        // ✅ Store for summary panel
+        window.currentUserProfile = profile;
+        updateSummary();
+
+        console.log("✅ Profile loaded via API:", profile);
+        return profile;
+      }
+      return null;
+    } catch (error) {
+      console.error("❌ Failed to load profile via API:", error);
+      return null;
+    }
+  }
+
   async function loadDepartments() {
     const deptSelect = document.getElementById("department");
     // console.log("🔄 loadDepartments() called");
@@ -93,75 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("❌ Failed to load doctors:", error);
     }
   }
-
-  // const doctors = [
-  //   {
-  //     id: "d1",
-  //     name: "Dr. Sarah Jenkins",
-  //     dept: "cardiology",
-  //     availableDates: [getFutureDate(3), getFutureDate(5), getFutureDate(10)],
-  //     availableDays: ["Mon", "Tue", "Thu", "Fri"],
-  //     timeSlots: [
-  //       "08:00",
-  //       "09:00",
-  //       "10:00",
-  //       "11:00",
-  //       "14:00",
-  //       "15:00",
-  //       "16:00",
-  //     ],
-  //   },
-  //   {
-  //     id: "d2",
-  //     name: "Dr. Michael Ross",
-  //     dept: "cardiology",
-  //     availableDates: [getFutureDate(2), getFutureDate(7), getFutureDate(12)],
-  //     availableDays: ["Mon", "Wed", "Sat"],
-  //     timeSlots: ["09:00", "10:00", "11:00", "13:00", "15:00", "16:00"],
-  //   },
-  //   {
-  //     id: "d3",
-  //     name: "Dr. Mark Alston",
-  //     dept: "neurology",
-  //     availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(14)],
-  //     availableDays: ["Tue", "Thu", "Fri"],
-  //     timeSlots: ["08:00", "10:00", "11:00", "14:00", "15:00", "17:00"],
-  //   },
-  //   {
-  //     id: "d4",
-  //     name: "Dr. Emily Chen",
-  //     dept: "pediatrics",
-  //     availableDates: [getFutureDate(1), getFutureDate(6), getFutureDate(9)],
-  //     availableDays: ["Mon", "Wed", "Thu"],
-  //     timeSlots: ["08:00", "09:00", "11:00", "13:00", "14:00"],
-  //   },
-  //   {
-  //     id: "d5",
-  //     name: "Dr. James Miller",
-  //     dept: "general",
-  //     availableDates: [getFutureDate(2), getFutureDate(3), getFutureDate(5)],
-  //     availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-  //     timeSlots: [
-  //       "08:00",
-  //       "09:00",
-  //       "10:00",
-  //       "11:00",
-  //       "13:00",
-  //       "14:00",
-  //       "15:00",
-  //       "16:00",
-  //       "17:00",
-  //     ],
-  //   },
-  //   {
-  //     id: "d6",
-  //     name: "Dr. Lisa Wong",
-  //     dept: "orthopedics",
-  //     availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(11)],
-  //     availableDays: ["Tue", "Thu", "Sat"],
-  //     timeSlots: ["09:00", "11:00", "13:00", "14:00", "16:00"],
-  //   },
-  // ];
 
   // Generate all possible time slots (8 AM to 8 PM)
   const ALL_TIME_SLOTS = [];
@@ -257,7 +281,6 @@ document.addEventListener("DOMContentLoaded", function () {
     progressSteps[2].classList.toggle("active", step1 && step2 && step3);
   }
 
-  // Render Time Slots for selected doctor & date
   function renderTimeSlots(doctor, selectedDate) {
     timeSlotsGrid.innerHTML = "";
 
@@ -275,6 +298,9 @@ document.addEventListener("DOMContentLoaded", function () {
       btn.className = "time-slot-btn";
       btn.textContent = formatTime(slot);
       btn.dataset.time = slot;
+
+      btn.dataset.scheduleId = doctor.slot_id || null;
+
       btn.style.transitionDelay = `${index * 0.03}s`;
 
       if (selectedTimeInput.value === slot) {
@@ -287,6 +313,12 @@ document.addEventListener("DOMContentLoaded", function () {
           .forEach((b) => b.classList.remove("selected"));
         btn.classList.add("selected");
         selectedTimeInput.value = slot;
+
+        // Store the scheduleId for booking
+        if (btn.dataset.scheduleId) {
+          window.selectedScheduleId = btn.dataset.scheduleId;
+        }
+
         updateSummary();
         updateProgress();
         showToast(`Time selected: ${formatTime(slot)}`, "success");
@@ -453,9 +485,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Update Summary Panel
   function updateSummary() {
-    document.getElementById("sum-dept").textContent = deptSelect.value
-      ? departments[deptSelect.value]
-      : "--";
+    const selectedDeptOption = deptSelect.options[deptSelect.selectedIndex];
+    document.getElementById("sum-dept").textContent =
+      selectedDeptOption?.text && selectedDeptOption.value
+        ? selectedDeptOption.text
+        : "--";
     document.getElementById("sum-date").textContent = dateInput.value
       ? formatDate(dateInput.value)
       : "--";
@@ -475,14 +509,20 @@ document.addEventListener("DOMContentLoaded", function () {
         doc?.specialization_name || doc?.department_name || "--";
     }
 
+    // In updateSummary(), replace this section:
     const activeTab = document.querySelector(".pill.active").dataset.tab;
     let patientName = "--";
-    if (activeTab === "self") patientName = "John Doe (Self)";
-    else {
+
+    if (activeTab === "self") {
+      // ✅ Use real user name from API-loaded profile
+      const userName = window.currentUserProfile?.fullName || "Current User";
+      patientName = `${userName} (Self)`;
+    } else {
       const fname = document.getElementById("o_fname").value.trim();
       const lname = document.getElementById("o_lname").value.trim();
       if (fname || lname) patientName = `${fname} ${lname}`.trim();
     }
+
     document.getElementById("sum-patient").textContent = patientName;
   }
 
@@ -530,8 +570,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById(id)?.addEventListener("input", updateSummary);
   });
 
-  // Confirm Button
-  confirmBtn.addEventListener("click", () => {
+  confirmBtn.addEventListener("click", async () => {
     if (!selectedDoctorIdInput.value) {
       showToast("Please select a specialist.", "warning");
       return;
@@ -546,32 +585,117 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const activeTab = document.querySelector(".pill.active").dataset.tab;
+
     if (activeTab === "other") {
-      if (
-        !document.getElementById("o_fname").value ||
-        !document.getElementById("o_phone").value
-      ) {
-        showToast("Please fill in required patient details.", "warning");
+      const fname = document.getElementById("o_fname").value.trim();
+      const lname = document.getElementById("o_lname").value.trim();
+      const phone = document.getElementById("o_phone").value.trim();
+      const address = document.getElementById("o_address").value.trim();
+
+      if (!fname || !lname || !phone || !address) {
+        showToast(
+          "First name, last name, contact number, and address are required.",
+          "warning",
+        );
         return;
       }
     }
 
+    const selectedDoctor = doctors.find(
+      (d) => d.id === selectedDoctorIdInput.value,
+    );
+
+    const bookingData = {
+      personId: window.currentPersonId,
+
+      doctorId: parseInt(selectedDoctorIdInput.value.replace("d", "")),
+
+      departmentId:
+        deptSelect.options[deptSelect.selectedIndex]?.dataset.deptId,
+      specializationId: selectedDoctor?.specialization_id,
+
+      scheduleId: window.selectedScheduleId || selectedDoctor?.slot_id,
+
+      preferredDate: dateInput.value,
+
+      bookingType: activeTab === "self" ? 1 : 2,
+
+      patientInfo:
+        activeTab === "other"
+          ? {
+              firstName: document.getElementById("o_fname").value.trim(),
+              lastName: document.getElementById("o_lname").value.trim(),
+              contactNumber: document.getElementById("o_phone").value.trim(),
+              email: document.getElementById("o_email").value.trim() || null, 
+              address: document.getElementById("o_address").value.trim(),
+            }
+          : null,
+
+      reasonForVisit: document.getElementById("symptoms").value.trim() || null,
+    };
+
+    if (!bookingData.scheduleId) {
+      showToast(
+        "Could not determine time slot. Please select a time again.",
+        "warning",
+      );
+      return;
+    }
+
+    console.log("📋 Booking ", bookingData);
+
+    const originalBtnText = confirmBtn.innerHTML;
     confirmBtn.innerHTML =
       '<i class="fa-solid fa-circle-notch fa-spin"></i> Booking...';
     confirmBtn.disabled = true;
 
-    setTimeout(() => {
-      showToast(
-        "✅ Appointment booked successfully! Confirmation sent to your email.",
-        "success",
-      );
-      confirmBtn.innerHTML =
-        '<i class="fa-solid fa-check-circle"></i> Confirm Appointment';
+    try {
+      const response = await fetch("/api/appointments/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showToast(
+          `Appointment booked! ID: #${result.data?.appointmentId || "N/A"}`,
+          "success",
+        );
+
+        // Optional: Reset form after success
+        setTimeout(() => {
+          selectedDoctorIdInput.value = "";
+          selectedTimeInput.value = "";
+          window.selectedScheduleId = null;
+          document.getElementById("symptoms").value = "";
+          if (activeTab === "other") {
+            document.getElementById("o_fname").value = "";
+            document.getElementById("o_lname").value = "";
+            document.getElementById("o_phone").value = "";
+            document.getElementById("o_email").value = "";
+            document.getElementById("o_address").value = "";
+          }
+          renderDoctors(); 
+          updateSummary();
+        }, 2000);
+      } else {
+        showToast(
+          result.message || "Booking failed. Please try again.",
+          "error",
+        );
+      }
+    } catch (error) {
+      console.error("❌ Booking error:", error);
+      showToast("Network error. Please check your connection.", "error");
+    } finally {
+      // restore button state
+      confirmBtn.innerHTML = originalBtnText;
       confirmBtn.disabled = false;
-    }, 1200);
+    }
   });
 
-  // ===== TOAST NOTIFICATION =====
   function showToast(message, type = "success") {
     const existing = document.getElementById("apptToast");
     if (existing) existing.remove();
@@ -614,18 +738,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // loadDepartments();
-  // // Initialize
-  // initScrollAnimations();
-  // renderDoctors();
-  // updateProgress();
-
   async function init() {
-    await loadDepartments(); // Load departments first
-    await loadDoctors(); // Load real doctors from DB
+    await loadDepartments();
+    await loadUserProfile();
+    await loadDoctors();
+
     initScrollAnimations();
-    renderDoctors(); // Now render with real data
+    renderDoctors();
     updateProgress();
+    updateSummary();
   }
 
   init();

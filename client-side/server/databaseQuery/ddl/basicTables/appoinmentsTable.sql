@@ -1,6 +1,7 @@
 CREATE TABLE appointments (
     appointment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    client_id BIGINT NOT NULL,
+
+    person_id BIGINT NOT NULL, -- replaced client_id
 
     staff_id BIGINT NOT NULL,
 
@@ -16,34 +17,42 @@ CREATE TABLE appointments (
 
     reason_for_visit TEXT NOT NULL,
 
-    diagnosis_name VARCHAR(255) NULL, -- Added column
-
     appointment_status_id TINYINT NOT NULL DEFAULT 1,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (client_id)
-        REFERENCES clients(client_id),
+    CONSTRAINT fk_appointments_person
+        FOREIGN KEY (person_id)
+        REFERENCES persons(person_id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
 
-    FOREIGN KEY (staff_id)
+    CONSTRAINT fk_appointments_staff
+        FOREIGN KEY (staff_id)
         REFERENCES staff(staff_id),
 
-    FOREIGN KEY (department_id)
+    CONSTRAINT fk_appointments_department
+        FOREIGN KEY (department_id)
         REFERENCES departments(department_id),
 
-    FOREIGN KEY (specialization_id)
+    CONSTRAINT fk_appointments_specialization
+        FOREIGN KEY (specialization_id)
         REFERENCES specializations(specialization_id),
 
-    FOREIGN KEY (schedule_id)
+    CONSTRAINT fk_appointments_schedule
+        FOREIGN KEY (schedule_id)
         REFERENCES doctor_schedules(schedule_id),
 
-    FOREIGN KEY (booking_type_id)
+    CONSTRAINT fk_appointments_booking_type
+        FOREIGN KEY (booking_type_id)
         REFERENCES booking_types(booking_type_id),
 
-    FOREIGN KEY (appointment_patient_id)
+    CONSTRAINT fk_appointments_patient
+        FOREIGN KEY (appointment_patient_id)
         REFERENCES appointment_patients(appointment_patient_id),
 
-    FOREIGN KEY (appointment_status_id)
+    CONSTRAINT fk_appointments_status
+        FOREIGN KEY (appointment_status_id)
         REFERENCES appointment_status(appointment_status_id),
 
     CONSTRAINT chk_booking_type
@@ -53,11 +62,3 @@ CREATE TABLE appointments (
     )
 );
 
-/* drop table appointments;
-
-ALTER TABLE appointments
-ADD COLUMN diagnosis_name VARCHAR(255) NULL
-AFTER reason_for_visit;
-
-ALTER table appointments
-drop COLUMN diagnosis_name; */

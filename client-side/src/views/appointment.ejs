@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Appointment • NovaLife Patient Portal</title>
 
-    <!-- 2 Fonts Only -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -158,21 +157,19 @@
                 <div class="tab-pane active" id="tab-self">
                   <div class="info-row readonly">
                     <span class="info-label">Name</span
-                    ><span class="info-value">John Doe</span>
+                    ><span class="info-value"> </span>
                   </div>
                   <div class="info-row readonly">
                     <span class="info-label">Contact</span
-                    ><span class="info-value">+880 1712 345678</span>
+                    ><span class="info-value"> </span>
                   </div>
                   <div class="info-row readonly">
                     <span class="info-label">Email</span
-                    ><span class="info-value">john.doe@email.com</span>
+                    ><span class="info-value"> </span>
                   </div>
                   <div class="info-row readonly">
                     <span class="info-label">Address</span
-                    ><span class="info-value"
-                      >45 Hospital Road, Motihar, Rajshahi 6000</span
-                    >
+                    ><span class="info-value"> </span>
                   </div>
                   <div class="edit-link">
                     <a href="/settings/profile">Edit Profile Details</a>
@@ -187,11 +184,11 @@
                     </h4>
                     <div class="info-row readonly">
                       <span class="info-label">Name</span
-                      ><span class="info-value">John Doe</span>
+                      ><span class="info-value"> </span>
                     </div>
                     <div class="info-row readonly">
                       <span class="info-label">Contact</span
-                      ><span class="info-value">+880 1712 345678</span>
+                      ><span class="info-value"> </span>
                     </div>
                   </div>
                   <div class="section-divider"></div>
@@ -254,7 +251,7 @@
                   <textarea
                     id="symptoms"
                     rows="2"
-                    placeholder="Brief description (optional)..."
+                    placeholder="Brief description..."
                   ></textarea>
                 </div>
               </div>
@@ -309,6 +306,12 @@
     <%- include('../utils/layouts/client-footer') %> <%-
     include('../utils/layouts/client-publicChat') %>
 
+    <script>
+          window.currentPersonId = <%- JSON.stringify(user?.personId || null) %>;
+
+      // Debug log (remove in production)
+      console.log("💡 Person ID injected:", window.currentPersonId);
+    </script>
     <script src="/scripts/client-layouts.js"></script>
     <script src="/scripts/client-publicChat.js"></script>
     <script src="/scripts/appointment.js"></script>
