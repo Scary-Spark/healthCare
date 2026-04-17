@@ -37,6 +37,7 @@ import {
   getDoctors,
   createAppointment,
   getCurrentUserProfile,
+  getAppointmentHistory,
 } from "../controllers/appointmentController.js";
 
 const router = express.Router();
@@ -151,6 +152,7 @@ router.get("/api/appointments/departments", getDepartments);
 router.get("/api/appointments/doctors", getDoctors);
 router.get("/api/appointments/profile", getCurrentUserProfile);
 router.post("/api/appointments/book", createAppointment);
+router.get("/api/appointments/history", getAppointmentHistory);
 
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {

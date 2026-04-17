@@ -1,110 +1,67 @@
 /**
- * APPOINTMENT & RECORDS HISTORY PAGE
- * Fast animations • Mobile responsive • Admission/Release tracking
+ * APPOINTMENT & RECORDS HISTORY PAGE - DYNAMIC VERSION
+ * Fetches real data from database via API
+ * Handles NULL values, dynamic status colors, and dynamic stats/filtering
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  // ===== MOCK DATA - Appointment & Records History =====
-  const history = [
-    {
-      id: 1,
-      visitId: "V-2024-001",
-      type: "admission",
-      doctor: "Dr. Sarah Jenkins",
-      department: "Cardiology",
-      diagnosis: "Acute Myocardial Infarction",
-      appointmentDate: "2024-10-15",
-      admissionDate: "2024-10-15",
-      dischargeDate: "2024-10-18",
-      status: "completed",
+  // ===== STATUS CONFIGURATION - DYNAMIC COLORS WITH GOOD CONTRAST =====
+  const STATUS_CONFIG = {
+    pending: {
+      label: "Pending",
+      class: "pending",
+      icon: "fa-clock",
+      bg: "#fef3c7",
+      color: "#92400e",
+      border: "#f59e0b",
     },
-    {
-      id: 2,
-      visitId: "V-2024-002",
-      type: "outpatient",
-      doctor: "Dr. Emily Chen",
-      department: "Pediatrics",
-      diagnosis: "Seasonal Allergies - Follow-up",
-      appointmentDate: "2024-09-22",
-      admissionDate: null,
-      dischargeDate: null,
-      status: "completed",
+    confirmed: {
+      label: "Confirmed",
+      class: "confirmed",
+      icon: "fa-check-circle",
+      bg: "#d1fae5",
+      color: "#065f46",
+      border: "#10b981",
     },
-    {
-      id: 3,
-      visitId: "V-2024-003",
-      type: "emergency",
-      doctor: "Dr. Mark Alston",
-      department: "Emergency Medicine",
-      diagnosis: "Fractured Radius",
-      appointmentDate: "2024-08-10",
-      admissionDate: "2024-08-10",
-      dischargeDate: "2024-08-12",
-      status: "completed",
+    completed: {
+      label: "Completed",
+      class: "completed",
+      icon: "fa-check-double",
+      bg: "#d1fae5",
+      color: "#065f46",
+      border: "#10b981",
     },
-    {
-      id: 4,
-      visitId: "V-2024-004",
-      type: "followup",
-      doctor: "Dr. Sarah Jenkins",
-      department: "Cardiology",
-      diagnosis: "Post-Infarction Checkup",
-      appointmentDate: "2024-10-22",
-      admissionDate: null,
-      dischargeDate: null,
-      status: "completed",
+    cancelled: {
+      label: "Cancelled",
+      class: "cancelled",
+      icon: "fa-times-circle",
+      bg: "#fee2e2",
+      color: "#991b1b",
+      border: "#ef4444",
     },
-    {
-      id: 5,
-      visitId: "V-2024-005",
-      type: "admission",
-      doctor: "Dr. Michael Ross",
-      department: "Neurology",
-      diagnosis: "Severe Migraine Investigation",
-      appointmentDate: "2024-07-05",
-      admissionDate: "2024-07-05",
-      dischargeDate: "2024-07-07",
-      status: "completed",
+    "no-show": {
+      label: "No-Show",
+      class: "no-show",
+      icon: "fa-user-slash",
+      bg: "#ffedd5",
+      color: "#9a3412",
+      border: "#f97316",
     },
-    // Add more mock data
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: i + 6,
-      visitId: `V-2024-${String(i + 6).padStart(3, "0")}`,
-      type: ["admission", "outpatient", "emergency", "followup"][i % 4],
-      doctor: [
-        "Dr. Sarah Jenkins",
-        "Dr. Michael Ross",
-        "Dr. Mark Alston",
-        "Dr. Emily Chen",
-        "Dr. James Miller",
-      ][i % 5],
-      department: [
-        "Cardiology",
-        "Neurology",
-        "Orthopedics",
-        "Pediatrics",
-        "General",
-      ][i % 5],
-      diagnosis: [
-        "Routine Checkup",
-        "Flu Symptoms",
-        "Back Pain",
-        "Annual Physical",
-        "Hypertension",
-      ][i % 5],
-      appointmentDate: `2024-10-${String(15 + i).padStart(2, "0")}`,
-      admissionDate:
-        i % 4 === 0 ? `2024-10-${String(15 + i).padStart(2, "0")}` : null,
-      dischargeDate:
-        i % 4 === 0 ? `2024-10-${String(17 + i).padStart(2, "0")}` : null,
-      status: ["completed", "completed", "completed", "cancelled"][i % 4],
-    })),
-  ];
+    rescheduled: {
+      label: "Rescheduled",
+      class: "rescheduled",
+      icon: "fa-calendar-alt",
+      bg: "#dbeafe",
+      color: "#1e40af",
+      border: "#3b82f6",
+    },
+  };
 
   // ===== STATE =====
   let currentPage = 1;
   let itemsPerPage = 25;
-  let filteredData = [...history];
+  let history = [];
+  let filteredData = []; // This will be the source of truth for Stats and Table
   let selectedRecord = null;
 
   // ===== DOM ELEMENTS =====
@@ -125,12 +82,112 @@ document.addEventListener("DOMContentLoaded", function () {
   const downloadPanel = document.getElementById("downloadPanel");
   const viewPanel = document.getElementById("viewPanel");
 
+  // ===== FETCH DATA FROM API =====
+  async function loadAppointmentHistory() {
+    try {
+      console.log("🔄 Loading appointment history...");
+
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:var(--primary);"></i><p style="margin-top:12px;color:var(--text-light);">Loading your history...</p></td></tr>`;
+
+      const response = await fetch("/api/appointments/history");
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("📦 API result:", result);
+
+      if (result.success) {
+        history = result.data || [];
+        filteredData = [...history]; // ✅ Initialize filteredData with all data
+
+        console.log(`✅ Loaded ${history.length} appointment records`);
+
+        // ✅ Populate filter dropdowns dynamically
+        populateVisitTypeFilter();
+        populateStatusFilter();
+
+        updateStats();
+        renderTable();
+      } else {
+        console.error("❌ API returned error:", result.message);
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light);">
+          <i class="fa-solid fa-circle-exclamation" style="font-size:2rem;margin-bottom:12px;"></i>
+          <p>${result.message || "Failed to load appointment history"}</p>
+        </td></tr>`;
+      }
+    } catch (error) {
+      console.error("❌ Error fetching appointment history:", error);
+      console.error("Error stack:", error.stack);
+
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light);">
+        <i class="fa-solid fa-circle-exclamation" style="font-size:2rem;margin-bottom:12px;"></i>
+        <p>Error loading data. Please try again.</p>
+        <p style="font-size:0.85rem;margin-top:8px;opacity:0.7;">${error.message}</p>
+      </td></tr>`;
+    }
+  }
+
+  // ===== POPULATE FILTERS DYNAMICALLY =====
+  function populateVisitTypeFilter() {
+    const select = document.getElementById("visitTypeFilter");
+    if (!select) return;
+
+    // Get unique visit types from loaded data
+    const types = [...new Set(history.map((h) => h.type).filter(Boolean))];
+
+    // Keep the "All Types" option
+    select.innerHTML = '<option value="">All Types</option>';
+
+    // Add dynamic options
+    types.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = capitalize(type);
+      select.appendChild(option);
+    });
+  }
+
+  function populateStatusFilter() {
+    const select = document.getElementById("statusFilter");
+    if (!select) return;
+
+    // Get unique statuses from loaded data
+    const statuses = [...new Set(history.map((h) => h.status).filter(Boolean))];
+
+    // Keep the "All Status" option
+    select.innerHTML = '<option value="">All Status</option>';
+
+    // Add dynamic options with proper labels
+    statuses.forEach((status) => {
+      const option = document.createElement("option");
+      option.value = status.toLowerCase();
+      // Use STATUS_CONFIG for nice labels, fallback to capitalize
+      const config = STATUS_CONFIG[status.toLowerCase()];
+      option.textContent = config?.label || capitalize(status);
+      select.appendChild(option);
+    });
+  }
+
+  // ===== GET STATUS CONFIG =====
+  function getStatusConfig(status) {
+    const statusKey = status
+      ? status.toLowerCase().replace(/\s+/g, "-")
+      : "pending";
+    return STATUS_CONFIG[statusKey] || STATUS_CONFIG["pending"];
+  }
+
   // ===== STATS UPDATE =====
   function updateStats() {
-    const total = history.length;
-    const admissions = history.filter((h) => h.type === "admission").length;
-    const outpatient = history.filter((h) => h.type === "outpatient").length;
-    const emergency = history.filter((h) => h.type === "emergency").length;
+    // ✅ Use filteredData so stats reflect active filters (Date, Type, Status, Search)
+    const data = filteredData;
+
+    const total = data.length;
+    const admissions = data.filter((h) => h.type === "admission").length;
+    const outpatient = data.filter((h) => h.type === "outpatient").length;
+    const emergency = data.filter((h) => h.type === "emergency").length;
 
     animateNumber("totalVisits", total);
     animateNumber("admissions", admissions);
@@ -140,6 +197,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function animateNumber(elementId, target) {
     const element = document.getElementById(elementId);
+    if (!element) return;
+
     const duration = 500;
     const start = 0;
     const increment = target / (duration / 16);
@@ -164,23 +223,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableBody.innerHTML = "";
 
+    if (pageData.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light);">No records found</td></tr>`;
+      updateTableInfo();
+      renderPagination();
+      return;
+    }
+
     pageData.forEach((record) => {
       const row = document.createElement("tr");
       row.dataset.id = record.id;
 
-      const statusClass =
-        record.status === "completed"
-          ? "completed"
-          : record.status === "in-patient"
-            ? "in-patient"
-            : "cancelled";
-      const statusIcon =
-        record.status === "completed"
-          ? "fa-check"
-          : record.status === "in-patient"
-            ? "fa-hospital"
-            : "fa-xmark";
+      const statusConfig = getStatusConfig(record.status);
 
+      // ✅ Type icon based on actual type from API
       const typeIcon =
         record.type === "admission"
           ? "fa-bed"
@@ -190,39 +246,51 @@ document.addEventListener("DOMContentLoaded", function () {
               ? "fa-kit-medical"
               : "fa-rotate-right";
 
-      // Dates logic
+      // ✅ Dates logic - handle NULL values
       let datesHTML = "";
       if (record.type === "admission") {
+        const admissionDate = record.admissionDate
+          ? formatDate(record.admissionDate)
+          : "N/A";
+        const dischargeDate = record.dischargeDate
+          ? formatDate(record.dischargeDate)
+          : "Not discharged";
+
         datesHTML = `
           <div class="dates-display">
-            <span class="date-primary">${formatDate(record.admissionDate)}</span>
-            <span class="date-secondary">Discharged: ${formatDate(record.dischargeDate)}</span>
+            <span class="date-primary">${admissionDate}</span>
+            <span class="date-secondary">Discharged: ${dischargeDate}</span>
           </div>
         `;
       } else {
+        const apptDate = record.appointmentDate
+          ? formatDate(record.appointmentDate)
+          : "N/A";
+
         datesHTML = `
           <div class="dates-display">
-            <span class="date-primary">${formatDate(record.appointmentDate)}</span>
+            <span class="date-primary">${apptDate}</span>
             <span class="date-secondary">Appointment</span>
           </div>
         `;
       }
 
+      // ✅ Build row HTML - handle ALL nullable fields with dynamic status
       row.innerHTML = `
-        <td><strong>${record.visitId}</strong></td>
+        <td><strong>${record.visitId || "N/A"}</strong></td>
         <td>
           <span class="type-badge ${record.type}">
             <i class="fa-solid ${typeIcon}"></i>
             ${capitalize(record.type)}
           </span>
         </td>
-        <td>${record.doctor}</td>
+        <td>${record.doctor || "Unknown Doctor"}</td>
         <td>${datesHTML}</td>
-        <td>${record.diagnosis}</td>
+        <td>${record.diagnosis || "No diagnosis recorded"}</td>
         <td>
-          <span class="status-badge ${statusClass}">
-            <i class="fa-solid ${statusIcon}"></i>
-            ${record.status}
+          <span class="status-badge ${statusConfig.class}" style="background:${statusConfig.bg};color:${statusConfig.color};border:1px solid ${statusConfig.border}">
+            <i class="fa-solid ${statusConfig.icon}"></i>
+            ${statusConfig.label}
           </span>
         </td>
         <td>
@@ -327,46 +395,50 @@ document.addEventListener("DOMContentLoaded", function () {
   function showRecordDetails(record) {
     selectedRecord = record;
 
-    const statusClass =
-      record.status === "completed"
-        ? "completed"
-        : record.status === "in-patient"
-          ? "in-patient"
-          : "cancelled";
-    const statusIcon =
-      record.status === "completed"
-        ? "fa-check-circle"
-        : record.status === "in-patient"
-          ? "fa-hospital"
-          : "fa-xmark";
+    const statusConfig = getStatusConfig(record.status);
 
-    // Date Section
+    // ✅ Date Section - handle NULL values
     let datesHTML = "";
     if (record.type === "admission") {
+      const admissionDate = record.admissionDate
+        ? formatDate(record.admissionDate)
+        : "N/A";
+      const dischargeDate = record.dischargeDate
+        ? formatDate(record.dischargeDate)
+        : "Not discharged yet";
+      const duration =
+        record.admissionDate && record.dischargeDate
+          ? calculateDuration(record.admissionDate, record.dischargeDate)
+          : "N/A";
+
       datesHTML = `
         <div class="detail-section">
           <h4>Admission Details</h4>
           <div class="detail-row">
             <span class="detail-label">Admission Date</span>
-            <span class="detail-value">${formatDate(record.admissionDate)}</span>
+            <span class="detail-value">${admissionDate}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Discharge Date</span>
-            <span class="detail-value">${formatDate(record.dischargeDate)}</span>
+            <span class="detail-value">${dischargeDate}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Duration</span>
-            <span class="detail-value">${calculateDuration(record.admissionDate, record.dischargeDate)}</span>
+            <span class="detail-value">${duration}</span>
           </div>
         </div>
       `;
     } else {
+      const apptDate = record.appointmentDate
+        ? formatDate(record.appointmentDate)
+        : "N/A";
+
       datesHTML = `
         <div class="detail-section">
           <h4>Appointment Details</h4>
           <div class="detail-row">
             <span class="detail-label">Appointment Date</span>
-            <span class="detail-value">${formatDate(record.appointmentDate)}</span>
+            <span class="detail-value">${apptDate}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Visit Type</span>
@@ -376,29 +448,30 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }
 
+    // ✅ Build details panel - handle ALL nullable fields with dynamic status
     panelContent.innerHTML = `
       <div class="visit-detail">
         <div class="detail-section">
           <h4>Visit Information</h4>
           <div class="detail-row">
             <span class="detail-label">Visit ID</span>
-            <span class="detail-value">${record.visitId}</span>
+            <span class="detail-value">${record.visitId || "N/A"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status</span>
             <span class="detail-value">
-              <span class="status-badge ${statusClass}">
-                <i class="fa-solid ${statusIcon}"></i> ${record.status}
+              <span class="status-badge ${statusConfig.class}" style="background:${statusConfig.bg};color:${statusConfig.color};border:1px solid ${statusConfig.border};padding:6px 12px;">
+                <i class="fa-solid ${statusConfig.icon}"></i> ${statusConfig.label}
               </span>
             </span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Department</span>
-            <span class="detail-value">${record.department}</span>
+            <span class="detail-value">${record.department || "N/A"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Attending Doctor</span>
-            <span class="detail-value">${record.doctor}</span>
+            <span class="detail-value">${record.doctor || "N/A"}</span>
           </div>
         </div>
 
@@ -407,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="detail-section">
           <h4>Diagnosis</h4>
           <div class="diagnosis-box">
-            <p>${record.diagnosis}</p>
+            <p>${record.diagnosis || "No diagnosis recorded"}</p>
           </div>
         </div>
       </div>
@@ -447,25 +520,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const dateFrom = document.getElementById("dateFrom").value;
     const dateTo = document.getElementById("dateTo").value;
 
+    // ✅ Filter the main history array and update filteredData
     filteredData = history.filter((record) => {
       let match = true;
 
       if (visitType && record.type !== visitType) match = false;
-      if (status && record.status !== status) match = false;
+      if (status && record.status?.toLowerCase() !== status.toLowerCase())
+        match = false;
 
       const visitDate =
         record.type === "admission"
           ? record.admissionDate
           : record.appointmentDate;
-      if (dateFrom && visitDate < dateFrom) match = false;
-      if (dateTo && visitDate > dateTo) match = false;
+
+      if (dateFrom && visitDate && new Date(visitDate) < new Date(dateFrom))
+        match = false;
+      if (dateTo && visitDate && new Date(visitDate) > new Date(dateTo))
+        match = false;
 
       return match;
     });
 
     currentPage = 1;
     renderTable();
-    updateStats();
+    updateStats(); // ✅ Stats update with filters
     filtersSection.hidden = true;
   }
 
@@ -475,10 +553,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("dateFrom").value = "";
     document.getElementById("dateTo").value = "";
 
-    filteredData = [...history];
+    filteredData = [...history]; // ✅ Reset to all data
     currentPage = 1;
     renderTable();
-    updateStats();
+    updateStats(); // ✅ Stats reset to total
   }
 
   searchInput.addEventListener("input", (e) => {
@@ -486,20 +564,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     filteredData = history.filter(
       (record) =>
-        record.visitId.toLowerCase().includes(term) ||
-        record.doctor.toLowerCase().includes(term) ||
-        record.diagnosis.toLowerCase().includes(term) ||
-        record.department.toLowerCase().includes(term),
+        (record.visitId || "").toLowerCase().includes(term) ||
+        (record.doctor || "").toLowerCase().includes(term) ||
+        (record.diagnosis || "").toLowerCase().includes(term) ||
+        (record.department || "").toLowerCase().includes(term),
     );
 
     currentPage = 1;
     renderTable();
+    updateStats(); // ✅ Stats update with search
   });
 
   // ===== DOWNLOAD & VIEW =====
   window.downloadRecord = function (id) {
     const record = history.find((r) => r.id === id);
-    showToast(`Downloading record ${record.visitId}...`, "success");
+    showToast(
+      `Downloading record ${record.visitId || record.id}...`,
+      "success",
+    );
   };
 
   window.viewRecord = function (id) {
@@ -577,6 +659,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ===== INITIALIZE =====
-  updateStats();
-  renderTable();
+  loadAppointmentHistory();
 });

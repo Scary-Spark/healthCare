@@ -231,3 +231,88 @@ export const getCurrentUserProfile = async (req, res) => {
     });
   }
 };
+
+// src/controllers/appointmentController.js
+
+// ✅ NEW: Get patient's appointment history
+export const getAppointmentHistory = async (req, res) => {
+  try {
+    const personId = req.session.client?.personId;
+
+    if (!personId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    console.log("🔍 Fetching appointment history for personId:", personId);
+
+    // Call stored procedure
+    const [rows] = await pool.query(`CALL GetPatientAppointmentHistory(?)`, [
+      personId,
+    ]);
+
+    console.log("📊 Stored procedure result:", rows);
+
+    // Stored procedures return nested arrays - get first result set
+    const appointments = rows[0] || [];
+
+    console.log(`✅ Found ${appointments.length} appointments`);
+
+    // ✅ Map visit_status to proper type
+    const VISIT_TYPE_MAP = {
+      ADMISSION: "admission",
+      OUTPATIENT: "outpatient",
+      EMERGENCY: "emergency",
+      "FOLLOW-UP": "followup",
+      // Fallbacks
+      admission: "admission",
+      outpatient: "outpatient",
+      emergency: "emergency",
+      "follow-up": "followup",
+      followup: "followup",
+    };
+
+    // Format data for frontend - handle ALL nullable fields
+    const formattedHistory = appointments.map((apt) => {
+      // ✅ Get type from visit_status (not from check_in/check_out times)
+      const rawStatus = apt.visit_status || apt.appointment_status || "";
+      const type = VISIT_TYPE_MAP[rawStatus.toUpperCase()] || "outpatient";
+
+      return {
+        id: apt.appointment_id,
+        visitId: apt.visit_id || null,
+        type: type, // ✅ Now properly mapped from visit_status
+        doctor: apt.doctor_name || "Unknown Doctor",
+        department: apt.department_name || "General",
+        diagnosis: apt.diagnosis_name || "No diagnosis recorded",
+        appointmentDate: apt.appointment_date,
+        admissionDate: apt.check_in_time || null,
+        dischargeDate: apt.check_out_time || null,
+        status: apt.appointment_status?.toLowerCase() || "pending",
+        visitStatus: apt.visit_status || null,
+        appointmentStatus: apt.appointment_status || null,
+      };
+    });
+
+    res.json({
+      success: true,
+      data: formattedHistory, // ✅ Changed to "data" to match frontend
+      count: formattedHistory.length,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching appointment history:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load appointment history",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
