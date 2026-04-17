@@ -6,6 +6,63 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
+  async function loadDepartments() {
+    const deptSelect = document.getElementById("department");
+    // console.log("🔄 loadDepartments() called");
+
+    try {
+      // console.log("🌐 Fetching /api/appointments/departments...");
+      const response = await fetch("/api/appointments/departments");
+
+      // console.log("📡 Response status:", response.status);
+      // console.log("📡 Response OK?", response.ok);
+
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+
+      const result = await response.json();
+      // console.log("📦 API result:", result);
+      // console.log("🔍 result.success:", result.success);
+      // console.log("🔍 result.data:", result.data);
+      // console.log("🔍 result.data?.length:", result.data?.length);
+
+      if (result.success && result.data && result.data.length > 0) {
+        // console.log(`✅ Loading ${result.data.length} departments`);
+
+        // Keep "Choose Department" option
+        deptSelect.innerHTML = '<option value="">Choose Department</option>';
+
+        result.data.forEach((dept, index) => {
+          // console.log(
+          //   `  [${index}] Adding: ${dept.department_name} (ID: ${dept.department_id})`,
+          // );
+          const option = document.createElement("option");
+          option.value = dept.department_name.toLowerCase();
+          option.textContent = dept.department_name;
+          option.dataset.deptId = dept.department_id;
+          deptSelect.appendChild(option);
+        });
+
+        // console.log("✅ Departments loaded successfully");
+        // console.log(
+        //   "📋 Dropdown now has",
+        //   deptSelect.options.length,
+        //   "options",
+        // );
+      } else {
+        console.warn("⚠️ No departments in response");
+        console.warn("  result.success:", result.success);
+        console.warn("  result.data:", result.data);
+      }
+    } catch (error) {
+      console.error("❌ Failed to load departments:", error);
+      console.error("  Error name:", error.name);
+      console.error("  Error message:", error.message);
+      console.error("  Error stack:", error.stack);
+    }
+  }
+
   // ===== MOCK DATA =====
   const today = new Date();
   const getFutureDate = (daysOffset) => {
@@ -22,74 +79,89 @@ document.addEventListener("DOMContentLoaded", function () {
     general: "General Medicine",
   };
 
-  const doctors = [
-    {
-      id: "d1",
-      name: "Dr. Sarah Jenkins",
-      dept: "cardiology",
-      availableDates: [getFutureDate(3), getFutureDate(5), getFutureDate(10)],
-      availableDays: ["Mon", "Tue", "Thu", "Fri"],
-      timeSlots: [
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "14:00",
-        "15:00",
-        "16:00",
-      ],
-    },
-    {
-      id: "d2",
-      name: "Dr. Michael Ross",
-      dept: "cardiology",
-      availableDates: [getFutureDate(2), getFutureDate(7), getFutureDate(12)],
-      availableDays: ["Mon", "Wed", "Sat"],
-      timeSlots: ["09:00", "10:00", "11:00", "13:00", "15:00", "16:00"],
-    },
-    {
-      id: "d3",
-      name: "Dr. Mark Alston",
-      dept: "neurology",
-      availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(14)],
-      availableDays: ["Tue", "Thu", "Fri"],
-      timeSlots: ["08:00", "10:00", "11:00", "14:00", "15:00", "17:00"],
-    },
-    {
-      id: "d4",
-      name: "Dr. Emily Chen",
-      dept: "pediatrics",
-      availableDates: [getFutureDate(1), getFutureDate(6), getFutureDate(9)],
-      availableDays: ["Mon", "Wed", "Thu"],
-      timeSlots: ["08:00", "09:00", "11:00", "13:00", "14:00"],
-    },
-    {
-      id: "d5",
-      name: "Dr. James Miller",
-      dept: "general",
-      availableDates: [getFutureDate(2), getFutureDate(3), getFutureDate(5)],
-      availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-      timeSlots: [
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-      ],
-    },
-    {
-      id: "d6",
-      name: "Dr. Lisa Wong",
-      dept: "orthopedics",
-      availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(11)],
-      availableDays: ["Tue", "Thu", "Sat"],
-      timeSlots: ["09:00", "11:00", "13:00", "14:00", "16:00"],
-    },
-  ];
+  let doctors = [];
+
+  async function loadDoctors() {
+    try {
+      const response = await fetch("/api/appointments/doctors");
+      const result = await response.json();
+      if (result.success) {
+        doctors = result.data; // ← Real doctors from DB in mock format
+        console.log(`✅ Loaded ${doctors.length} doctors from database`);
+      }
+    } catch (error) {
+      console.error("❌ Failed to load doctors:", error);
+    }
+  }
+
+  // const doctors = [
+  //   {
+  //     id: "d1",
+  //     name: "Dr. Sarah Jenkins",
+  //     dept: "cardiology",
+  //     availableDates: [getFutureDate(3), getFutureDate(5), getFutureDate(10)],
+  //     availableDays: ["Mon", "Tue", "Thu", "Fri"],
+  //     timeSlots: [
+  //       "08:00",
+  //       "09:00",
+  //       "10:00",
+  //       "11:00",
+  //       "14:00",
+  //       "15:00",
+  //       "16:00",
+  //     ],
+  //   },
+  //   {
+  //     id: "d2",
+  //     name: "Dr. Michael Ross",
+  //     dept: "cardiology",
+  //     availableDates: [getFutureDate(2), getFutureDate(7), getFutureDate(12)],
+  //     availableDays: ["Mon", "Wed", "Sat"],
+  //     timeSlots: ["09:00", "10:00", "11:00", "13:00", "15:00", "16:00"],
+  //   },
+  //   {
+  //     id: "d3",
+  //     name: "Dr. Mark Alston",
+  //     dept: "neurology",
+  //     availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(14)],
+  //     availableDays: ["Tue", "Thu", "Fri"],
+  //     timeSlots: ["08:00", "10:00", "11:00", "14:00", "15:00", "17:00"],
+  //   },
+  //   {
+  //     id: "d4",
+  //     name: "Dr. Emily Chen",
+  //     dept: "pediatrics",
+  //     availableDates: [getFutureDate(1), getFutureDate(6), getFutureDate(9)],
+  //     availableDays: ["Mon", "Wed", "Thu"],
+  //     timeSlots: ["08:00", "09:00", "11:00", "13:00", "14:00"],
+  //   },
+  //   {
+  //     id: "d5",
+  //     name: "Dr. James Miller",
+  //     dept: "general",
+  //     availableDates: [getFutureDate(2), getFutureDate(3), getFutureDate(5)],
+  //     availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  //     timeSlots: [
+  //       "08:00",
+  //       "09:00",
+  //       "10:00",
+  //       "11:00",
+  //       "13:00",
+  //       "14:00",
+  //       "15:00",
+  //       "16:00",
+  //       "17:00",
+  //     ],
+  //   },
+  //   {
+  //     id: "d6",
+  //     name: "Dr. Lisa Wong",
+  //     dept: "orthopedics",
+  //     availableDates: [getFutureDate(4), getFutureDate(8), getFutureDate(11)],
+  //     availableDays: ["Tue", "Thu", "Sat"],
+  //     timeSlots: ["09:00", "11:00", "13:00", "14:00", "16:00"],
+  //   },
+  // ];
 
   // Generate all possible time slots (8 AM to 8 PM)
   const ALL_TIME_SLOTS = [];
@@ -251,13 +323,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const card = document.createElement("div");
       card.className = `doctor-card ${selectedDoctorIdInput.value === doc.id ? "selected" : ""}`;
       card.dataset.docId = doc.id;
-      card.style.transitionDelay = `${index * 0.05}s`;
+      // card.style.transitionDelay = `${index * 0.05}s`;
 
       // Show available days on card
       const daysDisplay = doc.availableDays.slice(0, 3).join(", ");
 
       // Check if doctor is available on selected date (for status badge only)
-      const isAvailableOnDate = date && doc.availableDates.includes(date);
+      const selectedDayName = date ? getDayName(date) : null; // e.g., "Wed"
+      const isAvailableOnDate =
+        date && selectedDayName && doc.availableDays.includes(selectedDayName);
       const statusClass = date ? (isAvailableOnDate ? "" : "unavailable") : "";
       const statusText = date
         ? isAvailableOnDate
@@ -266,15 +340,20 @@ document.addEventListener("DOMContentLoaded", function () {
         : "Select date";
 
       // Simplified card - NO HOVER CARD
+      const avatarHtml = doc.profile_pic_path
+        ? `<img src="${doc.profile_pic_path}" class="doc-avatar" style="object-fit:cover; padding:0; background:#fff;">`
+        : `<div class="doc-avatar">${doc.name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase()}</div>`;
+
       card.innerHTML = `
-        <div class="doc-avatar">${doc.name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .substring(0, 2)}</div>
+        ${avatarHtml}
         <div class="doc-name">${doc.name}</div>
-        <div class="doc-dept">${departments[doc.dept]}</div>
-        <div class="doc-days"><i class="fa-regular fa-calendar"></i> ${daysDisplay}</div>
+        <div class="doc-dept">${doc.specialization_name || doc.department_name || doc.dept}</div>
+        <div class="doc-days"><i class="fa-regular fa-calendar"></i> ${doc.availableDays.slice(0, 3).join(", ")}</div>
         <span class="doc-status ${statusClass}">${statusText}</span>
       `;
 
@@ -294,33 +373,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Select Doctor - FIXED: Auto-adjust date if needed
   function selectDoctor(doc) {
-    const selectedDate = dateInput.value;
+    console.log("👆 selectDoctor called for:", doc.name);
+    console.log("📋 Doctor availableDays:", doc.availableDays);
 
     selectedDoctorIdInput.value = doc.id;
     deptSelect.value = doc.dept;
 
-    // If date is selected but doctor not available, auto-pick first available date
-    if (selectedDate && !doc.availableDates.includes(selectedDate)) {
-      // Show helpful message
-      showToast(
-        `${doc.name} is not available on ${formatDate(selectedDate)}. Date adjusted to ${formatDate(doc.availableDates[0])}.`,
-        "warning",
-      );
-      dateInput.value = doc.availableDates[0];
-    } else if (!selectedDate) {
-      // Auto-select first available date if none selected
-      dateInput.value = doc.availableDates[0];
+    // ✅ ALWAYS AUTO-PICK DATE (remove the !dateInput.value check)
+    if (doc.availableDays && doc.availableDays.length > 0) {
+      console.log("🔍 Auto-picking date based on doctor's availability...");
+
+      const daysMap = {
+        sunday: 0,
+        sun: 0,
+        monday: 1,
+        mon: 1,
+        tuesday: 2,
+        tue: 2,
+        wednesday: 3,
+        wed: 3,
+        thursday: 4,
+        thu: 4,
+        friday: 5,
+        fri: 5,
+        saturday: 6,
+        sat: 6,
+      };
+
+      const today = new Date();
+      const currentDayIndex = today.getDay();
+
+      let minDaysUntil = Infinity;
+      let bestDate = null;
+
+      doc.availableDays.forEach((dayName) => {
+        const dayNameLower = dayName.toLowerCase();
+        const targetIndex = daysMap[dayNameLower];
+
+        if (targetIndex === undefined) return;
+
+        let daysUntil = targetIndex - currentDayIndex;
+        if (daysUntil < 0) daysUntil += 7;
+
+        if (daysUntil < minDaysUntil) {
+          minDaysUntil = daysUntil;
+          const nextDate = new Date(today);
+          nextDate.setDate(today.getDate() + daysUntil);
+          bestDate = nextDate.toISOString().split("T")[0];
+        }
+      });
+
+      if (bestDate) {
+        console.log(`✅ Auto-picked date: ${bestDate}`);
+        dateInput.value = bestDate;
+
+        // Optional: Show toast notification
+        showToast(`📅 Auto-selected: ${formatDate(bestDate)}`, "success");
+      }
+    } else {
+      console.warn("⚠️ No available days for this doctor");
     }
 
-    // Update UI
+    // Update UI selection
     document
       .querySelectorAll(".doctor-card")
       .forEach((c) => c.classList.remove("selected"));
     const selectedCard = doctorGrid.querySelector(`[data-doc-id="${doc.id}"]`);
     if (selectedCard) selectedCard.classList.add("selected");
 
-    // Re-render time slots with new date
-    renderTimeSlots(doc, dateInput.value);
+    // Render time slots if date is set
+    if (dateInput.value) {
+      renderTimeSlots(doc);
+    }
 
     updateSummary();
     updateProgress();
@@ -340,7 +464,16 @@ document.addEventListener("DOMContentLoaded", function () {
       : "--";
 
     const doc = doctors.find((d) => d.id === selectedDoctorIdInput.value);
+
+    // Update specialist name
     document.getElementById("sum-doctor").textContent = doc ? doc.name : "--";
+
+    // ADD THIS: Update specialization name
+    const specElement = document.getElementById("sum-specialization");
+    if (specElement) {
+      specElement.textContent =
+        doc?.specialization_name || doc?.department_name || "--";
+    }
 
     const activeTab = document.querySelector(".pill.active").dataset.tab;
     let patientName = "--";
@@ -481,8 +614,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Initialize
-  initScrollAnimations();
-  renderDoctors();
-  updateProgress();
+  // loadDepartments();
+  // // Initialize
+  // initScrollAnimations();
+  // renderDoctors();
+  // updateProgress();
+
+  async function init() {
+    await loadDepartments(); // Load departments first
+    await loadDoctors(); // Load real doctors from DB
+    initScrollAnimations();
+    renderDoctors(); // Now render with real data
+    updateProgress();
+  }
+
+  init();
 });

@@ -4,3 +4,5 @@ CREATE TABLE time_slots (
     end_time TIME NOT NULL,
     UNIQUE (start_time, end_time)
 );
+
+select * from time_slots;

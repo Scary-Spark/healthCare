@@ -1,183 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book Appointment • NovaLife Patient Portal</title>
-  
-  <!-- 2 Fonts Only -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
-  <link rel="stylesheet" href="/styles/home.css" />
-  <link rel="stylesheet" href="/styles/client-layouts.css" />
-  <link rel="stylesheet" href="/styles/client-publicChat.css" />
-  <link rel="stylesheet" href="/styles/appointment.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Appointment • NovaLife Patient Portal</title>
 
-  <!-- Navbar -->
-  <%- include('../utils/layouts/client-navbar') %>
-  <!-- Sidebar -->
-  <%- include('../utils/layouts/client-sidebar') %>
+    <!-- 2 Fonts Only -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-  <div class="client-layout">
-    <main class="client-main">
-      
-      <div class="appt-page">
-        
-        <!-- Header -->
-        <header class="appt-header">
-          <div class="appt-header-content">
-            <h1>Book an Appointment</h1>
-            <p>Select your preferred specialist, date, and time to schedule your visit.</p>
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/client-layouts.css" />
+    <link rel="stylesheet" href="/styles/client-publicChat.css" />
+    <link rel="stylesheet" href="/styles/appointment.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <%- include('../utils/layouts/client-navbar') %>
+    <!-- Sidebar -->
+    <%- include('../utils/layouts/client-sidebar') %>
+
+    <div class="client-layout">
+      <main class="client-main">
+        <div class="appt-page">
+          <!-- Header -->
+          <header class="appt-header">
+            <div class="appt-header-content">
+              <h1>Book an Appointment</h1>
+              <p>
+                Select your preferred specialist, date, and time to schedule
+                your visit.
+              </p>
+            </div>
+            <div class="appt-progress">
+              <div class="progress-step active" data-step="1">
+                <span class="step-num">1</span
+                ><span class="step-label">Schedule</span>
+              </div>
+              <div class="progress-line"></div>
+              <div class="progress-step" data-step="2">
+                <span class="step-num">2</span
+                ><span class="step-label">Doctor</span>
+              </div>
+              <div class="progress-line"></div>
+              <div class="progress-step" data-step="3">
+                <span class="step-num">3</span
+                ><span class="step-label">Patient</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="appt-grid">
+            <!-- Left: Form -->
+            <div class="appt-form">
+              <!-- Section 1: Schedule -->
+              <div class="form-card animate-on-scroll" id="card-schedule">
+                <h3 class="card-title">
+                  <i class="fa-regular fa-calendar"></i> Select Schedule
+                </h3>
+                <div class="form-row">
+                  <div class="form-field">
+                    <label>Department <span class="required">*</span></label>
+                    <div class="select-box">
+                      <select id="department" required>
+                        <option value="" disabled selected>
+                          Loading departments...
+                        </option>
+                        <!-- Options will be populated by JavaScript -->
+                      </select>
+                      <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label>Preferred Date</label>
+                    <input
+                      type="date"
+                      id="appointmentDate"
+                      required
+                      min=""
+                      max=""
+                    />
+                    <span class="hint"
+                      >Select a date within the next 2 months</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Doctor Selection -->
+              <div class="form-card animate-on-scroll" id="card-doctor">
+                <h3 class="card-title">
+                  <i class="fa-solid fa-user-doctor"></i> Choose Specialist
+                </h3>
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input
+                    type="text"
+                    id="doctorSearch"
+                    placeholder="Search by name or browse grid..."
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="doctor-grid" id="doctorGrid">
+                  <!-- Populated by JS -->
+                </div>
+                <input type="hidden" id="selectedDoctorId" />
+                <input type="hidden" id="selectedTime" />
+
+                <!-- Time Slots Section (appears after doctor selected) -->
+                <div
+                  id="timeSlotsSection"
+                  hidden
+                  style="
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-top: 1px solid var(--border);
+                  "
+                >
+                  <label
+                    style="
+                      display: block;
+                      margin-bottom: 12px;
+                      font-weight: 500;
+                    "
+                    >Available Time Slots</label
+                  >
+                  <div class="time-slots-grid" id="timeSlotsGrid">
+                    <!-- Time slots populated by JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Patient Info -->
+              <div class="form-card animate-on-scroll" id="card-patient">
+                <h3 class="card-title">
+                  <i class="fa-regular fa-id-card"></i> Patient Information
+                </h3>
+
+                <div class="pill-tabs">
+                  <button class="pill active" data-tab="self">
+                    <i class="fa-regular fa-user"></i> For Myself
+                  </button>
+                  <button class="pill" data-tab="other">
+                    <i class="fa-solid fa-user-plus"></i> For Someone Else
+                  </button>
+                </div>
+
+                <!-- Tab: Self -->
+                <div class="tab-pane active" id="tab-self">
+                  <div class="info-row readonly">
+                    <span class="info-label">Name</span
+                    ><span class="info-value">John Doe</span>
+                  </div>
+                  <div class="info-row readonly">
+                    <span class="info-label">Contact</span
+                    ><span class="info-value">+880 1712 345678</span>
+                  </div>
+                  <div class="info-row readonly">
+                    <span class="info-label">Email</span
+                    ><span class="info-value">john.doe@email.com</span>
+                  </div>
+                  <div class="info-row readonly">
+                    <span class="info-label">Address</span
+                    ><span class="info-value"
+                      >45 Hospital Road, Motihar, Rajshahi 6000</span
+                    >
+                  </div>
+                  <div class="edit-link">
+                    <a href="/settings/profile">Edit Profile Details</a>
+                  </div>
+                </div>
+
+                <!-- Tab: Other -->
+                <div class="tab-pane" id="tab-other">
+                  <div class="sub-section">
+                    <h4>
+                      <i class="fa-solid fa-user-shield"></i> Applicant (You)
+                    </h4>
+                    <div class="info-row readonly">
+                      <span class="info-label">Name</span
+                      ><span class="info-value">John Doe</span>
+                    </div>
+                    <div class="info-row readonly">
+                      <span class="info-label">Contact</span
+                      ><span class="info-value">+880 1712 345678</span>
+                    </div>
+                  </div>
+                  <div class="section-divider"></div>
+                  <div class="sub-section">
+                    <h4>
+                      <i class="fa-solid fa-user-injured"></i> Patient Details
+                    </h4>
+                    <div class="form-row">
+                      <div class="form-field">
+                        <label>First Name <span class="req">*</span></label
+                        ><input
+                          type="text"
+                          id="o_fname"
+                          placeholder="Enter first name"
+                        />
+                      </div>
+                      <div class="form-field">
+                        <label>Last Name <span class="req">*</span></label
+                        ><input
+                          type="text"
+                          id="o_lname"
+                          placeholder="Enter last name"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-field">
+                        <label>Contact Number <span class="req">*</span></label
+                        ><input
+                          type="tel"
+                          id="o_phone"
+                          placeholder="+880 1XXX XXXXXX"
+                        />
+                      </div>
+                      <div class="form-field">
+                        <label>Email (Optional)</label
+                        ><input
+                          type="email"
+                          id="o_email"
+                          placeholder="patient@email.com"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-field full">
+                      <label>Patient Address <span class="req">*</span></label>
+                      <textarea
+                        id="o_address"
+                        rows="2"
+                        placeholder="Street, City, Postal Code"
+                      ></textarea>
+                      <span class="hint"
+                        >Auto-filled from your profile. Edit if different.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field full" style="margin-top: 16px">
+                  <label>Reason for Visit / Symptoms</label>
+                  <textarea
+                    id="symptoms"
+                    rows="2"
+                    placeholder="Brief description (optional)..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Summary -->
+            <aside class="appt-summary">
+              <div class="summary-card animate-on-scroll">
+                <h3>Booking Summary</h3>
+                <div class="summary-list">
+                  <div class="summary-item">
+                    <span class="s-label">Department</span
+                    ><span class="s-value" id="sum-dept">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Date</span
+                    ><span class="s-value" id="sum-date">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Time</span
+                    ><span class="s-value" id="sum-time">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Specialist</span
+                    ><span class="s-value" id="sum-doctor">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Specialization</span>
+                    <span class="s-value" id="sum-specialization">--</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Patient</span
+                    ><span class="s-value" id="sum-patient">--</span>
+                  </div>
+                </div>
+                <div class="summary-divider"></div>
+                <button type="button" class="btn-confirm" id="confirmBtn">
+                  <i class="fa-solid fa-check-circle"></i> Confirm Appointment
+                </button>
+                <p class="summary-note">
+                  <i class="fa-solid fa-shield-halved"></i> Your data is
+                  encrypted & secure
+                </p>
+              </div>
+            </aside>
           </div>
-          <div class="appt-progress">
-            <div class="progress-step active" data-step="1"><span class="step-num">1</span><span class="step-label">Schedule</span></div>
-            <div class="progress-line"></div>
-            <div class="progress-step" data-step="2"><span class="step-num">2</span><span class="step-label">Doctor</span></div>
-            <div class="progress-line"></div>
-            <div class="progress-step" data-step="3"><span class="step-num">3</span><span class="step-label">Patient</span></div>
-          </div>
-        </header>
-
-        <div class="appt-grid">
-          
-          <!-- Left: Form -->
-          <div class="appt-form">
-            
-            <!-- Section 1: Schedule -->
-            <div class="form-card animate-on-scroll" id="card-schedule">
-              <h3 class="card-title"><i class="fa-regular fa-calendar"></i> Select Schedule</h3>
-              <div class="form-row">
-                <div class="form-field">
-                  <label>Department</label>
-                  <div class="select-box">
-                    <select id="department" required>
-                      <option value="">Choose Department</option>
-                      <option value="cardiology">Cardiology</option>
-                      <option value="neurology">Neurology</option>
-                      <option value="orthopedics">Orthopedics</option>
-                      <option value="pediatrics">Pediatrics</option>
-                      <option value="general">General Medicine</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down"></i>
-                  </div>
-                </div>
-                <div class="form-field">
-                  <label>Preferred Date</label>
-                  <input type="date" id="appointmentDate" required min="" max="" />
-                  <span class="hint">Select a date within the next 2 months</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Section 2: Doctor Selection -->
-            <div class="form-card animate-on-scroll" id="card-doctor">
-              <h3 class="card-title"><i class="fa-solid fa-user-doctor"></i> Choose Specialist</h3>
-              <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="doctorSearch" placeholder="Search by name or browse grid..." autocomplete="off" />
-              </div>
-              <div class="doctor-grid" id="doctorGrid">
-                <!-- Populated by JS -->
-              </div>
-              <input type="hidden" id="selectedDoctorId" />
-              <input type="hidden" id="selectedTime" />
-              
-              <!-- Time Slots Section (appears after doctor selected) -->
-              <div id="timeSlotsSection" hidden style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-                <label style="display: block; margin-bottom: 12px; font-weight: 500;">Available Time Slots</label>
-                <div class="time-slots-grid" id="timeSlotsGrid">
-                  <!-- Time slots populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Section 3: Patient Info -->
-            <div class="form-card animate-on-scroll" id="card-patient">
-              <h3 class="card-title"><i class="fa-regular fa-id-card"></i> Patient Information</h3>
-              
-              <div class="pill-tabs">
-                <button class="pill active" data-tab="self"><i class="fa-regular fa-user"></i> For Myself</button>
-                <button class="pill" data-tab="other"><i class="fa-solid fa-user-plus"></i> For Someone Else</button>
-              </div>
-
-              <!-- Tab: Self -->
-              <div class="tab-pane active" id="tab-self">
-                <div class="info-row readonly"><span class="info-label">Name</span><span class="info-value">John Doe</span></div>
-                <div class="info-row readonly"><span class="info-label">Contact</span><span class="info-value">+880 1712 345678</span></div>
-                <div class="info-row readonly"><span class="info-label">Email</span><span class="info-value">john.doe@email.com</span></div>
-                <div class="info-row readonly"><span class="info-label">Address</span><span class="info-value">45 Hospital Road, Motihar, Rajshahi 6000</span></div>
-                <div class="edit-link"><a href="/settings/profile">Edit Profile Details</a></div>
-              </div>
-
-              <!-- Tab: Other -->
-              <div class="tab-pane" id="tab-other">
-                <div class="sub-section">
-                  <h4><i class="fa-solid fa-user-shield"></i> Applicant (You)</h4>
-                  <div class="info-row readonly"><span class="info-label">Name</span><span class="info-value">John Doe</span></div>
-                  <div class="info-row readonly"><span class="info-label">Contact</span><span class="info-value">+880 1712 345678</span></div>
-                </div>
-                <div class="section-divider"></div>
-                <div class="sub-section">
-                  <h4><i class="fa-solid fa-user-injured"></i> Patient Details</h4>
-                  <div class="form-row">
-                    <div class="form-field"><label>First Name <span class="req">*</span></label><input type="text" id="o_fname" placeholder="Enter first name" /></div>
-                    <div class="form-field"><label>Last Name <span class="req">*</span></label><input type="text" id="o_lname" placeholder="Enter last name" /></div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-field"><label>Contact Number <span class="req">*</span></label><input type="tel" id="o_phone" placeholder="+880 1XXX XXXXXX" /></div>
-                    <div class="form-field"><label>Email (Optional)</label><input type="email" id="o_email" placeholder="patient@email.com" /></div>
-                  </div>
-                  <div class="form-field full">
-                    <label>Patient Address <span class="req">*</span></label>
-                    <textarea id="o_address" rows="2" placeholder="Street, City, Postal Code"></textarea>
-                    <span class="hint">Auto-filled from your profile. Edit if different.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-field full" style="margin-top: 16px;">
-                <label>Reason for Visit / Symptoms</label>
-                <textarea id="symptoms" rows="2" placeholder="Brief description (optional)..."></textarea>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Right: Summary -->
-          <aside class="appt-summary">
-            <div class="summary-card animate-on-scroll">
-              <h3>Booking Summary</h3>
-              <div class="summary-list">
-                <div class="summary-item"><span class="s-label">Department</span><span class="s-value" id="sum-dept">--</span></div>
-                <div class="summary-item"><span class="s-label">Date</span><span class="s-value" id="sum-date">--</span></div>
-                <div class="summary-item"><span class="s-label">Time</span><span class="s-value" id="sum-time">--</span></div>
-                <div class="summary-item"><span class="s-label">Specialist</span><span class="s-value" id="sum-doctor">--</span></div>
-                <div class="summary-item"><span class="s-label">Patient</span><span class="s-value" id="sum-patient">--</span></div>
-              </div>
-              <div class="summary-divider"></div>
-              <button type="button" class="btn-confirm" id="confirmBtn"><i class="fa-solid fa-check-circle"></i> Confirm Appointment</button>
-              <p class="summary-note"><i class="fa-solid fa-shield-halved"></i> Your data is encrypted & secure</p>
-            </div>
-          </aside>
-
         </div>
-      </div>
-      
-    </main>
-  </div>
+      </main>
+    </div>
 
-  <!-- Footer & Chat -->
-  <%- include('../utils/layouts/client-footer') %>
-  <%- include('../utils/layouts/client-publicChat') %>
+    <!-- Footer & Chat -->
+    <%- include('../utils/layouts/client-footer') %> <%-
+    include('../utils/layouts/client-publicChat') %>
 
-  <script src="/scripts/client-layouts.js"></script>
-  <script src="/scripts/client-publicChat.js"></script>
-  <script src="/scripts/appointment.js"></script>
-  
-</body>
+    <script src="/scripts/client-layouts.js"></script>
+    <script src="/scripts/client-publicChat.js"></script>
+    <script src="/scripts/appointment.js"></script>
+  </body>
 </html>

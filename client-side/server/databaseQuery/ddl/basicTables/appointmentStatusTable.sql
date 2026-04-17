@@ -3,3 +3,5 @@ CREATE TABLE appointment_status (
     status_name VARCHAR(30) NOT NULL UNIQUE,
     description VARCHAR(100)
 );
+
+select * from appointment_status;

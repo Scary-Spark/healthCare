@@ -53,11 +53,11 @@ CREATE TABLE appointments (
     )
 );
 
-drop table appointments;
+/* drop table appointments;
 
 ALTER TABLE appointments
 ADD COLUMN diagnosis_name VARCHAR(255) NULL
 AFTER reason_for_visit;
 
 ALTER table appointments
-drop COLUMN diagnosis_name;
+drop COLUMN diagnosis_name; */

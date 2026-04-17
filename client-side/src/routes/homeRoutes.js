@@ -32,6 +32,10 @@ import {
   getProfile,
   getAppointments,
 } from "../controllers/clientController.js";
+import {
+  getDepartments,
+  getDoctors,
+} from "../controllers/appointmentController.js";
 
 const router = express.Router();
 
@@ -106,30 +110,6 @@ router.get("/others-settings", requireAuth, (req, res) => {
 });
 router.get("/profile-settings", requireAuth, getProfile);
 
-// dashboard (requires login)
-// router.get("/dashboard", requireAuth, (req, res) => {
-//   res.render("dashboard", {
-//     user: {
-//       name: `${req.session.client.firstName} ${req.session.client.lastName}`,
-//       email: req.session.client.email,
-//     },
-//   });
-// });
-
-// router.get("/appointment", (req, res) => res.render("appointment"));
-// router.get("/test-reports", (req, res) => res.render("test-reports"));
-// router.get("/prescriptions", (req, res) => res.render("prescriptions"));
-// router.get("/appointment-history", (req, res) =>
-//   res.render("appointment-history"),
-// );
-
-// router.get("/invoices", (req, res) => res.render("invoices"));
-// router.get("/payment", (req, res) => res.render("payment"));
-// router.get("/forum", (req, res) => res.render("forum"));
-// router.get("/suggestions", (req, res) => res.render("suggestions"));
-// router.get("/others-settings", (req, res) => res.render("others-settings"));
-// router.get("/profile-settings", (req, res) => res.render("profile-settings"));
-
 // api routes for signup
 router.post("/api/signup/personal-info", validatePersonalInfo);
 router.post("/api/signup/contact-info", validateContactInfo);
@@ -163,6 +143,10 @@ router.get("/reset-password", (req, res) => {
   }
   res.render("reset-password", { token });
 });
+
+// api routes for appointment
+router.get("/api/appointments/departments", getDepartments);
+router.get("/api/appointments/doctors", getDoctors);
 
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {

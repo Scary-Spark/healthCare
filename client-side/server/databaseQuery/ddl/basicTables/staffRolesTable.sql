@@ -3,3 +3,5 @@ CREATE TABLE staff_roles (
     role_name VARCHAR(50) NOT NULL UNIQUE,
     description VARCHAR(255) NULL
 );
+
+select * from staff_roles;
