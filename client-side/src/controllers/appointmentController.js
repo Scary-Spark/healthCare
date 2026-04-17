@@ -1,4 +1,5 @@
 import { pool } from "../configs/database.js";
+import { generateAppointmentPDF } from "../configs/pdfGenerator.js";
 
 export const getDepartments = async (req, res) => {
   try {
@@ -312,6 +313,53 @@ export const getAppointmentHistory = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to load appointment history",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+export const downloadAppointmentPDF = async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    const personId = req.session.client?.personId;
+
+    if (!personId) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
+    }
+
+    // Fetch specific appointment data using updated stored procedure
+    const [rows] = await pool.query(`CALL GetPatientAppointmentHistory(?)`, [
+      personId,
+    ]);
+
+    const appointments = rows[0] || [];
+    const record = appointments.find((a) => a.appointment_id == appointmentId);
+
+    if (!record) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
+    }
+
+    // Generate PDF
+    const pdfBuffer = await generateAppointmentPDF(record);
+
+    // Set response headers for PDF download
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Appointment-${record.visit_id || record.appointment_id}.pdf"`,
+    );
+    res.setHeader("Content-Length", pdfBuffer.length);
+
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error("❌ Error generating PDF:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate PDF",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }

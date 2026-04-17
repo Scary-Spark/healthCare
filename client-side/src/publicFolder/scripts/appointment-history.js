@@ -578,16 +578,12 @@ document.addEventListener("DOMContentLoaded", function () {
   // ===== DOWNLOAD & VIEW =====
   window.downloadRecord = function (id) {
     const record = history.find((r) => r.id === id);
-    showToast(
-      `Downloading record ${record.visitId || record.id}...`,
-      "success",
-    );
+    showToast("Feature is coming soon!", "info");
   };
 
   window.viewRecord = function (id) {
     const record = history.find((r) => r.id === id);
-    showRecordDetails(record);
-    openPanel();
+    showToast("Feature is coming soon!", "info");
   };
 
   // Panel Buttons - Feature Coming Soon
