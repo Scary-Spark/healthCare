@@ -470,12 +470,7 @@ export const getTestReports = async (req, res) => {
       personId,
     ]);
 
-    console.log("📊 Stored procedure result:", rows);
-
-    // Stored procedures return nested arrays - get first result set
     const reportRows = rows[0] || [];
-
-    // Group results by test report (since one test can have multiple result parameters)
     const reportsMap = new Map();
 
     reportRows.forEach((row) => {
@@ -507,7 +502,6 @@ export const getTestReports = async (req, res) => {
         });
       }
 
-      // Add result parameter if exists
       if (row.parameter_name) {
         const report = reportsMap.get(reportRef);
         report.results.push({
@@ -526,7 +520,6 @@ export const getTestReports = async (req, res) => {
       }
     });
 
-    // Convert map to array and sort by date descending
     const reports = Array.from(reportsMap.values());
     reports.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -549,6 +542,187 @@ export const getTestReports = async (req, res) => {
       success: false,
       message: "Failed to load test reports",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+export const getPayments = async (req, res) => {
+  try {
+    const personId = req.session.client?.personId;
+
+    if (!personId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    console.log("🔍 Fetching payments for personId:", personId);
+
+    // Call stored procedure
+    const [rows] = await pool.query(`CALL GetPaymentsByPersonId(?)`, [
+      personId,
+    ]);
+
+    console.log("📊 Stored procedure result:", rows);
+
+    // Stored procedures return nested arrays - get first result set
+    const paymentRows = rows[0] || [];
+
+    console.log(`✅ Found ${paymentRows.length} payment records`);
+
+    // Format data for frontend - handle NULL values and map types
+    const payments = paymentRows.map((row) => {
+      // Map service name to frontend type
+      const serviceToType = {
+        Consultation: "consultation",
+        "Lab Test": "lab",
+        Pharmacy: "pharmacy",
+        Recharge: "recharge",
+        Refund: "refund",
+      };
+
+      // Map status to frontend status
+      const statusMap = {
+        PENDING: "pending",
+        COMPLETED: "completed",
+        OVERDUE: "overdue",
+      };
+
+      // Determine direction: credit for recharge/refund, debit for others
+      const isCredit =
+        row.payment_service_name === "Recharge" ||
+        row.payment_service_name === "Refund";
+
+      // ✅ FIX: Capitalize method name properly
+      const methodName = row.method_name
+        ? row.method_name
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (l) => l.toUpperCase())
+        : "Unpaid";
+
+      return {
+        id: row.payment_id,
+        reference: row.reference_id,
+        type: serviceToType[row.payment_service_name] || "other",
+        service: row.payment_service_name || "Unknown Service",
+        date: row.payment_date || row.invoice_created,
+        amount: row.payment_amount,
+        direction: isCredit ? "credit" : "debit",
+        status: statusMap[row.status_name?.toUpperCase()] || "pending",
+        method: methodName,
+        transactionId: row.transaction_id,
+        // ✅ ADD: Include balance from database
+        balance:
+          row.balance !== null && row.balance !== undefined
+            ? Number(row.balance)
+            : 0,
+        // Extra fields for details panel
+        invoiceCreated: row.invoice_created,
+        statusName: row.status_name,
+      };
+    });
+
+    // Sort by payment_id descending (newest first)
+    payments.sort((a, b) => b.id - a.id);
+
+    // ✅ ADD: Include actual balance in response (from first row)
+    const actualBalance = payments.length > 0 ? payments[0].balance : 0;
+
+    res.json({
+      success: true,
+      payments,
+      count: payments.length,
+      // ✅ Include actual balance at top level for easy access
+      balance: actualBalance,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching payments:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load payment history",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+export const processPayment = async (req, res) => {
+  try {
+    const personId = req.session.client?.personId;
+    const { paymentId, amount } = req.body;
+
+    // Validate required fields
+    if (!personId || !paymentId || !amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields: personId, paymentId, amount",
+      });
+    }
+
+    console.log(
+      `💳 Processing payment: personId=${personId}, paymentId=${paymentId}, amount=${amount}`,
+    );
+
+    // Call stored procedure
+    const [result] = await pool.query(`CALL ProcessPayment(?, ?, ?)`, [
+      personId,
+      paymentId,
+      Number(amount),
+    ]);
+
+    if (!result || result.affectedRows === undefined) {
+      throw new Error("Stored procedure did not return expected result");
+    }
+
+    console.log(`Payment ${paymentId} processed successfully`);
+
+    res.json({
+      success: true,
+      message: "Payment processed successfully",
+      data: {
+        paymentId,
+        amount: Number(amount),
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    const errorMessage = error.message || error.sqlMessage || "";
+
+    if (
+      errorMessage.includes("Insufficient balance") ||
+      errorMessage.includes("45000")
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Insufficient account balance. Please add funds to your wallet.",
+        errorCode: "INSUFFICIENT_BALANCE",
+      });
+    }
+
+    if (
+      errorMessage.includes("payment not found") ||
+      errorMessage.includes("Row not found") ||
+      error.code === "ER_ROW_NOT_FOUND"
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment record not found or already processed",
+        errorCode: "PAYMENT_NOT_FOUND",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to process payment. Please try again.",
+      errorCode: error.code || "UNKNOWN_ERROR",
+      error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
     });
   }
 };

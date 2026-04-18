@@ -41,12 +41,12 @@ import {
   downloadAppointmentPDF,
   getPrescriptions,
   getTestReports,
+  getPayments,
+  processPayment,
 } from "../controllers/appointmentController.js";
 
 const router = express.Router();
 
-// login rate limit
-// 5 attempts per 15 minutes per ip
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 login attempts per window
@@ -56,7 +56,7 @@ const loginLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-});
+}); // function not used
 
 // middlewares
 const requireAuth = (req, res, next) => {
@@ -159,6 +159,10 @@ router.get("/api/appointments/history", getAppointmentHistory);
 router.get("/api/appointments/history/:id/pdf", downloadAppointmentPDF);
 router.get("/api/prescriptions", getPrescriptions);
 router.get("/api/test-reports", getTestReports);
+
+// api routes for payments
+router.get("/api/payments", getPayments);
+router.post("/api/payments/process", processPayment);
 
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {
