@@ -364,3 +364,90 @@ export const downloadAppointmentPDF = async (req, res) => {
     });
   }
 };
+
+export const getPrescriptions = async (req, res) => {
+  try {
+    const personId = req.session.client?.personId;
+
+    if (!personId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    console.log("🔍 Fetching prescriptions for personId:", personId);
+
+    // Call stored procedure
+    const [rows] = await pool.query(`CALL GetPersonPrescriptions(?)`, [
+      personId,
+    ]);
+
+    console.log("📊 Stored procedure result:", rows);
+
+    // Stored procedures return nested arrays - get first result set
+    const prescriptionRows = rows[0] || [];
+
+    console.log(`✅ Found ${prescriptionRows.length} prescription rows`);
+
+    // Group medicines by prescription (since one prescription can have multiple medicines)
+    const prescriptionsMap = new Map();
+
+    prescriptionRows.forEach((row) => {
+      const prescriptionId = row.prescription_code;
+
+      if (!prescriptionsMap.has(prescriptionId)) {
+        prescriptionsMap.set(prescriptionId, {
+          id: prescriptionId,
+          refNumber: row.prescription_code,
+          appointmentId: row.appointment_id,
+          doctor: row.staff_full_name,
+          datePrescribed: row.prescription_date,
+          status: row.prescription_status_name?.toLowerCase() || "active",
+          medications: [],
+        });
+      }
+
+      // Add medicine if exists
+      if (row.medicine_name) {
+        const prescription = prescriptionsMap.get(prescriptionId);
+        prescription.medications.push({
+          name: row.medicine_name,
+          dosage: row.dosage,
+          frequency: row.frequency,
+          duration: row.duration,
+          instructions: row.instructions,
+        });
+      }
+    });
+
+    // Convert map to array
+    const prescriptions = Array.from(prescriptionsMap.values());
+
+    // Sort by date descending
+    prescriptions.sort(
+      (a, b) => new Date(b.datePrescribed) - new Date(a.datePrescribed),
+    );
+
+    console.log(`✅ Grouped into ${prescriptions.length} unique prescriptions`);
+
+    res.json({
+      success: true,
+      data: prescriptions,
+      count: prescriptions.length,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching prescriptions:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load prescriptions",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
