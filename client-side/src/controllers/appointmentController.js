@@ -451,3 +451,104 @@ export const getPrescriptions = async (req, res) => {
     });
   }
 };
+
+export const getTestReports = async (req, res) => {
+  try {
+    const personId = req.session.client?.personId;
+
+    if (!personId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    console.log("🔍 Fetching test reports for personId:", personId);
+
+    // Call stored procedure
+    const [rows] = await pool.query(`CALL GetPatientTestReports(?)`, [
+      personId,
+    ]);
+
+    console.log("📊 Stored procedure result:", rows);
+
+    // Stored procedures return nested arrays - get first result set
+    const reportRows = rows[0] || [];
+
+    // Group results by test report (since one test can have multiple result parameters)
+    const reportsMap = new Map();
+
+    reportRows.forEach((row) => {
+      const reportRef = row.report_reference;
+
+      if (!reportsMap.has(reportRef)) {
+        reportsMap.set(reportRef, {
+          id: reportRef, // Use reference as ID
+          refNumber: row.report_reference,
+          testName: row.test_name,
+          testType: row.test_name?.toLowerCase().includes("blood")
+            ? "blood"
+            : row.test_name?.toLowerCase().includes("urine")
+              ? "urine"
+              : row.test_name?.toLowerCase().includes("x-ray")
+                ? "xray"
+                : row.test_name?.toLowerCase().includes("mri")
+                  ? "mri"
+                  : row.test_name?.toLowerCase().includes("ct")
+                    ? "ct"
+                    : "other",
+          doctor: row.doctor_name,
+          performedBy: row.test_status_name || "Lab",
+          date: row.test_date,
+          status: row.test_status_name?.toLowerCase() || "pending",
+          appointmentDate: row.appointment_date,
+          department: row.department_name,
+          results: [],
+        });
+      }
+
+      // Add result parameter if exists
+      if (row.parameter_name) {
+        const report = reportsMap.get(reportRef);
+        report.results.push({
+          parameter: row.parameter_name,
+          value: row.result_value,
+          unit: row.unit,
+          referenceRange: row.reference_range,
+          remarks: row.result_remarks,
+          // Determine if normal based on reference range (simple check)
+          normal:
+            row.result_value && row.reference_range
+              ? row.reference_range.toLowerCase().includes("normal") ||
+                !row.result_remarks?.toLowerCase().includes("abnormal")
+              : true,
+        });
+      }
+    });
+
+    // Convert map to array and sort by date descending
+    const reports = Array.from(reportsMap.values());
+    reports.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    console.log(`✅ Grouped into ${reports.length} unique test reports`);
+
+    res.json({
+      success: true,
+      reports,
+      count: reports.length,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching test reports:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to load test reports",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};

@@ -1,140 +1,43 @@
 /**
- * TEST REPORTS PAGE
- * Fast animations • Mobile responsive • Feature coming soon messages
+ * TEST REPORTS PAGE - DYNAMIC VERSION
+ * Fetches real data from database via API
+ * Handles NULL values and dynamic status colors
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  // ===== MOCK DATA - Test Reports =====
-  const testReports = [
-    {
-      id: 1,
-      refNumber: "TR-2024-001",
-      testName: "Complete Blood Count (CBC)",
-      testType: "blood",
-      doctor: "Dr. Sarah Jenkins",
-      performedBy: "Lab Tech: Michael Brown",
-      date: "2024-10-15",
-      status: "completed",
-      appointmentDate: "2024-10-14",
-      department: "Hematology",
-      results: {
-        Hemoglobin: { value: "14.2 g/dL", normal: true },
-        "WBC Count": { value: "7,500/μL", normal: true },
-        Platelets: { value: "250,000/μL", normal: true },
-        "RBC Count": { value: "4.8 M/μL", normal: true },
-      },
+  // ===== STATUS CONFIGURATION - DYNAMIC COLORS =====
+  const STATUS_CONFIG = {
+    completed: {
+      label: "Completed",
+      class: "completed",
+      icon: "fa-check-circle",
+      bg: "#d1fae5",
+      color: "#065f46",
+      border: "#10b981",
     },
-    {
-      id: 2,
-      refNumber: "TR-2024-002",
-      testName: "Lipid Profile",
-      testType: "blood",
-      doctor: "Dr. Michael Ross",
-      performedBy: "Lab Tech: Emily White",
-      date: "2024-10-18",
-      status: "completed",
-      appointmentDate: "2024-10-17",
-      department: "Biochemistry",
-      results: {
-        "Total Cholesterol": { value: "195 mg/dL", normal: true },
-        HDL: { value: "52 mg/dL", normal: true },
-        LDL: { value: "118 mg/dL", normal: true },
-        Triglycerides: { value: "145 mg/dL", normal: true },
-      },
+    pending: {
+      label: "Pending",
+      class: "pending",
+      icon: "fa-clock",
+      bg: "#fef3c7",
+      color: "#92400e",
+      border: "#f59e0b",
     },
-    {
-      id: 3,
-      refNumber: "TR-2024-003",
-      testName: "Urinalysis",
-      testType: "urine",
-      doctor: "Dr. Mark Alston",
-      performedBy: "Lab Tech: Sarah Johnson",
-      date: "2024-10-20",
-      status: "pending",
-      appointmentDate: "2024-10-19",
-      department: "Clinical Pathology",
-      results: {},
+    critical: {
+      label: "Critical",
+      class: "critical",
+      icon: "fa-triangle-exclamation",
+      bg: "#fee2e2",
+      color: "#991b1b",
+      border: "#ef4444",
     },
-    {
-      id: 4,
-      refNumber: "TR-2024-004",
-      testName: "Chest X-Ray",
-      testType: "xray",
-      doctor: "Dr. Emily Chen",
-      performedBy: "Radiologist: Dr. James Wilson",
-      date: "2024-10-22",
-      status: "completed",
-      appointmentDate: "2024-10-21",
-      department: "Radiology",
-      results: {
-        Finding: { value: "No acute abnormality", normal: true },
-        "Heart Size": { value: "Normal", normal: true },
-        Lungs: { value: "Clear", normal: true },
-      },
-    },
-    {
-      id: 5,
-      refNumber: "TR-2024-005",
-      testName: "MRI Brain",
-      testType: "mri",
-      doctor: "Dr. Mark Alston",
-      performedBy: "Radiologist: Dr. Lisa Wong",
-      date: "2024-10-25",
-      status: "critical",
-      appointmentDate: "2024-10-24",
-      department: "Neuro-Radiology",
-      results: {
-        Finding: { value: "Small lesion detected", normal: false },
-        Recommendation: { value: "Follow-up in 3 months", normal: true },
-      },
-    },
-    // Add more mock data
-    ...Array.from({ length: 20 }, (_, i) => ({
-      id: i + 6,
-      refNumber: `TR-2024-${String(i + 6).padStart(3, "0")}`,
-      testName: [
-        "Blood Glucose",
-        "Thyroid Panel",
-        "CT Abdomen",
-        "Ultrasound",
-        "ECG",
-      ][i % 5],
-      testType: ["blood", "blood", "ct", "ultrasound", "blood"][i % 5],
-      doctor: [
-        "Dr. Sarah Jenkins",
-        "Dr. Michael Ross",
-        "Dr. Mark Alston",
-        "Dr. Emily Chen",
-        "Dr. James Miller",
-      ][i % 5],
-      performedBy: [
-        "Lab Tech: Sample",
-        "Lab Tech: Demo",
-        "Radiologist: Sample",
-      ][i % 3],
-      date: `2024-10-${String(15 + i).padStart(2, "0")}`,
-      status: ["completed", "pending", "completed", "critical", "completed"][
-        i % 5
-      ],
-      appointmentDate: `2024-10-${String(14 + i).padStart(2, "0")}`,
-      department: [
-        "Hematology",
-        "Biochemistry",
-        "Radiology",
-        "Cardiology",
-        "Neurology",
-      ][i % 5],
-      results: {
-        "Result 1": { value: "Normal", normal: true },
-        "Result 2": { value: "Normal", normal: true },
-      },
-    })),
-  ];
+  };
 
   // ===== STATE =====
   let currentPage = 1;
   let itemsPerPage = 25;
-  let filteredData = [...testReports];
+  let testReports = []; // Will be populated by API
+  let filteredData = [];
   let selectedReport = null;
 
   // ===== DOM ELEMENTS =====
@@ -155,14 +58,124 @@ document.addEventListener("DOMContentLoaded", function () {
   const downloadPanel = document.getElementById("downloadPanel");
   const viewPanel = document.getElementById("viewPanel");
 
+  // ===== FETCH DATA FROM API =====
+  async function loadTestReports() {
+    try {
+
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:var(--primary);"></i><p style="margin-top:12px;color:var(--text-light);">Loading your test reports...</p></td></tr>`;
+
+      const response = await fetch("/api/test-reports");
+      console.log("📡 Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("📦 API result:", result);
+
+      if (result.success) {
+        testReports = result.reports || [];
+        filteredData = [...testReports];
+
+        // Populate filter dropdowns dynamically
+        populateTestTypeFilter();
+        populateStatusFilter();
+
+        // Update UI
+        updateStats();
+        renderTable();
+      } else {
+        console.error("❌ API returned error:", result.message);
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-light);">
+        <i class="fa-solid fa-circle-exclamation" style="font-size:2rem;margin-bottom:12px;"></i>
+        <p>${result.message || "Failed to load test reports"}</p>
+      </td></tr>`;
+      }
+    } catch (error) {
+      console.error("❌ Error fetching test reports:", error);
+      console.error("Error stack:", error.stack);
+
+      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-light);">
+      <i class="fa-solid fa-circle-exclamation" style="font-size:2rem;margin-bottom:12px;"></i>
+      <p>Error loading data. Please try again.</p>
+      <p style="font-size:0.85rem;margin-top:8px;opacity:0.7;">${error.message}</p>
+    </td></tr>`;
+    }
+  }
+
+  // ===== POPULATE FILTERS DYNAMICALLY =====
+  function populateTestTypeFilter() {
+    const select = document.getElementById("testTypeFilter");
+    if (!select) return;
+
+    // Get unique test types from loaded data (based on test name patterns)
+    const types = [
+      ...new Set(testReports.map((r) => r.testType).filter(Boolean)),
+    ];
+
+    // Keep the "All Types" option
+    select.innerHTML = '<option value="">All Types</option>';
+
+    // Add dynamic options with proper labels
+    const typeLabels = {
+      blood: "Blood Test",
+      urine: "Urine Test",
+      xray: "X-Ray",
+      mri: "MRI",
+      ct: "CT Scan",
+      ultrasound: "Ultrasound",
+      other: "Other",
+    };
+
+    types.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = typeLabels[type] || capitalize(type);
+      select.appendChild(option);
+    });
+  }
+
+  function populateStatusFilter() {
+    const select = document.getElementById("statusFilter");
+    if (!select) return;
+
+    // Get unique statuses from loaded data
+    const statuses = [
+      ...new Set(testReports.map((r) => r.status).filter(Boolean)),
+    ];
+
+    // Keep the "All Status" option
+    select.innerHTML = '<option value="">All Status</option>';
+
+    // Add dynamic options with proper labels
+    statuses.forEach((status) => {
+      const option = document.createElement("option");
+      option.value = status.toLowerCase();
+      // Use STATUS_CONFIG for nice labels, fallback to capitalize
+      const config = STATUS_CONFIG[status.toLowerCase()];
+      option.textContent = config?.label || capitalize(status);
+      select.appendChild(option);
+    });
+  }
+
+  // ===== GET STATUS CONFIG =====
+  function getStatusConfig(status) {
+    const statusKey = status
+      ? status.toLowerCase().replace(/\s+/g, "-")
+      : "pending";
+    return STATUS_CONFIG[statusKey] || STATUS_CONFIG["pending"];
+  }
+
   // ===== STATS UPDATE =====
   function updateStats() {
-    const total = testReports.length;
-    const pending = testReports.filter((r) => r.status === "pending").length;
-    const completed = testReports.filter(
-      (r) => r.status === "completed",
-    ).length;
-    const critical = testReports.filter((r) => r.status === "critical").length;
+    // ✅ Use filteredData so stats reflect active filters
+    const data = filteredData;
+
+    const total = data.length;
+    const pending = data.filter((r) => r.status === "pending").length;
+    const completed = data.filter((r) => r.status === "completed").length;
+    const critical = data.filter((r) => r.status === "critical").length;
 
     animateNumber("totalTests", total);
     animateNumber("pendingTests", pending);
@@ -172,7 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function animateNumber(elementId, target) {
     const element = document.getElementById(elementId);
-    const duration = 500; // Faster animation
+    if (!element) return;
+
+    const duration = 500;
     const start = 0;
     const increment = target / (duration / 16);
     let current = start;
@@ -196,27 +211,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableBody.innerHTML = "";
 
+    if (pageData.length === 0) {
+      if (testReports.length === 0) {
+        // No reports in database
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:60px 40px;">
+              <div style="max-width:400px;margin:0 auto;">
+                <i class="fa-solid fa-file-medical" style="font-size:4rem;color:var(--border);margin-bottom:20px;display:block;"></i>
+                <h3 style="color:var(--text-dark);margin:0 0 8px 0;font-size:1.3rem;">No Test Reports Yet</h3>
+                <p style="color:var(--text-light);margin:0 0 20px 0;font-size:0.95rem;">
+                  You don't have any test reports on record. When your doctor orders tests, 
+                  the results will appear here.
+                </p>
+                <button onclick="window.location.href='/appointment'" style="
+                  background:var(--primary);
+                  color:white;
+                  border:none;
+                  padding:12px 24px;
+                  border-radius:8px;
+                  font-weight:600;
+                  cursor:pointer;
+                  font-size:0.9rem;
+                ">
+                  <i class="fa-solid fa-plus" style="margin-right:8px;"></i>
+                  Book an Appointment
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else {
+        // Filtered results are empty
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align:center;padding:60px 40px;">
+              <div style="max-width:400px;margin:0 auto;">
+                <i class="fa-solid fa-search" style="font-size:3rem;color:var(--border);margin-bottom:20px;display:block;"></i>
+                <h3 style="color:var(--text-dark);margin:0 0 8px 0;font-size:1.3rem;">No Matching Reports</h3>
+                <p style="color:var(--text-light);margin:0;font-size:0.95rem;">
+                  No test reports match your current filters. Try adjusting your search or filters.
+                </p>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      updateTableInfo();
+      renderPagination();
+      return;
+    }
+
     pageData.forEach((report) => {
       const row = document.createElement("tr");
       row.dataset.id = report.id;
 
-      const statusClass = report.status;
-      const statusIcon =
-        report.status === "completed"
-          ? "fa-check"
-          : report.status === "pending"
-            ? "fa-clock"
-            : "fa-triangle-exclamation";
+      const statusConfig = getStatusConfig(report.status);
 
       row.innerHTML = `
-        <td><strong>${report.refNumber}</strong></td>
-        <td>${report.testName}</td>
-        <td>${report.doctor}</td>
+        <td><strong>${report.refNumber || "N/A"}</strong></td>
+        <td>${report.testName || "Unknown Test"}</td>
+        <td>${report.doctor || "Unknown Doctor"}</td>
         <td>${formatDate(report.date)}</td>
         <td>
-          <span class="status-badge ${statusClass}">
-            <i class="fa-solid ${statusIcon}"></i>
-            ${report.status}
+          <span class="status-badge ${statusConfig.class}" style="background:${statusConfig.bg};color:${statusConfig.color};border:1px solid ${statusConfig.border}">
+            <i class="fa-solid ${statusConfig.icon}"></i>
+            ${statusConfig.label}
           </span>
         </td>
         <td>
@@ -231,13 +291,11 @@ document.addEventListener("DOMContentLoaded", function () {
         </td>
       `;
 
-      // Hover to show details
       row.addEventListener("mouseenter", () => {
         showReportDetails(report);
         highlightRow(row);
       });
 
-      // Click to select
       row.addEventListener("click", () => {
         showReportDetails(report);
         highlightRow(row);
@@ -323,28 +381,41 @@ document.addEventListener("DOMContentLoaded", function () {
   function showReportDetails(report) {
     selectedReport = report;
 
-    const statusClass = report.status;
-    const statusIcon =
-      report.status === "completed"
-        ? "fa-check-circle"
-        : report.status === "pending"
-          ? "fa-clock"
-          : "fa-triangle-exclamation";
+    const statusConfig = getStatusConfig(report.status);
 
+    // Format results for display
     let resultsHTML = "";
-    if (Object.keys(report.results).length > 0) {
+    if (report.results && report.results.length > 0) {
       resultsHTML = `
         <div class="test-results">
-          ${Object.entries(report.results)
+          ${report.results
             .map(
-              ([key, value]) => `
+              (result) => `
             <div class="result-item">
-              <span class="result-name">${key}</span>
-              <span class="result-value ${value.normal ? "" : "abnormal"}">${value.value}</span>
+              <span class="result-name">${result.parameter || "N/A"}</span>
+              <span class="result-value ${result.normal ? "" : "abnormal"}">
+                ${result.value || "N/A"} ${result.unit || ""}
+                ${result.referenceRange ? `<span class="result-range">(${result.referenceRange})</span>` : ""}
+              </span>
+              ${result.remarks ? `<span class="result-remarks">${result.remarks}</span>` : ""}
             </div>
           `,
             )
             .join("")}
+        </div>
+      `;
+    } else {
+      resultsHTML = `
+        <div style="
+          padding: 20px;
+          background: var(--bg);
+          border-radius: var(--radius-md);
+          text-align: center;
+          color: var(--text-light);
+          font-size: 0.9rem;
+          font-style: italic;
+        ">
+          No detailed results available for this test report.
         </div>
       `;
     }
@@ -355,17 +426,17 @@ document.addEventListener("DOMContentLoaded", function () {
           <h4>Report Information</h4>
           <div class="detail-row">
             <span class="detail-label">Reference #</span>
-            <span class="detail-value">${report.refNumber}</span>
+            <span class="detail-value">${report.refNumber || "N/A"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Test Name</span>
-            <span class="detail-value">${report.testName}</span>
+            <span class="detail-value">${report.testName || "N/A"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status</span>
             <span class="detail-value">
-              <span class="status-badge ${statusClass}">
-                <i class="fa-solid ${statusIcon}"></i> ${report.status}
+              <span class="status-badge ${statusConfig.class}" style="background:${statusConfig.bg};color:${statusConfig.color};border:1px solid ${statusConfig.border};padding:6px 12px;">
+                <i class="fa-solid ${statusConfig.icon}"></i> ${statusConfig.label}
               </span>
             </span>
           </div>
@@ -383,19 +454,18 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
           <div class="detail-row">
             <span class="detail-label">Doctor</span>
-            <span class="detail-value">${report.doctor}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Performed By</span>
-            <span class="detail-value">${report.performedBy}</span>
+            <span class="detail-value">${report.doctor || "N/A"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Department</span>
-            <span class="detail-value">${report.department}</span>
+            <span class="detail-value">${report.department || "N/A"}</span>
           </div>
         </div>
 
-        ${resultsHTML}
+        <div class="detail-section">
+          <h4>Test Results</h4>
+          ${resultsHTML}
+        </div>
       </div>
     `;
   }
@@ -428,16 +498,20 @@ document.addEventListener("DOMContentLoaded", function () {
       let match = true;
 
       if (testType && report.testType !== testType) match = false;
-      if (status && report.status !== status) match = false;
-      if (dateFrom && report.date < dateFrom) match = false;
-      if (dateTo && report.date > dateTo) match = false;
+      if (status && report.status?.toLowerCase() !== status.toLowerCase())
+        match = false;
+
+      if (dateFrom && report.date && new Date(report.date) < new Date(dateFrom))
+        match = false;
+      if (dateTo && report.date && new Date(report.date) > new Date(dateTo))
+        match = false;
 
       return match;
     });
 
     currentPage = 1;
     renderTable();
-    updateStats();
+    updateStats(); // ✅ Stats update with filters
     filtersSection.hidden = true;
   }
 
@@ -447,10 +521,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("dateFrom").value = "";
     document.getElementById("dateTo").value = "";
 
-    filteredData = [...testReports];
+    filteredData = [...testReports]; // ✅ Reset to all data
     currentPage = 1;
     renderTable();
-    updateStats();
+    updateStats(); // ✅ Stats reset to total
   }
 
   searchInput.addEventListener("input", (e) => {
@@ -458,19 +532,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     filteredData = testReports.filter(
       (report) =>
-        report.testName.toLowerCase().includes(term) ||
-        report.doctor.toLowerCase().includes(term) ||
-        report.refNumber.toLowerCase().includes(term),
+        (report.refNumber || "").toLowerCase().includes(term) ||
+        (report.testName || "").toLowerCase().includes(term) ||
+        (report.doctor || "").toLowerCase().includes(term),
     );
 
     currentPage = 1;
     renderTable();
+    updateStats(); // ✅ Stats update with search
   });
 
   // ===== DOWNLOAD & VIEW =====
   window.downloadReport = function (id) {
     const report = testReports.find((r) => r.id === id);
-    showToast(`Downloading ${report.testName}...`, "success");
+    showToast(`Downloading ${report.refNumber || report.id}...`, "info");
   };
 
   window.viewReport = function (id) {
@@ -479,14 +554,13 @@ document.addEventListener("DOMContentLoaded", function () {
     openPanel();
   };
 
-  // Download Panel Button
+  // Panel Buttons - Feature Coming Soon
   downloadPanel.addEventListener("click", () => {
     if (selectedReport) {
       showToast("Feature is coming soon!", "info");
     }
   });
 
-  // View Panel Button
   viewPanel.addEventListener("click", () => {
     if (selectedReport) {
       showToast("Feature is coming soon!", "info");
@@ -499,7 +573,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ===== UTILITIES =====
+  function capitalize(s) {
+    return s && s[0].toUpperCase() + s.slice(1);
+  }
+
   function formatDate(dateStr) {
+    if (!dateStr) return "N/A";
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
       month: "short",
@@ -544,6 +623,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ===== INITIALIZE =====
-  updateStats();
-  renderTable();
+  loadTestReports(); // ✅ Fetch real data on page load
 });
