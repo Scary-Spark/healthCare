@@ -31,6 +31,12 @@ import {
   getDashboard,
   getProfile,
   getAppointments,
+  getProfileSettings,
+  updatePersonalInfo,
+  updateAddressInfo,
+  updateContactInfo,
+  updatePassword,
+  updateProfilePicture,
 } from "../controllers/clientController.js";
 import {
   getDepartments,
@@ -44,6 +50,10 @@ import {
   getPayments,
   processPayment,
 } from "../controllers/appointmentController.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import fs from "fs";
 
 const router = express.Router();
 
@@ -137,6 +147,48 @@ router.get("/api/locations/upazila/:upazilaId", getUpazilaDetails);
 router.post("/api/auth/login", loginClient);
 router.post("/api/auth/logout", logoutClient);
 router.get("/api/auth/me", getCurrentClient); // get current user for dashboard
+
+// api routes for profile settings
+router.get("/api/profile/settings", getProfileSettings);
+router.post("/api/profile/personal", requireAuth, updatePersonalInfo);
+router.post("/api/profile/contact", requireAuth, updateContactInfo);
+router.post("/api/profile/address", requireAuth, updateAddressInfo);
+router.post("/api/profile/password", requireAuth, updatePassword);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+import multer from "multer";
+const uploadDir = path.join(
+  __dirname,
+  "..",
+  "publicFolder",
+  "uploads",
+  "profilePictures",
+);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir); // ✅ Use absolute path
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, "avatar-" + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 2MB limit
+});
+
+// Then add route:
+router.post(
+  "/api/profile/avatar",
+  requireAuth,
+  upload.single("avatar"),
+  updateProfilePicture,
+);
 
 // routes for password reset
 router.post("/api/auth/request-password-reset", requestPasswordReset);

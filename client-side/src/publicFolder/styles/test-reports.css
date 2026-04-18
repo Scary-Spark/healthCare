@@ -864,3 +864,7 @@
     animation: none !important;
   }
 }
+
+h3 {
+  color: white;
+}

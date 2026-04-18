@@ -1,47 +1,288 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // ===== STATE =====
+  let profileData = null;
+  let originalFormData = null; // Store original values for reset
+
+  // ===== DOM ELEMENTS =====
+  const settingsProfileAvatar = document.getElementById(
+    "settingsProfileAvatar",
+  );
+  const displayName = document.getElementById("displayName");
+  const displayEmail = document.getElementById("displayEmail");
+  const progressFill = document.getElementById("progressFill");
+  const progressPercent = document.getElementById("progressPercent");
+  const globalCurrentPassword = document.getElementById(
+    "globalCurrentPassword",
+  );
+
+  // Location dropdowns
+  const divisionSelect = document.getElementById("division");
+  const districtSelect = document.getElementById("district");
+  const upazilaSelect = document.getElementById("upazila");
+
+  // ===== FETCH PROFILE DATA =====
+  async function loadProfileData() {
+    try {
+      const response = await fetch("/api/profile/settings");
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        profileData = result.data;
+        originalFormData = JSON.parse(JSON.stringify(result.data)); // Deep copy for reset
+        populateFormFields();
+        await loadLocationData();
+        updateProgress();
+      }
+    } catch (error) {
+      showToast("Failed to load profile data", "error");
+    }
+  }
+
+  // ===== POPULATE FORM FIELDS =====
+  function populateFormFields() {
+    if (!profileData) return;
+
+    const firstNameInput = document.getElementById("firstName");
+    const lastNameInput = document.getElementById("lastName");
+    const dobInput = document.getElementById("dob");
+    const genderInput = document.getElementById("gender");
+    const bloodGroupInput = document.getElementById("bloodGroup");
+
+    if (firstNameInput) firstNameInput.value = profileData.firstName || "";
+    if (lastNameInput) lastNameInput.value = profileData.lastName || "";
+    if (dobInput) dobInput.value = profileData.dateOfBirth || "";
+    if (genderInput) genderInput.value = profileData.gender || "";
+    if (bloodGroupInput)
+      bloodGroupInput.value = profileData.bloodGroup || "not-tested";
+
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+
+    if (emailInput) emailInput.value = profileData.email || "";
+    if (phoneInput) phoneInput.value = profileData.phone || "";
+
+    const postalCodeInput = document.getElementById("postalCode");
+    const streetAddressInput = document.getElementById("streetAddress");
+
+    if (postalCodeInput) postalCodeInput.value = profileData.postalCode || "";
+    if (streetAddressInput)
+      streetAddressInput.value = profileData.streetAddress || "";
+
+    if (settingsProfileAvatar && profileData.profilePic) {
+      settingsProfileAvatar.src = profileData.profilePic;
+    }
+    if (displayName && (profileData.firstName || profileData.lastName)) {
+      displayName.textContent = (
+        profileData.firstName +
+        " " +
+        profileData.lastName
+      ).trim();
+    }
+    if (displayEmail && profileData.email) {
+      displayEmail.textContent = profileData.email;
+    }
+  }
+
+  // ===== LOAD LOCATION DATA =====
+  async function loadLocationData() {
+    try {
+      const divisionsResponse = await fetch("/api/locations/divisions");
+      const divisions = await divisionsResponse.json();
+
+      if (Array.isArray(divisions)) {
+        populateDivisions(divisions);
+
+        if (profileData.upazilaDetails) {
+          await populateDistricts(profileData.upazilaDetails.divisionId);
+          await populateUpazilas(profileData.upazilaDetails.districtId);
+
+          if (divisionSelect)
+            divisionSelect.value = profileData.upazilaDetails.divisionId;
+          if (districtSelect)
+            districtSelect.value = profileData.upazilaDetails.districtId;
+          if (upazilaSelect)
+            upazilaSelect.value = profileData.upazilaDetails.upazilaId;
+        }
+      }
+    } catch (error) {
+      showToast("Failed to load location data", "error");
+    }
+  }
+
+  // ===== POPULATE DIVISIONS =====
+  function populateDivisions(divisions) {
+    if (!divisionSelect) return;
+
+    divisionSelect.innerHTML = "";
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select Division";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    divisionSelect.appendChild(defaultOption);
+
+    if (Array.isArray(divisions)) {
+      divisions.forEach((division) => {
+        if (!division.division_name) return;
+        const option = document.createElement("option");
+        option.value = division.division_id;
+        option.textContent = division.division_name;
+        divisionSelect.appendChild(option);
+      });
+    }
+  }
+
+  // ===== POPULATE DISTRICTS =====
+  async function populateDistricts(divisionId) {
+    if (!districtSelect || !upazilaSelect) return;
+
+    districtSelect.innerHTML = "";
+    upazilaSelect.innerHTML = "";
+
+    const defaultDistrict = document.createElement("option");
+    defaultDistrict.value = "";
+    defaultDistrict.textContent = "Select District";
+    defaultDistrict.disabled = true;
+    defaultDistrict.selected = true;
+    districtSelect.appendChild(defaultDistrict);
+
+    const defaultUpazila = document.createElement("option");
+    defaultUpazila.value = "";
+    defaultUpazila.textContent = "Select Upazila";
+    defaultUpazila.disabled = true;
+    defaultUpazila.selected = true;
+    upazilaSelect.appendChild(defaultUpazila);
+
+    upazilaSelect.disabled = true;
+
+    if (!divisionId) {
+      districtSelect.disabled = true;
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/locations/districts/" + divisionId);
+      const districts = await response.json();
+
+      if (Array.isArray(districts)) {
+        districts.forEach((district) => {
+          if (!district.district_name) return;
+          const option = document.createElement("option");
+          option.value = district.district_id;
+          option.textContent = district.district_name;
+          districtSelect.appendChild(option);
+        });
+        districtSelect.disabled = false;
+      }
+    } catch (error) {
+      showToast("Failed to load districts", "error");
+    }
+  }
+
+  // ===== POPULATE UPAZILAS =====
+  async function populateUpazilas(districtId) {
+    if (!upazilaSelect) return;
+
+    upazilaSelect.innerHTML = "";
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select Upazila";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    upazilaSelect.appendChild(defaultOption);
+
+    if (!districtId) {
+      upazilaSelect.disabled = true;
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/locations/upazilas/" + districtId);
+      const upazilas = await response.json();
+
+      if (Array.isArray(upazilas)) {
+        upazilas.forEach((upazila) => {
+          if (!upazila.upazila_name) return;
+          const option = document.createElement("option");
+          option.value = upazila.upazila_id;
+          option.textContent = upazila.upazila_name;
+          upazilaSelect.appendChild(option);
+        });
+        upazilaSelect.disabled = false;
+      }
+    } catch (error) {
+      showToast("Failed to load upazilas", "error");
+    }
+  }
+
   // ===== SECTION TOGGLE =====
   window.toggleSection = function (sectionId) {
     const body = document.getElementById(sectionId + "Body");
     const toggle = document.getElementById(sectionId + "Toggle");
-    body.classList.toggle("expanded");
-    toggle.classList.toggle("active");
+    if (body && toggle) {
+      body.classList.toggle("expanded");
+      toggle.classList.toggle("active");
+    }
   };
 
-  // ===== AVATAR UPLOAD (Using new ID) =====
+  // ===== AVATAR UPLOAD =====
   const avatarUpload = document.getElementById("avatarUpload");
-  const profileAvatar = document.getElementById("settingsProfileAvatar"); // ✅ Updated ID
-  const displayName = document.getElementById("displayName");
+  if (avatarUpload && settingsProfileAvatar) {
+    avatarUpload.addEventListener("change", async function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("Please select a valid image file.", "error");
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        showToast("File too large. Max 2MB allowed.", "error");
+        return;
+      }
 
-  avatarUpload.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      showToast("Please select a valid image file.", "error");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      showToast("File too large. Max 2MB allowed.", "error");
-      return;
-    }
+      // Show loading
+      const originalSrc = settingsProfileAvatar.src;
+      settingsProfileAvatar.src = URL.createObjectURL(file);
 
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      profileAvatar.src = event.target.result;
-      showToast("Profile photo updated!", "success");
-    };
-    reader.readAsDataURL(file);
-  });
+      try {
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        const response = await fetch("/api/profile/avatar", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showToast("Profile photo updated!", "success");
+          if (profileData) profileData.profilePic = result.data.profilePic;
+        } else {
+          showToast(result.message || "Failed to upload photo", "error");
+          settingsProfileAvatar.src = originalSrc; // Revert on error
+        }
+      } catch (error) {
+        showToast("Network error uploading photo", "error");
+        settingsProfileAvatar.src = originalSrc;
+      }
+    });
+  }
 
   // ===== PASSWORD TOGGLE =====
   window.togglePassword = function (inputId, btn) {
     const input = document.getElementById(inputId);
     const icon = btn.querySelector("i");
-    if (input.type === "password") {
-      input.type = "text";
-      icon.classList.replace("fa-eye", "fa-eye-slash");
-    } else {
-      input.type = "password";
-      icon.classList.replace("fa-eye-slash", "fa-eye");
+    if (input && icon) {
+      if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        input.type = "password";
+        icon.classList.replace("fa-eye-slash", "fa-eye");
+      }
     }
   };
 
@@ -55,6 +296,8 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("bar4"),
     ];
     const text = document.getElementById("strengthText");
+
+    if (!strengthEl || !bars[0] || !text) return;
 
     if (password.length === 0) {
       strengthEl.classList.remove("visible");
@@ -88,72 +331,106 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ===== VERIFY GLOBAL PASSWORD =====
   function verifyGlobalPassword(actionName) {
-    const password = document.getElementById("globalCurrentPassword").value;
+    const password = globalCurrentPassword?.value;
     if (!password || password.length < 1) {
       showToast(
-        `Please enter your current password to ${actionName}.`,
+        "Please enter your current password to " + actionName + ".",
         "error",
       );
-      document.getElementById("globalCurrentPassword").focus();
+      if (globalCurrentPassword) globalCurrentPassword.focus();
       return false;
     }
-    return true; // Demo: Accepts any password
+    return true;
+  }
+
+  // ===== API CALL HELPERS =====
+  async function callUpdateApi(endpoint, data) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showToast(result.message, "success");
+        // Refresh profile data to show updated values
+        await loadProfileData();
+        return true;
+      } else {
+        showToast(result.message || "Update failed", "error");
+        return false;
+      }
+    } catch (error) {
+      showToast("Network error. Please try again.", "error");
+      return false;
+    }
   }
 
   // ===== FORM SUBMISSIONS =====
 
   // Personal Form
-  document
-    .getElementById("personalForm")
-    .addEventListener("submit", function (e) {
+  const personalForm = document.getElementById("personalForm");
+  if (personalForm) {
+    personalForm.addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!verifyGlobalPassword("update personal information")) return;
 
-      const firstName = document.getElementById("firstName").value.trim();
-      const lastName = document.getElementById("lastName").value.trim();
-      displayName.textContent = `${firstName} ${lastName}`;
-      updateProgress();
-      showToast("Personal information updated!", "success");
-      document.getElementById("globalCurrentPassword").value = ""; // Clear after success
+      const data = {
+        firstName: document.getElementById("firstName")?.value.trim(),
+        lastName: document.getElementById("lastName")?.value.trim(),
+        dateOfBirth: document.getElementById("dob")?.value,
+        gender: document.getElementById("gender")?.value,
+        bloodGroup: document.getElementById("bloodGroup")?.value,
+        currentPassword: globalCurrentPassword?.value,
+      };
+
+      const success = await callUpdateApi("/api/profile/personal", data);
+      if (success && globalCurrentPassword) globalCurrentPassword.value = "";
     });
+  }
 
   // Contact Form
-  document
-    .getElementById("contactForm")
-    .addEventListener("submit", function (e) {
+  const contactForm = document.getElementById("contactForm");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      if (!verifyGlobalPassword("update contact information")) return;
-
-      const email = document.getElementById("email").value;
-      document.getElementById("displayEmail").textContent = email;
-      updateProgress();
-      showToast("Contact information updated!", "success");
-      document.getElementById("globalCurrentPassword").value = "";
+      showToast("Contact information update feature is coming soon!", "info");
     });
+  }
 
   // Address Form
-  document
-    .getElementById("addressForm")
-    .addEventListener("submit", function (e) {
+  const addressForm = document.getElementById("addressForm");
+  if (addressForm) {
+    addressForm.addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!verifyGlobalPassword("update address")) return;
 
-      updateProgress();
-      showToast("Address updated successfully!", "success");
-      document.getElementById("globalCurrentPassword").value = "";
-    });
+      const data = {
+        upazilaId: document.getElementById("upazila")?.value,
+        postalCode: document.getElementById("postalCode")?.value.trim(),
+        streetAddress: document.getElementById("streetAddress")?.value.trim(),
+        currentPassword: globalCurrentPassword?.value,
+      };
 
-  // Security Form (Has its own current password field)
-  document
-    .getElementById("securityForm")
-    .addEventListener("submit", function (e) {
+      const success = await callUpdateApi("/api/profile/address", data);
+      if (success && globalCurrentPassword) globalCurrentPassword.value = "";
+    });
+  }
+
+  // Security Form (Password update - uses its own password field conceptually, but we use global)
+  const securityForm = document.getElementById("securityForm");
+  if (securityForm) {
+    securityForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const current = document.getElementById("currentPassword").value;
-      const newPassword = document.getElementById("newPassword").value;
-      const confirm = document.getElementById("confirmPassword").value;
+      const newPassword = document.getElementById("newPassword")?.value;
+      const confirm = document.getElementById("confirmPassword")?.value;
+      const currentPassword = globalCurrentPassword?.value;
 
-      if (!current) {
+      if (!currentPassword) {
         showToast("Please enter your current password.", "error");
         return;
       }
@@ -170,15 +447,73 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      showToast("Password updated successfully!", "success");
-      this.reset();
-      document.getElementById("passwordStrength").classList.remove("visible");
+      const data = {
+        newPassword,
+        currentPassword,
+      };
+
+      const success = await callUpdateApi("/api/profile/password", data);
+      if (success) {
+        this.reset();
+        const passwordStrength = document.getElementById("passwordStrength");
+        if (passwordStrength) passwordStrength.classList.remove("visible");
+        if (globalCurrentPassword) globalCurrentPassword.value = "";
+      }
     });
+  }
+
+  // Two-Factor Auth Toggle (Coming Soon)
+  const twoFactorToggle = document.getElementById("twoFactor");
+  if (twoFactorToggle) {
+    twoFactorToggle.addEventListener("change", function () {
+      showToast("Two-factor authentication feature is coming soon!", "info");
+      this.checked = false; // Revert toggle
+    });
+  }
 
   // ===== RESET SECTIONS =====
   window.resetSection = function (sectionId) {
     if (confirm("Reset all changes in this section?")) {
-      document.getElementById(sectionId + "Form").reset();
+      if (sectionId === "personal" && originalFormData) {
+        document.getElementById("firstName").value =
+          originalFormData.firstName || "";
+        document.getElementById("lastName").value =
+          originalFormData.lastName || "";
+        document.getElementById("dob").value =
+          originalFormData.dateOfBirth || "";
+        document.getElementById("gender").value = originalFormData.gender || "";
+        document.getElementById("bloodGroup").value =
+          originalFormData.bloodGroup || "not-tested";
+      } else if (sectionId === "contact" && originalFormData) {
+        document.getElementById("email").value = originalFormData.email || "";
+        document.getElementById("phone").value = originalFormData.phone || "";
+      } else if (sectionId === "address" && originalFormData) {
+        document.getElementById("postalCode").value =
+          originalFormData.postalCode || "";
+        document.getElementById("streetAddress").value =
+          originalFormData.streetAddress || "";
+        // For location, reload from original upazilaDetails
+        if (originalFormData.upazilaDetails && divisionSelect) {
+          populateDistricts(originalFormData.upazilaDetails.divisionId).then(
+            () => {
+              populateUpazilas(originalFormData.upazilaDetails.districtId).then(
+                () => {
+                  divisionSelect.value =
+                    originalFormData.upazilaDetails.divisionId;
+                  districtSelect.value =
+                    originalFormData.upazilaDetails.districtId;
+                  upazilaSelect.value =
+                    originalFormData.upazilaDetails.upazilaId;
+                },
+              );
+            },
+          );
+        }
+      } else if (sectionId === "security") {
+        document.getElementById("securityForm")?.reset();
+        const passwordStrength = document.getElementById("passwordStrength");
+        if (passwordStrength) passwordStrength.classList.remove("visible");
+      }
       showToast("Section reset to defaults.", "info");
     }
   };
@@ -186,210 +521,90 @@ document.addEventListener("DOMContentLoaded", function () {
   // ===== PROGRESS CALCULATION =====
   function updateProgress() {
     const fields = [
-      document.getElementById("firstName").value,
-      document.getElementById("lastName").value,
-      document.getElementById("email").value,
-      document.getElementById("phone").value,
-      document.getElementById("division").value,
-      document.getElementById("district").value,
+      document.getElementById("firstName")?.value,
+      document.getElementById("lastName")?.value,
+      document.getElementById("email")?.value,
+      document.getElementById("phone")?.value,
+      document.getElementById("division")?.value,
+      document.getElementById("district")?.value,
     ];
     const filled = fields.filter((f) => f && f.trim() !== "").length;
     const percent = Math.round((filled / fields.length) * 100);
-    document.getElementById("progressFill").style.width = percent + "%";
-    document.getElementById("progressPercent").textContent = percent + "%";
+    if (progressFill) progressFill.style.width = percent + "%";
+    if (progressPercent) progressPercent.textContent = percent + "%";
   }
 
-  // ===== VERIFICATION MODAL & TOASTS (Same as before) =====
-  let verificationType = "";
-  window.requestVerification = function (type) {
-    verificationType = type;
-    const modal = document.getElementById("verificationModal");
-    document.getElementById("verifyType").textContent =
-      type === "email" ? "Email" : "Phone";
-    document.getElementById("verifyTarget").textContent =
-      type === "email" ? "email" : "phone";
-    modal.style.display = "flex";
-    setTimeout(() => {
-      const firstDigit = modal.querySelector(".otp-digit");
-      if (firstDigit) firstDigit.focus();
-    }, 100);
-  };
-  window.closeVerificationModal = function () {
-    document.getElementById("verificationModal").style.display = "none";
-  };
-  window.verifyChange = function () {
-    const digits = document.querySelectorAll(
-      '.otp-digit[data-target="verify"]',
-    );
-    let code = "";
-    digits.forEach((d) => (code += d.value));
-    if (code.length !== 6) {
-      showToast("Please enter all 6 digits.", "error");
-      return;
-    }
-    showToast(
-      `${verificationType === "email" ? "Email" : "Phone"} verified!`,
-      "success",
-    );
-    closeVerificationModal();
-    updateProgress();
-  };
-  window.resendVerificationCode = function () {
-    showToast("Verification code resent!", "success");
-  };
-
-  // OTP Input Handlers
-  document.addEventListener("input", function (e) {
-    if (e.target.classList.contains("otp-digit")) {
-      const value = e.target.value;
-      if (!/^\d*$/.test(value)) {
-        e.target.value = "";
-        return;
-      }
-      if (value.length === 1) {
-        const inputs = Array.from(
-          document.querySelectorAll(
-            '.otp-digit[data-target="' + e.target.dataset.target + '"]',
-          ),
-        );
-        const index = inputs.indexOf(e.target);
-        if (index < inputs.length - 1) inputs[index + 1].focus();
-      }
-    }
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.target.classList.contains("otp-digit")) {
-      if (e.key === "Backspace" && !e.target.value) {
-        const inputs = Array.from(
-          document.querySelectorAll(
-            '.otp-digit[data-target="' + e.target.dataset.target + '"]',
-          ),
-        );
-        const index = inputs.indexOf(e.target);
-        if (index > 0) inputs[index - 1].focus();
-      }
-    }
-  });
-  document
-    .getElementById("verificationModal")
-    .addEventListener("click", function (e) {
-      if (e.target === this) closeVerificationModal();
+  // ===== LOCATION CASCADE EVENTS =====
+  if (divisionSelect) {
+    divisionSelect.addEventListener("change", function () {
+      populateDistricts(this.value);
+      updateProgress();
     });
+  }
 
-  window.showToast = function (message, type = "success") {
+  if (districtSelect) {
+    districtSelect.addEventListener("change", function () {
+      populateUpazilas(this.value);
+      updateProgress();
+    });
+  }
+
+  if (upazilaSelect) {
+    upazilaSelect.addEventListener("change", function () {
+      updateProgress();
+    });
+  }
+
+  window.requestVerification = function (type) {
+    showToast("Email/phone verification feature is coming soon!", "info");
+  };
+
+  window.closeVerificationModal = function () {
+    const modal = document.getElementById("verificationModal");
+    if (modal) modal.style.display = "none";
+  };
+
+  window.verifyChange = function () {
+    showToast("Verification feature is coming soon!", "info");
+    closeVerificationModal();
+  };
+
+  window.resendVerificationCode = function () {
+    showToast("Verification feature is coming soon!", "info");
+  };
+
+  // ===== TOAST NOTIFICATIONS =====
+  window.showToast = function (message, type) {
     const container = document.getElementById("toastContainer");
+    if (!container) return;
+
     const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
+    toast.className = "toast " + (type || "success");
+
     const iconMap = { success: "fa-check", error: "fa-xmark", info: "fa-info" };
-    toast.innerHTML = `<div class="toast-icon"><i class="fa-solid ${iconMap[type]}"></i></div><div class="toast-content">${message}</div>`;
+    const icon = iconMap[type] || "fa-check";
+
+    toast.innerHTML =
+      '<div class="toast-icon"><i class="fa-solid ' +
+      icon +
+      '"></i></div><div class="toast-content">' +
+      message +
+      "</div>";
+
     container.appendChild(toast);
+
     setTimeout(() => {
       toast.style.opacity = "0";
       toast.style.transform = "translateX(100%)";
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, 300);
     }, 3000);
   };
 
-  // ===== BANGLADESH LOCATION CASCADE (Same as before) =====
-  const bangladeshLocations = {
-    Barisal: {
-      Barguna: ["Amtali", "Bamna"],
-      Barisal: ["Agailjhara", "Babuganj"],
-    },
-    Chittagong: {
-      "Cox's Bazar": ["Chakaria", "Teknaf"],
-      Chittagong: ["Anwara", "Patiya"],
-    },
-    Dhaka: {
-      Dhaka: ["Dhamrai", "Savar"],
-      Gazipur: ["Gazipur Sadar", "Kaliakair"],
-    },
-    Khulna: {
-      Khulna: ["Batiaghata", "Dumuria"],
-      Jessore: ["Abhaynagar", "Bagherpara"],
-    },
-    Mymensingh: {
-      Mymensingh: ["Bhaluka", "Trishal"],
-      Jamalpur: ["Baksiganj", "Islampur"],
-    },
-    Rajshahi: {
-      Rajshahi: ["Bagha", "Godagari"],
-      Bogra: ["Adamdighi", "Sherpur"],
-    },
-    Rangpur: {
-      Rangpur: ["Badarganj", "Pirganj"],
-      Dinajpur: ["Birampur", "Parbatipur"],
-    },
-    Sylhet: {
-      Sylhet: ["Balaganj", "Beanibazar"],
-      Habiganj: ["Ajmiriganj", "Bahubal"],
-    },
-  };
-
-  function populateDivisions() {
-    const divisionSelect = document.getElementById("division");
-    if (!divisionSelect) return;
-    divisionSelect.innerHTML =
-      '<option value="" disabled selected>Select Division</option>';
-    Object.keys(bangladeshLocations)
-      .sort()
-      .forEach((division) => {
-        const option = document.createElement("option");
-        option.value = division;
-        option.textContent = division;
-        divisionSelect.appendChild(option);
-      });
-  }
-  function populateDistricts(division) {
-    const districtSelect = document.getElementById("district");
-    const upazilaSelect = document.getElementById("upazila");
-    if (!districtSelect || !upazilaSelect) return;
-    districtSelect.innerHTML =
-      '<option value="" disabled selected>Select District</option>';
-    upazilaSelect.innerHTML =
-      '<option value="" disabled selected>Select Upazila</option>';
-    upazilaSelect.disabled = true;
-    if (!division || !bangladeshLocations[division]) {
-      districtSelect.disabled = true;
-      return;
-    }
-    Object.keys(bangladeshLocations[division])
-      .sort()
-      .forEach((district) => {
-        const option = document.createElement("option");
-        option.value = district;
-        option.textContent = district;
-        districtSelect.appendChild(option);
-      });
-    districtSelect.disabled = false;
-  }
-  function populateUpazilas(division, district) {
-    const upazilaSelect = document.getElementById("upazila");
-    if (!upazilaSelect) return;
-    upazilaSelect.innerHTML =
-      '<option value="" disabled selected>Select Upazila</option>';
-    if (!division || !district || !bangladeshLocations[division][district]) {
-      upazilaSelect.disabled = true;
-      return;
-    }
-    bangladeshLocations[division][district].sort().forEach((upazila) => {
-      const option = document.createElement("option");
-      option.value = upazila;
-      option.textContent = upazila;
-      upazilaSelect.appendChild(option);
-    });
-    upazilaSelect.disabled = false;
-  }
-  document.getElementById("division")?.addEventListener("change", function () {
-    populateDistricts(this.value);
-  });
-  document.getElementById("district")?.addEventListener("change", function () {
-    populateUpazilas(document.getElementById("division").value, this.value);
-  });
-
   // ===== INITIALIZE =====
-  populateDivisions();
-  updateProgress();
+  loadProfileData();
+
   setTimeout(() => {
     toggleSection("personal");
   }, 300);

@@ -86,14 +86,14 @@
 .profile-info {
   z-index: 2;
 }
-.profile-name {
+.profile-info .profile-name {
   font-family: var(--font-ui);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-dark);
   margin: 0 0 2px 0;
 }
-.profile-email {
+.profile-info .profile-email {
   font-size: 0.85rem;
   color: var(--text-mid);
   margin: 0 0 8px 0;
@@ -183,7 +183,7 @@
 .verification-content label {
   display: block;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-dark);
   margin-bottom: 6px;
 }
@@ -279,7 +279,7 @@
 .card-header h3 {
   font-family: var(--font-ui);
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 530;
   color: var(--text-dark);
   margin: 0 0 2px 0;
 }
@@ -324,7 +324,7 @@
 .form-field label {
   display: block;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-dark);
   margin-bottom: 6px;
   font-family: var(--font-ui);
@@ -357,7 +357,7 @@
   color: var(--text-dark);
   font-size: 0.85rem;
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 400;
   transition: all var(--transition);
   appearance: none;
 }
