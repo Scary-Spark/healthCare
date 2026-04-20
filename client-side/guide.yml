@@ -102,3 +102,45 @@ healthCare:
           client-publicChat.ejs
       views:
         signup.ejs
+
+  
+
+
+healthCare: // git repo
+  admin-side: // admin side server folder
+  .git/
+  .github/
+  .gitignore
+  client-side: // main cilent server
+    node-modules: 
+    package-lock.json
+    package.json
+    clientPath.js
+    src/
+      configs/
+        database.js
+        email.js
+        passwordHasing.js
+      controllers/
+        signupController.js
+      main/
+        main.js // main server run file
+      publicFolder/
+        assets/
+          fonts/
+          icons/
+          images/
+        scripts/
+          signup.js
+        styles/
+          signup.css
+        uploads/
+          pdfs/
+          profilePictures/
+      routes/
+        homeRouts.js
+      utils/
+        components/
+        layouts/
+      views/
+        home.ejs

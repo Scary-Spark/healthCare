@@ -1,0 +1,422 @@
+/* ============================================
+   ACTIVITY LOG PAGE STYLES
+   ============================================ */
+
+.activity-log-page {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--primary-100);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-dark);
+}
+
+.page-header p {
+  margin: 4px 0 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+/* Filters Section */
+.log-filters {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.filter-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-mid);
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box i {
+  position: absolute;
+  left: 12px;
+  color: var(--text-light);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+.filter-group select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.log-filters .btn-primary,
+.log-filters .btn-outline {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  height: fit-content;
+}
+
+/* Stats Section */
+.log-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.stat-icon.security {
+  background: var(--accent-red);
+}
+
+.stat-icon.data {
+  background: var(--accent-gold);
+}
+
+.stat-icon:not(.security):not(.data) {
+  background: var(--primary);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+/* Table Section */
+.logs-table-section {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.logs-table thead {
+  background: var(--bg);
+  border-bottom: 2px solid var(--border);
+}
+
+.logs-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+
+.logs-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-mid);
+}
+
+.logs-table tbody tr:hover {
+  background: var(--bg);
+}
+
+/* Action Badges */
+.action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.action-badge.login {
+  background: var(--success-light);
+  color: var(--success);
+}
+.action-badge.logout {
+  background: var(--text-light);
+  color: var(--text-dark);
+}
+.action-badge.profile_update {
+  background: var(--primary-100);
+  color: var(--primary);
+}
+.action-badge.password_change {
+  background: var(--accent-red);
+  color: var(--accent-red);
+}
+.action-badge.appointment_book {
+  background: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.action-badge.appointment_cancel {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+.action-badge.record_view {
+  background: var(--info-light);
+  color: var(--info);
+}
+.action-badge.payment {
+  background: var(--success-light);
+  color: var(--success);
+}
+.action-badge.data_export {
+  background: var(--accent-orange);
+  color: var(--accent-orange);
+}
+
+/* Target & Description */
+.target-cell {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.description-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Reference ID */
+.reference-cell {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-mid);
+}
+
+/* Details Button */
+.details-btn {
+  padding: 6px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-dark);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.details-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Pagination */
+.table-pagination {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination-buttons button {
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.pagination-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-light);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.empty-state p {
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .log-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    min-width: 100%;
+  }
+
+  .logs-table th,
+  .logs-table td {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+
+  .description-cell {
+    max-width: 150px;
+  }
+
+  .table-pagination {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.action-badge.payment-completed {
+  background: var(--success-light);
+  color: var(--success);
+}
+.action-badge.appointment-created {
+  background: var(--primary-100);
+  color: var(--primary);
+}
+.action-badge.client-updated {
+  background: var(--info-light);
+  color: var(--info);
+}
+.action-badge.person-updated {
+  background: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.action-badge.login {
+  background: var(--success-light);
+  color: var(--success);
+}
+.action-badge.logout {
+  background: var(--text-light);
+  color: var(--text-dark);
+}
+.action-badge.password-change {
+  background: var(--accent-red);
+  color: var(--accent-red);
+}
+.action-badge.record-view {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+.action-badge.data-export {
+  background: var(--accent-orange);
+  color: var(--accent-orange);
+}

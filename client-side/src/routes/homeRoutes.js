@@ -50,6 +50,18 @@ import {
   getPayments,
   processPayment,
 } from "../controllers/appointmentController.js";
+import {
+  getChatMessages,
+  sendChatMessage,
+} from "../controllers/chatController.js";
+import {
+  getSuggestions,
+  createSuggestion,
+  voteSuggestion,
+  getSuggestionDetails,
+} from "../controllers/suggestionsController.js";
+import { getActivityLogs } from "../controllers/logsController.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -125,6 +137,10 @@ router.get("/others-settings", requireAuth, (req, res) => {
   res.render("others-settings", { user: res.locals.user });
 });
 router.get("/profile-settings", requireAuth, getProfile);
+router.get("/activity-log", requireAuth, (req, res) => {
+  res.render("activity-log", { user: res.locals.user });
+});
+router.get("/api/logs", requireAuth, getActivityLogs);
 
 // api routes for signup
 router.post("/api/signup/personal-info", validatePersonalInfo);
@@ -215,6 +231,16 @@ router.get("/api/test-reports", getTestReports);
 // api routes for payments
 router.get("/api/payments", getPayments);
 router.post("/api/payments/process", processPayment);
+
+// api routes for public chat
+router.get("/api/chat/messages", requireAuth, getChatMessages);
+router.post("/api/chat/messages", requireAuth, sendChatMessage);
+
+// Suggestions API routes
+router.get("/api/suggestions", requireAuth, getSuggestions);
+router.post("/api/suggestions", requireAuth, createSuggestion);
+router.post("/api/suggestions/vote", requireAuth, voteSuggestion);
+router.get("/api/suggestions/:id", requireAuth, getSuggestionDetails);
 
 // Database test route (for debugging)
 router.get("/test-db", async (req, res) => {

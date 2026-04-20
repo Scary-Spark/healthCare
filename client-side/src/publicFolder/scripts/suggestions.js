@@ -1,103 +1,42 @@
 /**
- * SUGGESTIONS & COMPLAINTS - FULL IMPLEMENTATION
+ * SUGGESTIONS & COMPLAINTS - DYNAMIC DATABASE VERSION
  * Status tracking • Voting • Search/Filter • Modal Details • Toasts
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  // ===== MOCK DATA =====
-  let submissions = [
-    {
-      id: 1,
-      type: "suggestion",
-      category: "tech",
-      title: "Add Dark Mode to Patient Portal",
-      description:
-        "It would be great to have a dark mode option for late-night browsing. Reduces eye strain significantly.",
-      status: "in-progress",
-      priority: "medium",
-      author: "Sarah M.",
-      avatar: "SM",
-      date: "2024-10-20",
-      votes: 24,
-      declinedReason: "",
-    },
-    {
-      id: 2,
-      type: "complaint",
-      category: "staff",
-      title: "Long Wait Times at Front Desk",
-      description:
-        "Waited over 45 minutes just to check in for a scheduled appointment. Staff seemed overwhelmed. Please improve queue management.",
-      status: "under-review",
-      priority: "high",
-      author: "David K.",
-      avatar: "DK",
-      date: "2024-10-18",
-      votes: 18,
-      declinedReason: "",
-    },
-    {
-      id: 3,
-      type: "suggestion",
-      category: "facilities",
-      title: "More Charging Stations in Waiting Area",
-      description:
-        "Patients often wait with phones at low battery. Installing USB charging ports near seats would be very helpful.",
-      status: "resolved",
-      priority: "low",
-      author: "Anonymous",
-      avatar: "AN",
-      date: "2024-10-15",
-      votes: 31,
-      declinedReason: "",
-    },
-    {
-      id: 4,
-      type: "complaint",
-      category: "billing",
-      title: "Incorrect Insurance Claim Processing",
-      description:
-        "My recent claim was rejected due to a coding error on your end. I had to pay out of pocket. Please review and refund.",
-      status: "pending",
-      priority: "critical",
-      author: "Priya R.",
-      avatar: "PR",
-      date: "2024-10-12",
-      votes: 9,
-      declinedReason: "",
-    },
-    {
-      id: 5,
-      type: "suggestion",
-      category: "tech",
-      title: "Mobile App Push Notifications for Appointments",
-      description:
-        "Send reminders 24h and 1h before appointments via app notifications instead of just email.",
-      status: "declined",
-      priority: "medium",
-      author: "Mark T.",
-      avatar: "MT",
-      date: "2024-10-10",
-      votes: 12,
-      declinedReason: "Already implemented in v2.1 update.",
-    },
-    {
-      id: 6,
-      type: "complaint",
-      category: "facilities",
-      title: "Restroom Cleanliness on 3rd Floor",
-      description:
-        "The restrooms near radiology are frequently out of soap and paper towels. Maintenance schedule needs improvement.",
-      status: "resolved",
-      priority: "medium",
-      author: "Lisa W.",
-      avatar: "LW",
-      date: "2024-10-08",
-      votes: 27,
-      declinedReason: "",
-    },
-  ];
+  // ===== VOTE PERSISTENCE =====
+  const VOTED_KEY = "suggestions_voted";
 
+  // Load voted IDs from localStorage on init
+  function loadVotedIds() {
+    try {
+      const saved = localStorage.getItem(VOTED_KEY);
+      if (saved) {
+        const ids = JSON.parse(saved);
+        currentUserVotes = new Set(ids);
+        console.log(
+          `🗳️ Loaded ${currentUserVotes.size} voted IDs from localStorage`,
+        );
+      }
+    } catch (e) {
+      console.warn("⚠️ Failed to load voted IDs:", e);
+    }
+  }
+
+  // Save voted IDs to localStorage
+  function saveVotedIds() {
+    try {
+      localStorage.setItem(
+        VOTED_KEY,
+        JSON.stringify(Array.from(currentUserVotes)),
+      );
+    } catch (e) {
+      console.warn("⚠️ Failed to save voted IDs:", e);
+    }
+  }
+
+  // ===== STATE =====
+  let submissions = [];
   let currentUserVotes = new Set();
 
   // ===== DOM ELEMENTS =====
@@ -110,34 +49,78 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeFormBtn = document.getElementById("closeFormBtn");
   const cancelFormBtn = document.getElementById("cancelFormBtn");
   const feedbackForm = document.getElementById("feedbackForm");
+  const formAnonymous = document.getElementById("formAnonymous");
 
   // ===== INIT =====
   function init() {
-    renderSubmissions(submissions);
-    updateStats();
+    // ✅ Load persisted votes FIRST
+    loadVotedIds();
+
+    // Make anonymous checkbox show "coming soon"
+    if (formAnonymous) {
+      formAnonymous.addEventListener("change", function () {
+        showToast("Anonymous submissions feature is coming soon!", "info");
+        this.checked = false;
+      });
+    }
+
+    loadSubmissions();
     setupEvents();
+  }
+
+  // ===== LOAD SUBMISSIONS FROM API =====
+  async function loadSubmissions() {
+    try {
+      const params = new URLSearchParams();
+      const search = searchInput?.value || "";
+      const type = typeFilter?.value || "";
+      const status = statusFilter?.value || "";
+
+      if (search) params.append("search", search);
+      if (type) params.append("type", type);
+      if (status) params.append("status", status);
+
+      const response = await fetch(`/api/suggestions?${params}`);
+      const result = await response.json();
+
+      if (result.success) {
+        // ✅ FIX: Handle both possible response keys
+        submissions = result.suggestions || result.data || [];
+        renderSubmissions(submissions);
+        updateStats();
+      }
+    } catch (error) {
+      console.error("Error loading submissions:", error);
+      showToast("Failed to load suggestions", "error");
+    }
   }
 
   function setupEvents() {
     // Form Toggle
-    newSubmissionBtn.addEventListener("click", () => {
-      submissionForm.classList.remove("hidden");
+    newSubmissionBtn?.addEventListener("click", () => {
+      submissionForm?.classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    closeFormBtn.addEventListener("click", () =>
-      submissionForm.classList.add("hidden"),
+    closeFormBtn?.addEventListener("click", () =>
+      submissionForm?.classList.add("hidden"),
     );
-    cancelFormBtn.addEventListener("click", () =>
-      submissionForm.classList.add("hidden"),
+    cancelFormBtn?.addEventListener("click", () =>
+      submissionForm?.classList.add("hidden"),
     );
 
     // Form Submit
-    feedbackForm.addEventListener("submit", handleSubmit);
+    feedbackForm?.addEventListener("submit", handleSubmit);
 
-    // Filters
-    searchInput.addEventListener("input", filterSubmissions);
-    typeFilter.addEventListener("change", filterSubmissions);
-    statusFilter.addEventListener("change", filterSubmissions);
+    // Filters with debounce
+    let filterTimeout;
+    const debouncedFilter = () => {
+      clearTimeout(filterTimeout);
+      filterTimeout = setTimeout(loadSubmissions, 300);
+    };
+
+    searchInput?.addEventListener("input", debouncedFilter);
+    typeFilter?.addEventListener("change", loadSubmissions);
+    statusFilter?.addEventListener("change", loadSubmissions);
 
     // Close modal on outside click
     document.addEventListener("click", (e) => {
@@ -149,11 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderSubmissions(data) {
     submissionsList.innerHTML = "";
 
-    if (data.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
       submissionsList.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-light);">
-        <i class="fa-regular fa-folder-open" style="font-size: 3rem; margin-bottom: 12px; opacity: 0.4;"></i>
-        <p>No submissions found matching your criteria.</p>
-      </div>`;
+      <i class="fa-regular fa-folder-open" style="font-size: 3rem; margin-bottom: 12px; opacity: 0.4;"></i>
+      <p>No submissions found. Be the first to share your feedback!</p>
+    </div>`;
       return;
     }
 
@@ -164,49 +147,55 @@ document.addEventListener("DOMContentLoaded", function () {
       const statusBadge = `<span class="status-badge ${sub.status}">${formatStatus(sub.status)}</span>`;
       const priorityBadge = `<span class="card-priority ${sub.priority}">${capitalize(sub.priority)}</span>`;
       const typeBadge = `<span class="card-type ${sub.type}"><i class="fa-solid ${sub.type === "suggestion" ? "fa-lightbulb" : "fa-exclamation"}"></i> ${capitalize(sub.type)}</span>`;
-      const isVoted = currentUserVotes.has(sub.id);
+
+      // ✅ Check both in-memory AND localStorage for voted state
+      const subId = sub.id || sub.suggestion_id;
+      const isVoted = currentUserVotes.has(subId) || sub.isVoted;
 
       card.innerHTML = `
-        <div class="card-header">
-          <div style="display:flex; gap:8px; align-items:center;">${typeBadge} ${priorityBadge}</div>
-          ${statusBadge}
+      <div class="card-header">
+        <div style="display:flex; gap:8px; align-items:center;">${typeBadge} ${priorityBadge}</div>
+        ${statusBadge}
+      </div>
+      <h3 class="card-title">${escapeHtml(sub.title)}</h3>
+      <p class="card-desc">${escapeHtml(sub.description)}</p>
+      <div class="card-meta">
+        <div class="card-author">
+          <div class="author-avatar">${escapeHtml(sub.avatar)}</div>
+          <span>${escapeHtml(sub.author)} • ${formatDate(sub.date)}</span>
         </div>
-        <h3 class="card-title">${sub.title}</h3>
-        <p class="card-desc">${sub.description}</p>
-        <div class="card-meta">
-          <div class="card-author">
-            <div class="author-avatar">${sub.avatar}</div>
-            <span>${sub.author} • ${formatDate(sub.date)}</span>
-          </div>
-          <div class="card-actions">
-            <button class="card-action ${isVoted ? "voted" : ""}" onclick="handleVote(${sub.id})">
-              <i class="fa-${isVoted ? "solid" : "regular"} fa-thumbs-up"></i> ${sub.votes}
-            </button>
-            <button class="card-action" onclick="showDetails(${sub.id})">
-              <i class="fa-solid fa-eye"></i> Details
-            </button>
-          </div>
+        <div class="card-actions">
+          <button class="card-action ${isVoted ? "voted" : ""}" onclick="handleVote(${subId})">
+            <i class="fa-${isVoted ? "solid" : "regular"} fa-thumbs-up"></i> ${sub.votes}
+          </button>
+          <button class="card-action" onclick="showDetails(${subId})">
+            <i class="fa-solid fa-eye"></i> Details
+          </button>
         </div>
-      `;
+      </div>
+    `;
       submissionsList.appendChild(card);
     });
   }
 
   function updateStats() {
-    document.getElementById("statTotal").textContent = submissions.length;
-    document.getElementById("statPending").textContent = submissions.filter(
+    // ✅ Safety check: ensure submissions is an array
+    const subs = Array.isArray(submissions) ? submissions : [];
+
+    document.getElementById("statTotal").textContent = subs.length;
+    document.getElementById("statPending").textContent = subs.filter(
       (s) => s.status === "pending",
     ).length;
-    document.getElementById("statProgress").textContent = submissions.filter(
+    document.getElementById("statProgress").textContent = subs.filter(
       (s) => s.status === "in-progress" || s.status === "under-review",
     ).length;
-    document.getElementById("statResolved").textContent = submissions.filter(
+    document.getElementById("statResolved").textContent = subs.filter(
       (s) => s.status === "resolved",
     ).length;
   }
 
   // ===== ACTIONS =====
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const type = document.getElementById("formType").value;
@@ -214,57 +203,127 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("formTitle").value.trim();
     const description = document.getElementById("formDescription").value.trim();
     const priority = document.getElementById("formPriority").value;
-    const anonymous = document.getElementById("formAnonymous").checked;
 
-    const newSub = {
-      id: Date.now(),
-      type,
-      category,
-      title,
-      description,
-      status: "pending",
-      priority,
-      author: anonymous ? "Anonymous" : "John Doe",
-      avatar: anonymous ? "AN" : "JD",
-      date: new Date().toISOString().split("T")[0],
-      votes: 0,
-      declinedReason: "",
-    };
+    try {
+      const response = await fetch("/api/suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          priority,
+          type,
+          // anonymous: document.getElementById("formAnonymous").checked // Coming soon
+        }),
+      });
 
-    submissions.unshift(newSub);
-    renderSubmissions(submissions);
-    updateStats();
-    feedbackForm.reset();
-    submissionForm.classList.add("hidden");
-    showToast(
-      "Feedback submitted successfully! Thank you for your input.",
-      "success",
-    );
+      const result = await response.json();
+
+      if (result.success) {
+        feedbackForm.reset();
+        submissionForm.classList.add("hidden");
+        showToast(
+          "Feedback submitted successfully! Thank you for your input.",
+          "success",
+        );
+        loadSubmissions(); // Refresh list
+      } else {
+        showToast(result.message || "Failed to submit feedback", "error");
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      showToast("Network error. Please try again.", "error");
+    }
   }
 
-  window.handleVote = function (id) {
-    if (currentUserVotes.has(id)) {
+  window.handleVote = async function (id) {
+    const suggestionId = Number(id); // ✅ Ensure it's a number
+
+    console.log("🗳️ Voting on suggestion:", suggestionId);
+
+    // Check if already voted locally first
+    if (currentUserVotes.has(suggestionId)) {
       showToast("You already voted on this submission.", "info");
       return;
     }
-    const sub = submissions.find((s) => s.id === id);
-    if (sub) {
-      sub.votes++;
-      currentUserVotes.add(id);
-      filterSubmissions();
+
+    try {
+      console.log("📡 Sending vote request...");
+
+      const response = await fetch("/api/suggestions/vote", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          suggestionId: suggestionId, // ✅ Use the numeric ID
+        }),
+      });
+
+      console.log("📡 Response status:", response.status);
+
+      const result = await response.json();
+      console.log("📦 Vote response:", result);
+
+      if (result.success) {
+        // ✅ Update local state AND persist to localStorage
+        currentUserVotes.add(suggestionId);
+        saveVotedIds(); // ✅ PERSIST HERE
+
+        const sub = submissions.find(
+          (s) => s.id === suggestionId || s.suggestion_id === suggestionId,
+        );
+        if (sub) {
+          sub.votes = result.data?.votes || sub.votes + 1;
+          sub.isVoted = true;
+        }
+        renderSubmissions(submissions);
+        showToast("Vote recorded! Thank you.", "success");
+      } else if (result.alreadyVoted) {
+        // ✅ Also persist if server says already voted
+        currentUserVotes.add(suggestionId);
+        saveVotedIds();
+
+        const sub = submissions.find(
+          (s) => s.id === suggestionId || s.suggestion_id === suggestionId,
+        );
+        if (sub) sub.isVoted = true;
+        renderSubmissions(submissions);
+        showToast("You already voted on this submission.", "info");
+      } else {
+        console.error("❌ Vote failed:", result.message);
+        showToast(result.message || "Failed to record vote", "error");
+      }
+    } catch (error) {
+      console.error("❌ Vote error:", error);
+      showToast("Network error. Please try again.", "error");
     }
   };
 
-  window.showDetails = function (id) {
-    const sub = submissions.find((s) => s.id === id);
-    if (!sub) return;
+  window.showDetails = async function (id) {
+    try {
+      const response = await fetch(`/api/suggestions/${id}`);
+      const result = await response.json();
 
-    const modal = document.createElement("div");
-    modal.className = "modal-overlay";
-    modal.innerHTML = `
+      if (!result.success || !result.data) {
+        showToast("Failed to load details", "error");
+        return;
+      }
+
+      const sub = result.data;
+
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay";
+
+      // ✅ Ensure sub.id exists and is a number
+      const suggestionId = Number(sub.suggestion_id || sub.id || id);
+
+      modal.innerHTML = `
       <div class="modal-content">
         <div class="modal-header">
-          <h3>${sub.title}</h3>
+          <h3>${escapeHtml(sub.title)}</h3>
           <button class="modal-close" onclick="this.closest('.modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-body">
@@ -275,64 +334,55 @@ document.addEventListener("DOMContentLoaded", function () {
             <span>Category: ${capitalize(sub.category)}</span>
             <span>Posted: ${formatDate(sub.date)}</span>
           </div>
-          <p class="modal-desc">${sub.description}</p>
-          ${sub.status === "declined" && sub.declinedReason ? `<div style="margin-top:16px; padding:12px; background:#fde8e8; border-left:4px solid var(--accent-red); border-radius:6px; font-size:0.9rem;"><strong>Reason for decline:</strong> ${sub.declinedReason}</div>` : ""}
+          <p class="modal-desc">${escapeHtml(sub.description)}</p>
+          ${sub.status === "declined" && sub.declinedReason ? `<div style="margin-top:16px; padding:12px; background:#fde8e8; border-left:4px solid var(--accent-red); border-radius:6px; font-size:0.9rem;"><strong>Reason for decline:</strong> ${escapeHtml(sub.declinedReason)}</div>` : ""}
           ${sub.status === "resolved" ? `<div style="margin-top:16px; padding:12px; background:#d4edda; border-left:4px solid var(--accent-green); border-radius:6px; font-size:0.9rem;"><strong>Status:</strong> ✅ This issue has been resolved. Thank you for your feedback!</div>` : ""}
         </div>
         <div class="modal-footer">
           <div style="display:flex; align-items:center; gap:10px;">
-            <div class="author-avatar">${sub.avatar}</div>
+            <div class="author-avatar">${escapeHtml(sub.avatar)}</div>
             <div>
-              <div style="font-weight:600; font-size:0.9rem;">${sub.author}</div>
+              <div style="font-weight:600; font-size:0.9rem;">${escapeHtml(sub.author)}</div>
               <div style="font-size:0.8rem; color:var(--text-light);">${sub.votes} community votes</div>
             </div>
           </div>
-          <button class="btn-primary" style="padding:8px 16px; font-size:0.85rem;" onclick="handleVote(${sub.id}); this.closest('.modal-overlay').remove();">
+          <!-- ✅ Pass suggestionId (not sub.id) to handleVote -->
+          <button class="btn-primary" style="padding:8px 16px; font-size:0.85rem;" onclick="handleVote(${suggestionId}); this.closest('.modal-overlay').remove();">
             <i class="fa-regular fa-thumbs-up"></i> Upvote
           </button>
         </div>
       </div>
     `;
-    document.body.appendChild(modal);
+      document.body.appendChild(modal);
+    } catch (error) {
+      console.error("Details error:", error);
+      showToast("Failed to load details", "error");
+    }
   };
-
-  function filterSubmissions() {
-    const term = searchInput.value.toLowerCase();
-    const type = typeFilter.value;
-    const status = statusFilter.value;
-
-    const filtered = submissions.filter((s) => {
-      const matchSearch =
-        s.title.toLowerCase().includes(term) ||
-        s.description.toLowerCase().includes(term) ||
-        s.author.toLowerCase().includes(term);
-      const matchType = !type || s.type === type;
-      const matchStatus = !status || s.status === status;
-      return matchSearch && matchType && matchStatus;
-    });
-
-    renderSubmissions(filtered);
-  }
 
   // ===== UTILS =====
   function formatStatus(status) {
     return status.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   }
+
   function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+    return s?.charAt(0).toUpperCase() + s?.slice(1) || "";
   }
+
   function formatDate(str) {
+    if (!str) return "";
     const d = new Date(str);
-    const now = new Date();
-    const diffTime = Math.abs(now - d);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return d.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    const day = d.getDate();
+    const month = d.toLocaleDateString("en-US", { month: "short" });
+    const year = d.getFullYear();
+    return `${day} ${month} ${year}`;
+  }
+
+  function escapeHtml(text) {
+    if (!text) return "";
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   function showToast(message, type = "success") {

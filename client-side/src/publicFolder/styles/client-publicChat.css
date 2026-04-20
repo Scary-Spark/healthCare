@@ -391,3 +391,110 @@
   -ms-user-select: text;
   user-select: text;
 }
+
+/* Date in message meta */
+.message-time {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Optional: Date separator between days */
+.date-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.date-separator::before,
+.date-separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+  margin: 0 12px;
+}
+
+.date-separator span {
+  background: var(--card-bg);
+  padding: 0 12px;
+}
+
+/* Message header (name) */
+.message-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 2px;
+}
+
+.message.sent .message-header {
+  justify-content: flex-end;
+}
+
+/* Username */
+.message-username {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+}
+
+.message.sent .message-username {
+  color: white;
+}
+
+/* Time (2nd line) */
+.message-time {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-align: right;
+  margin-bottom: 4px;
+}
+
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Message text (3rd line) */
+.message-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Name on first line */
+.message-header {
+  display: flex;
+  margin-bottom: 2px;
+}
+.message.sent .message-header {
+  justify-content: flex-end;
+}
+
+/* Date+time on second line, always right-aligned */
+.message-time {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-align: right;
+  margin-bottom: 4px;
+}
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Message text on third line */
+.message-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}

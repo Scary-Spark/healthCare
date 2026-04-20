@@ -3,6 +3,9 @@
   Features: Single #general room, draggable widget, toggle via floating icon
   Note: This is PUBLIC chat (all users), NOT support chat
 -->
+<script src="/socket.io/socket.io.js"></script>
+<meta name="user-person-id" content="<%= user?.personId || '' %>" />
+
 <div
   class="public-chat-widget"
   id="publicChatWidget"
@@ -52,7 +55,7 @@
         <div class="message-content">
           <div class="message-meta">
             <span class="message-username">Alice Smith</span>
-            <span class="message-time">10:32 AM</span>
+            <span class="message-time">${date} ${time}</span>
           </div>
           <p>Has anyone tried the new telemedicine feature? How was it?</p>
         </div>
@@ -68,7 +71,7 @@
         <div class="message-content">
           <div class="message-meta">
             <span class="message-username">Bob Jones</span>
-            <span class="message-time">10:35 AM</span>
+            <span class="message-time">${date} ${time}</span>
           </div>
           <p>Yes! Super convenient. The doctor was very helpful 😊</p>
         </div>

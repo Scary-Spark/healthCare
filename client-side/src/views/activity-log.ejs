@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activity Log • NovaLife Patient Portal</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/client-layouts.css" />
+    <link rel="stylesheet" href="/styles/client-publicChat.css" />
+    <link rel="stylesheet" href="/styles/activity-log.css" />
+  </head>
+  <body>
+    <!-- Layout Components -->
+    <%- include('../utils/layouts/client-navbar') %> <%-
+    include('../utils/layouts/client-sidebar') %>
+
+    <!-- Main Content -->
+    <div class="client-layout">
+      <main class="client-main">
+        <div class="activity-log-page">
+          <!-- Header -->
+          <header class="page-header">
+            <div class="header-content">
+              <div class="header-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <h1>Activity & Audit Log</h1>
+                <p>
+                  Review your account activity, security events, and data
+                  changes.
+                </p>
+              </div>
+            </div>
+          </header>
+
+          <!-- Filters & Search -->
+          <section class="log-filters">
+            <div class="filter-group">
+              <label>Search</label>
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="logSearch"
+                  placeholder="Search actions, descriptions..."
+                />
+              </div>
+            </div>
+
+            <div class="filter-group">
+              <label>Action Type</label>
+              <select id="actionFilter">
+                <option value="">All Actions</option>
+                <option value="PAYMENT_COMPLETED">Payment Completed</option>
+                <option value="APPOINTMENT_CREATED">Appointment Created</option>
+                <option value="CLIENT_UPDATED">Client Updated</option>
+                <option value="PERSON_UPDATED">Person Updated</option>
+                <option value="LOGIN">Login</option>
+                <option value="LOGOUT">Logout</option>
+                <option value="PASSWORD_CHANGE">Password Change</option>
+                <option value="RECORD_VIEW">Record Viewed</option>
+                <option value="DATA_EXPORT">Data Export</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label>Date Range</label>
+              <select id="dateFilter">
+                <option value="7">Last 7 Days</option>
+                <option value="30" selected>Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="all">All Time</option>
+              </select>
+            </div>
+
+            <button class="btn-primary" id="applyFilters">
+              <i class="fa-solid fa-filter"></i> Apply
+            </button>
+            <button class="btn-outline" id="exportLogs">
+              <i class="fa-solid fa-download"></i> Export
+            </button>
+          </section>
+
+          <!-- Stats Overview -->
+          <section class="log-stats">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-list"></i></div>
+              <div class="stat-info">
+                <span class="stat-number" id="totalLogs">0</span>
+                <span class="stat-label">Total Activities</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon security">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="securityEvents">0</span>
+                <span class="stat-label">Security Events</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon data">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-number" id="dataChanges">0</span>
+                <span class="stat-label">Data Changes</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Activity Logs Table -->
+          <section class="logs-table-section">
+            <div class="table-container">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Description</th>
+                    <th>Reference ID</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                  <!-- Dynamic content will be inserted here -->
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px">
+                      <i
+                        class="fa-solid fa-spinner fa-spin"
+                        style="font-size: 2rem; color: var(--primary)"
+                      ></i>
+                      <p style="margin-top: 12px; color: var(--text-light)">
+                        Loading activity logs...
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="table-pagination" id="logPagination">
+              <!-- Pagination will be inserted here -->
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Footer & Chat -->
+    <%- include('../utils/layouts/client-footer') %> <%-
+    include('../utils/layouts/client-publicChat') %>
+
+    <!-- Scripts -->
+    <script src="/scripts/client-layouts.js"></script>
+    <script src="/scripts/client-publicChat.js"></script>
+    <script src="/scripts/activity-log.js"></script>
+  </body>
+</html>

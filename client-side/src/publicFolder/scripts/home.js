@@ -487,4 +487,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     });
+
+  document
+    .querySelectorAll(
+      '.btn-primary[href="#departments"], .btn-primary[href="#"]',
+    )
+    .forEach(function (btn) {
+      const text = btn.textContent.trim();
+      if (text.includes("Book Appointment")) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          showNotification("Please login to book appointment", "info");
+        });
+      }
+    });
 });

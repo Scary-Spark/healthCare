@@ -60,14 +60,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ===== QUICK ACTION CARDS =====
-  document.querySelectorAll(".action-card").forEach(function (card) {
-    card.addEventListener("click", function (e) {
-      // Demo: prevent navigation, show toast
-      e.preventDefault();
-      const action = this.querySelector("h3").textContent;
-      showToast(`Opening ${action}...`);
-    });
-  });
+  // document.querySelectorAll(".action-card").forEach(function (card) {
+  //   card.addEventListener("click", function (e) {
+  //     // Demo: prevent navigation, show toast
+  //     e.preventDefault();
+  //     const action = this.querySelector("h3").textContent;
+  //     showToast(`Opening ${action}...`);
+  //   });
+  // });
 
   // ===== APPOINTMENT ACTIONS =====
   document.querySelectorAll(".action-btn-small").forEach(function (btn) {

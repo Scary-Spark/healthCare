@@ -3,6 +3,41 @@ document.addEventListener("DOMContentLoaded", function () {
   const yearEl = document.getElementById("currentYear");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  // ===== EMERGENCY BUTTON - COMING SOON =====
+  const emergencyBtn = document.querySelector(".btn-emergency");
+  if (emergencyBtn) {
+    emergencyBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      showToast("Emergency assistance feature is coming soon!", "info");
+    });
+  }
+
+  // ===== NOTIFICATION BELL - COMING SOON =====
+  const notificationToggle = document.getElementById("notificationToggle");
+  const notificationDropdown = document.getElementById("notificationDropdown");
+
+  if (notificationToggle) {
+    notificationToggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      showToast("Notifications feature is coming soon!", "info");
+
+      // Close dropdown if somehow opened
+      if (notificationDropdown) {
+        notificationDropdown.hidden = true;
+        notificationToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // Also prevent dropdown from opening via any other means
+  if (notificationDropdown) {
+    notificationDropdown.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
+
   // ===== PROFILE DROPDOWN =====
   const profileToggle = document.getElementById("profileToggle");
   const profileDropdown = document.getElementById("profileDropdown");
@@ -27,48 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // ===== NOTIFICATION DROPDOWN =====
-  const notificationToggle = document.getElementById("notificationToggle");
-  const notificationDropdown = document.getElementById("notificationDropdown");
-  const markAllRead = document.getElementById("markAllRead");
-
-  if (notificationToggle && notificationDropdown) {
-    notificationToggle.addEventListener("click", function (e) {
-      e.stopPropagation();
-      const isOpen =
-        notificationToggle.getAttribute("aria-expanded") === "true";
-      closeAllDropdowns();
-      notificationToggle.setAttribute("aria-expanded", !isOpen);
-      notificationDropdown.hidden = isOpen;
-    });
-
-    document.addEventListener("click", function (e) {
-      if (
-        !notificationToggle.contains(e.target) &&
-        !notificationDropdown.contains(e.target)
-      ) {
-        notificationToggle.setAttribute("aria-expanded", "false");
-        notificationDropdown.hidden = true;
-      }
-    });
-  }
-
-  if (markAllRead) {
-    markAllRead.addEventListener("click", function () {
-      document
-        .querySelectorAll(".notification-item.unread")
-        .forEach(function (item) {
-          item.classList.remove("unread");
-        });
-      const badge = document.getElementById("notificationCount");
-      if (badge) {
-        badge.textContent = "0";
-        badge.hidden = true;
-      }
-    });
-  }
-
-  // ===== MOBILE SIDEBAR TOGGLE - FIXED =====
+  // ===== MOBILE SIDEBAR TOGGLE =====
   const mobileBtn = document.getElementById("mobileMenuToggle");
   const sidebarClose = document.getElementById("sidebarClose");
   const sidebar = document.getElementById("clientSidebar");
@@ -103,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // ===== SIDEBAR SUBMENU TOGGLE - FIXED FOR MOBILE =====
+  // ===== SIDEBAR SUBMENU TOGGLE =====
   document.querySelectorAll(".submenu-toggle").forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
@@ -170,29 +164,46 @@ document.addEventListener("DOMContentLoaded", function () {
       profileDropdown.hidden = true;
       profileToggle?.setAttribute("aria-expanded", "false");
     }
-    if (notificationDropdown) {
-      notificationDropdown.hidden = true;
-      notificationToggle?.setAttribute("aria-expanded", "false");
+    // Notification dropdown is now disabled, so we don't need to close it
+  }
+
+  // ===== TOAST NOTIFICATION =====
+  function showToast(message, type = "success") {
+    const existing = document.getElementById("layoutToast");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "layoutToast";
+    toast.innerHTML = `
+      <div class="toast-icon"><i class="fa-solid fa-${type === "success" ? "circle-check" : "info-circle"}"></i></div>
+      <div class="toast-content">${message}</div>
+    `;
+
+    toast.style.cssText = `
+      position:fixed;bottom:24px;right:24px;background:var(--card-bg);color:var(--text-dark);
+      padding:14px 20px;border-radius:var(--radius-md);box-shadow:var(--shadow-lg);
+      border-left:4px solid ${type === "success" ? "var(--primary)" : "var(--accent-gold)"};
+      display:flex;align-items:center;gap:12px;z-index:3000;max-width:360px;
+      animation:slideInRight 0.2s ease,fadeOut 0.2s ease 2s forwards;
+    `;
+
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 2200);
+
+    if (!document.getElementById("toastAnims")) {
+      const style = document.createElement("style");
+      style.id = "toastAnims";
+      style.textContent = `
+        @keyframes slideInRight{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes fadeOut{from{opacity:1}to{opacity:0}}
+      `;
+      document.head.appendChild(style);
     }
   }
 
-  // ===== EMERGENCY BUTTON CONFIRMATION =====
-  const emergencyBtn = document.querySelector(".btn-emergency");
-  if (emergencyBtn) {
-    emergencyBtn.addEventListener("click", function (e) {
-      if (!window.location.pathname.includes("/emergency")) {
-        e.preventDefault();
-        const confirmed = confirm(
-          "⚠️ Medical Emergency Only\n\nAre you experiencing a life-threatening situation?\n\n✓ YES: Connect immediately\n✗ NO: Use regular support",
-        );
-        if (confirmed) {
-          window.location.href = emergencyBtn.href;
-        }
-      }
-    });
-  }
-
-  // ===== HANDLE WINDOW RESIZE - FIXED =====
+  // ===== HANDLE WINDOW RESIZE =====
   window.addEventListener("resize", function () {
     if (window.innerWidth > 768) {
       sidebar.classList.remove("open");
